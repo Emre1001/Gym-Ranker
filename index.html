@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- === APPLE iOS OPTIMIERUNGEN === -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gym Ranker">
+    <!-- Hier wird dein Icon geladen -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- =============================== -->
+
+    <title>Gym Ranker | iOS Hardcore</title>
+    <style>
+        /* --- DESIGN TOKENS & VARIABLES --- */
+        :root {
+            --bg-dark: #000000;
+            --bg-panel: #111111;
+            --bg-panel-hover: #1f1f1f;
+            --accent: #dc2626; 
+            --accent-glow: rgba(220, 38, 38, 0.5);
+            --text-main: #f4f4f5;
+            --text-muted: #71717a;
+            --border: #27272a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --radius: 12px;
+        }
+
+        /* --- RANK COLORS --- */
+        .rank-holz { color: #8B5A2B; text-shadow: 0 0 5px rgba(139, 90, 43, 0.4); }
+        .rank-bronze { color: #CD7F32; text-shadow: 0 0 5px rgba(205, 127, 50, 0.4); }
+        .rank-stahl { color: #a1a1aa; text-shadow: 0 0 5px rgba(161, 161, 170, 0.4); }
+        .rank-silber { color: #e4e4e7; text-shadow: 0 0 10px rgba(228, 228, 231, 0.6); }
+        .rank-gold { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
+        .rank-diamant { color: #38bdf8; text-shadow: 0 0 15px rgba(56, 189, 248, 0.6); }
+        .rank-emerald { color: #34d399; text-shadow: 0 0 15px rgba(52, 211, 153, 0.6); }
+        .rank-ruby { color: #f43f5e; text-shadow: 0 0 20px rgba(244, 63, 94, 0.8); }
+        .rank-obsidian { color: #7c3aed; text-shadow: 0 0 20px rgba(124, 58, 237, 0.8); }
+        .rank-gymrat { color: #d946ef; text-shadow: 0 0 25px rgba(217, 70, 239, 0.9); }
+        .rank-champion { 
+            background: linear-gradient(90deg, #ff0000, #ff8c00, #ffd700, #ff0000);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fire 2s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes fire { to { background-position: 200% center; } }
+
+        /* --- GLOBAL STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; padding: 20px; min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Padding für iOS Notch/Dynamic Island */
+        .app-container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER & RANK DISPLAY --- */
+        .header-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; }
+        .status-badge { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+        .status-active { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-danger { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        .rank-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; margin-top: 15px; margin-bottom: 8px; font-weight: 600; }
+        .rank-name { font-size: 36px; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; text-transform: uppercase; }
+        .progress-container { width: 100%; background: #000; border-radius: 99px; height: 16px; overflow: hidden; position: relative; border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #991b1b, var(--accent)); width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px var(--accent-glow); }
+        .xp-text { font-size: 14px; font-weight: bold; margin-top: 12px; display: flex; justify-content: space-between; }
+        .xp-text span:first-child { color: var(--accent); }
+
+        /* --- INPUT SECTION --- */
+        .input-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .input-group label { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-main); font-size: 16px; outline: none; transition: border-color 0.2s; font-weight: 500; -webkit-appearance: none; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2); }
+
+        /* Search Dropdown */
+        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; margin-top: 4px; max-height: 220px; overflow-y: auto; z-index: 10; box-shadow: 0 10px 40px rgba(0,0,0,0.9); display: none; }
+        .search-results.active { display: block; }
+        .search-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .search-item:last-child { border-bottom: none; }
+        .search-item:hover { background: var(--bg-panel-hover); }
+        .item-name { font-weight: 600; font-size: 14px; }
+        .item-mult { font-size: 11px; color: var(--accent); background: rgba(220, 38, 38, 0.1); padding: 4px 6px; border-radius: 4px; font-weight: bold; }
+
+        .row { display: flex; gap: 16px; }
+        .row .input-group { flex: 1; }
+
+        /* --- BUTTONS --- */
+        .btn-primary { background: var(--accent); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-secondary { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+        .settings-row { display: flex; gap: 10px; margin-top: 10px; }
+        .settings-row button { flex: 1; }
+
+        /* --- CUSTOM MODAL (Kein alert/confirm) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--bg-panel); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius); width: 90%; max-width: 350px; text-align: center; transform: translateY(20px); transition: transform 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }
+        .modal-text { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .modal-buttons button { flex: 1; padding: 12px; font-size: 14px; }
+        .backup-code-box { background: var(--bg-dark); border: 1px solid var(--border); color: var(--accent); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 15px; user-select: all; }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; pointer-events: none; width: 90%; max-width: 400px; }
+        .toast { background: #18181b; border: 1px solid var(--border); color: white; padding: 16px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform: translateY(50px); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); display: flex; align-items: center; gap: 12px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--error); }
+        .toast.levelup { border: 2px solid var(--accent); background: linear-gradient(45deg, #111, #450a0a); box-shadow: 0 0 30px rgba(220, 38, 38, 0.4); text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER / RANK DISPLAY -->
+        <div class="header-panel">
+            <div id="statusBadge" class="status-badge status-active">
+                <span>🔥</span> Pump-Modus
+            </div>
+
+            <div class="rank-title">Hardcore Rang</div>
+            <div class="rank-name" id="rankDisplay">Lädt...</div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="xp-text">
+                <span id="currentXpDisplay">0 XP</span>
+                <span id="nextRankXpDisplay">0 XP</span>
+            </div>
+        </div>
+
+        <!-- INPUT SECTION -->
+        <div class="input-panel">
+            <div class="input-group">
+                <label for="exerciseSearch">Übung (Multiplikator)</label>
+                <input type="text" id="exerciseSearch" placeholder="z.B. Bankdrücken..." autocomplete="off">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label for="weight">Gewicht (kg)</label>
+                    <!-- inputmode="decimal" zeigt auf iOS den Nummernblock -->
+                    <input type="number" id="weight" placeholder="0" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label for="reps">Wiederholungen</label>
+                    <input type="number" id="reps" placeholder="0" inputmode="numeric">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="logWorkout()">Satz loggen</button>
+        </div>
+
+        <!-- EINSTELLUNGEN -->
+        <div class="settings-row">
+            <button class="btn-secondary" onclick="openBackupModal()">💾 Backup Code</button>
+            <button class="btn-secondary" onclick="openImportModal()">📥 Importieren</button>
+        </div>
+        <button class="btn-danger" style="width: 100%; margin-top: 5px;" onclick="openResetModal()">💀 Account löschen</button>
+
+    </div>
+
+    <!-- TOASTS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- CUSTOM MODAL SYSTEM -->
+    <div class="modal-overlay" id="customModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Titel</div>
+            <div class="modal-text" id="modalText">Text</div>
+            <!-- Extra Content Box (z.B. für Backup Code oder Input) -->
+            <div id="modalExtra"></div>
+            <div class="modal-buttons" id="modalButtons"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. DATA: EXERCISE DATABASE ---
+        const exerciseDB = [
+            { id: 'bp_flat', name: 'Bankdrücken (Flachbank)', mult: 1.0 },
+            { id: 'bp_incline', name: 'Bankdrücken (Schrägbank)', mult: 1.2 },
+            { id: 'db_flat', name: 'Kurzhantel Bankdrücken', mult: 1.4 },
+            { id: 'chest_press', name: 'Brustpresse (Maschine)', mult: 0.8 },
+            { id: 'butterfly_mach', name: 'Butterfly (Maschine)', mult: 1.3 },
+            { id: 'cable_cross', name: 'Cable Cross (Kabelzug)', mult: 1.8 },
+            { id: 'dips', name: 'Dips (Zusatzgewicht)', mult: 2.0 },
+            { id: 'deadlift', name: 'Kreuzheben', mult: 0.6 },
+            { id: 'lat_wide', name: 'Latzug (Breit)', mult: 1.2 },
+            { id: 'pullup', name: 'Klimmzüge (Zusatzgewicht)', mult: 2.5 },
+            { id: 'row_barbell', name: 'Langhantelrudern', mult: 1.1 },
+            { id: 'row_mach', name: 'Rudermaschine', mult: 0.9 },
+            { id: 'squat', name: 'Kniebeugen', mult: 0.8 },
+            { id: 'leg_press', name: 'Beinpresse', mult: 0.3 }, 
+            { id: 'hack_squat', name: 'Hackenschmidt Maschine', mult: 0.5 },
+            { id: 'leg_ext', name: 'Beinstrecker', mult: 1.4 },
+            { id: 'leg_curl_lying', name: 'Beinbeuger', mult: 1.5 },
+            { id: 'calf_stand', name: 'Wadenheben', mult: 0.6 },
+            { id: 'military', name: 'Military Press', mult: 1.5 },
+            { id: 'shoulder_db', name: 'Kurzhantel Schulterdrücken', mult: 1.8 },
+            { id: 'lateral_db', name: 'Seitheben (Kurzhantel)', mult: 8.0 },
+            { id: 'lateral_cable', name: 'Seitheben (Kabelzug)', mult: 9.0 },
+            { id: 'reverse_fly', name: 'Reverse Butterfly', mult: 3.5 },
+            { id: 'facepulls', name: 'Face Pulls', mult: 4.0 },
+            { id: 'tri_pushdown', name: 'Trizepsdrücken', mult: 2.5 },
+            { id: 'french_press', name: 'French Press', mult: 3.0 },
+            { id: 'curl_bb', name: 'Langhantel Curls', mult: 2.5 },
+            { id: 'curl_db', name: 'Kurzhantel Curls', mult: 3.5 },
+            { id: 'curl_cable', name: 'Bizeps Kabelzug', mult: 3.0 },
+            { id: 'crunch_cable', name: 'Crunches Kabelzug', mult: 2.0 },
+            { id: 'leg_raise_weight', name: 'Beinheben (Hantel)', mult: 4.0 }
+        ];
+        exerciseDB.sort((a, b) => a.name.localeCompare(b.name));
+
+        // --- 2. HARDCORE RANKS ---
+        const baseRanks = [
+            { id: 'holz', name: 'Holz' }, { id: 'bronze', name: 'Bronze' }, { id: 'stahl', name: 'Stahl' }, 
+            { id: 'silber', name: 'Silber' }, { id: 'gold', name: 'Gold' }, { id: 'diamant', name: 'Diamant' }, 
+            { id: 'emerald', name: 'Emerald' }, { id: 'ruby', name: 'Ruby' }, { id: 'obsidian', name: 'Obsidian' }, 
+            { id: 'gymrat', name: 'Gymrat' }, { id: 'champion', name: 'Champion' }
+        ];
+        const ranks = [];
+        let currentXpReq = 0; let step = 1000; 
+        baseRanks.forEach(rank => {
+            for (let i = 1; i <= 3; i++) {
+                ranks.push({ name: `${rank.name} ${i}`, class: `rank-${rank.id}`, xpRequired: Math.floor(currentXpReq) });
+                currentXpReq += step; step = step * 1.40;
+            }
+        });
+
+        // --- 3. STATE MANAGEMENT ---
+        let totalXp = localStorage.getItem('hc_gymXp') ? parseFloat(localStorage.getItem('hc_gymXp')) : 0;
+        let lastWorkoutTime = localStorage.getItem('hc_lastWorkout') ? parseInt(localStorage.getItem('hc_lastWorkout')) : Date.now();
+        let lastDecayTime = localStorage.getItem('hc_lastDecay') ? parseInt(localStorage.getItem('hc_lastDecay')) : Date.now();
+        
+        let selectedExercise = null;
+        let currentRankIndex = 0;
+
+        const MS_PER_DAY = 86400000;
+        const GRACE_DAYS = 3; 
+        const DECAY_RATE = 0.02; 
+
+        // --- 4. DECAY LOGIC ---
+        function checkAndApplyDecay() {
+            if (totalXp <= 0) return;
+            const now = Date.now();
+            const penaltyStartTime = lastWorkoutTime + (GRACE_DAYS * MS_PER_DAY);
+
+            if (now > penaltyStartTime) {
+                const decayFrom = Math.max(penaltyStartTime, lastDecayTime);
+                const msInDecayZone = now - decayFrom;
+                const daysToDecay = Math.floor(msInDecayZone / MS_PER_DAY);
+
+                if (daysToDecay > 0) {
+                    const oldXp = totalXp;
+                    for(let i = 0; i < daysToDecay; i++) totalXp = totalXp * (1 - DECAY_RATE);
+                    
+                    saveDataLocally();
+                    localStorage.setItem('hc_lastDecay', decayFrom + (daysToDecay * MS_PER_DAY));
+                    showToast(`🚨 FAULHEIT! ${Math.floor(oldXp - totalXp).toLocaleString('de-DE')} XP verloren!`, 'error');
+                }
+            }
+        }
+
+        function saveDataLocally() {
+            localStorage.setItem('hc_gymXp', totalXp);
+            localStorage.setItem('hc_lastWorkout', lastWorkoutTime);
+            localStorage.setItem('hc_lastDecay', lastDecayTime);
+        }
+
+        // --- 5. LOGIC & UI UPDATES ---
+        function getRankData(xp) {
+            let rankIndex = 0;
+            for (let i = 0; i < ranks.length; i++) {
+                if (xp >= ranks[i].xpRequired) { rankIndex = i; } else { break; }
+            }
+            return { index: rankIndex, current: ranks[rankIndex], next: ranks[rankIndex + 1] || ranks[rankIndex] };
+        }
+
+        function updateStatusBadge() {
+            const badge = document.getElementById('statusBadge');
+            const daysSinceWorkout = (Date.now() - lastWorkoutTime) / MS_PER_DAY;
+
+            if (totalXp === 0) {
+                badge.className = 'status-badge status-warning'; badge.innerHTML = '<span>💤</span> Neuling';
+            } else if (daysSinceWorkout < 2) {
+                badge.className = 'status-badge status-active'; badge.innerHTML = '<span>🔥</span> Pump-Modus';
+            } else if (daysSinceWorkout < 3) {
+                badge.className = 'status-badge status-warning'; badge.innerHTML = '<span>⚠️</span> Pause';
+            } else {
+                badge.className = 'status-badge status-danger'; badge.innerHTML = '<span>🩸</span> XP Bluten';
+            }
+        }
+
+        function updateUI(animateLevelUp = false) {
+            const rankData = getRankData(totalXp);
+            if (animateLevelUp && rankData.index > currentRankIndex) showToast(`🏆 LEVEL UP! ${rankData.current.name}!`, 'levelup');
+            if (!animateLevelUp && rankData.index < currentRankIndex) showToast(`📉 DERANK! Abgerutscht auf ${rankData.current.name}!`, 'error');
+            
+            currentRankIndex = rankData.index;
+
+            const rankDisplay = document.getElementById('rankDisplay');
+            rankDisplay.innerText = rankData.current.name;
+            rankDisplay.className = `rank-name ${rankData.current.class}`;
+
+            document.getElementById('currentXpDisplay').innerText = Math.floor(totalXp).toLocaleString('de-DE') + ' XP';
+            
+            const progressBar = document.getElementById('progressBar');
+            if (rankData.index < ranks.length - 1) {
+                document.getElementById('nextRankXpDisplay').innerText = Math.floor(rankData.next.xpRequired).toLocaleString('de-DE') + ' XP';
+                const xpIntoLevel = totalXp - rankData.current.xpRequired;
+                const xpNeededForLevel = rankData.next.xpRequired - rankData.current.xpRequired;
+                progressBar.style.width = `${(xpIntoLevel / xpNeededForLevel) * 100}%`;
+            } else {
+                document.getElementById('nextRankXpDisplay').innerText = 'LIMIT ERREICHT'; progressBar.style.width = '100%';
+            }
+            updateStatusBadge();
+        }
+
+        // --- 6. SEARCH LOGIC ---
+        const searchInput = document.getElementById('exerciseSearch');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            searchResults.innerHTML = '';
+            if (query.length === 0) { searchResults.classList.remove('active'); selectedExercise = null; return; }
+
+            const filtered = exerciseDB.filter(ex => ex.name.toLowerCase().includes(query));
+            if (filtered.length > 0) {
+                searchResults.classList.add('active');
+                filtered.forEach(ex => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerHTML = `<span class="item-name">${ex.name}</span> <span class="item-mult">x${ex.mult.toFixed(1)}</span>`;
+                    div.onclick = () => {
+                        selectedExercise = ex;
+                        searchInput.value = ex.name;
+                        searchResults.classList.remove('active');
+                    };
+                    searchResults.appendChild(div);
+                });
+            } else { searchResults.classList.remove('active'); }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target !== searchInput && e.target !== searchResults) searchResults.classList.remove('active');
+        });
+
+        // --- 7. LOG WORKOUT ---
+        function logWorkout() {
+            if (!selectedExercise) return showToast('Wähle eine Übung aus!', 'error');
+
+            const weight = parseFloat(document.getElementById('weight').value.replace(',', '.'));
+            const reps = parseInt(document.getElementById('reps').value);
+
+            if (isNaN(weight) || isNaN(reps) || weight <= 0 || reps <= 0) return showToast('Trag gültige Zahlen ein!', 'error');
+
+            const earnedXp = weight * reps * selectedExercise.mult;
+            totalXp += earnedXp;
+
+            const now = Date.now();
+            lastWorkoutTime = now;
+            lastDecayTime = now;
+
+            saveDataLocally();
+            
+            showToast(`+ ${Math.floor(earnedXp).toLocaleString('de-DE')} XP!`, 'success');
+            updateUI(true);
+
+            document.getElementById('weight').value = '';
+            document.getElementById('reps').value = '';
+        }
+
+        // --- 8. MODAL & BACKUP SYSTEM ---
+        const modal = document.getElementById('customModal');
+        
+        function closeModal() { modal.classList.remove('active'); }
+        
+        function showModal(title, text, extraHtml, buttonsHtml) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalText').innerText = text;
+            document.getElementById('modalExtra').innerHTML = extraHtml;
+            document.getElementById('modalButtons').innerHTML = buttonsHtml;
+            modal.classList.add('active');
+        }
+
+        // Backup erstellen
+        function openBackupModal() {
+            const saveObj = { xp: totalXp, lw: lastWorkoutTime, ld: lastDecayTime };
+            // Code in Base64 umwandeln, damit es cool und unleserlich aussieht
+            const saveCode = btoa(JSON.stringify(saveObj));
+            
+            const extra = `<div class="backup-code-box" id="backupCodeText">${saveCode}</div>`;
+            const buttons = `
+                <button class="btn-secondary" onclick="closeModal()">Schließen</button>
+                <button class="btn-primary" onclick="copyBackupCode('${saveCode}')">Kopieren</button>
+            `;
+            showModal('Backup Code', 'Kopiere diesen Code und speichere ihn z.B. in deinen Notizen. Damit kannst du deinen Fortschritt jederzeit wiederherstellen.', extra, buttons);
+        }
+
+        function copyBackupCode(code) {
+            // iOS Copy Workaround
+            const textArea = document.createElement("textarea");
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Code kopiert!', 'success');
+            } catch (err) {
+                showToast('Kopieren fehlgeschlagen. Bitte Code manuell markieren.', 'error');
+            }
+            document.body.removeChild(textArea);
+            closeModal();
+        }
+
+        // Backup Importieren
+        function openImportModal() {
+            const extra = `<input type="text" id="importInput" placeholder="Füge deinen Code hier ein..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--bg-dark); color:white; margin-bottom:15px;">`;
+            const buttons = `
+                <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+                <button class="btn-primary" onclick="processImport()">Laden</button>
+            `;
+            showModal('Code Importieren', 'Füge hier deinen gesicherten Backup-Code ein. ACHTUNG: Dein aktueller Fortschritt wird überschrieben!', extra, buttons);
+        }
+
+        function processImport() {
+            const code = document.getElementById('importInput').value.trim();
+            if(!code) return showToast('Kein Code eingegeben', 'error');
+            
+            try {
+                const decoded = JSON.parse(atob(code));
+                if(decoded.xp !== undefined && decoded.lw !== undefined) {
+                    totalXp = decoded.xp;
+                    lastWorkoutTime = decoded.lw;
+                    lastDecayTime = decoded.ld || decoded.lw;
+                    saveDataLocally();
+                    updateUI();
+                    closeModal();
+                    showToast('Fortschritt erfolgreich geladen!', 'success');
+                } else {
+                    throw new Error("Invalid format");
+                }
+            } catch(e) {
+                showToast('Ungültiger Code! Überprüfe die Eingabe.', 'error');
+            }
+        }
+
+        // Reset
+        function openResetModal() {
+            const buttons = `
+                <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+                <button class="btn-danger" style="background:var(--error); color:white; border:none;" onclick="confirmReset()">Ja, löschen</button>
+            `;
+            showModal('💀 WARNUNG', 'Bist du sicher? Alle deine Gains, Ränge und XP werden permanent gelöscht. Es gibt kein Zurück (außer du hast ein Backup)!', '', buttons);
+        }
+
+        function confirmReset() {
+            totalXp = 0;
+            lastWorkoutTime = Date.now();
+            lastDecayTime = Date.now();
+            localStorage.clear();
+            saveDataLocally();
+            updateUI();
+            closeModal();
+            showToast('Account gelöscht. Zurück auf Null.', 'error');
+        }
+
+        // --- 9. TOAST NOTIFICATION ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Init
+        checkAndApplyDecay();
+        const initialRank = getRankData(totalXp);
+        currentRankIndex = initialRank.index;
+        updateUI();
+
+    </script>
+</body>
+</html>
