@@ -1,7 +1,7 @@
 {
   "name": "Gym Ranker Hardcore",
-  "short_name": "Gym Ranker",
-  "start_url": ".",
+  "short_name": "GymRanker",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#dc2626",
@@ -9,7 +9,8 @@
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
