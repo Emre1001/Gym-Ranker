@@ -2,27 +2,11 @@
 
 🏋️‍♂️ Gym Ranker | Hardcore Edition
 
-<p align="center">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Version-1.1-red%3Fstyle%3Dfor-the-badge" alt="Version">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Platform-Android%2520%257C%2520iOS%2520%257C%2520Web-blue%3Fstyle%3Dfor-the-badge" alt="Platform">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Status-Hardcore-black%3Fstyle%3Dfor-the-badge" alt="Status">
-</p>
 
 „Der einzige schlechte Workout ist der, den du nicht gemacht hast.“ > Gym Ranker ist kein normaler Fitness-Tracker. Es ist ein gnadenloses, gamifiziertes Ranglisten-System. Logge deine Sätze, sammle XP und steige auf. Wer skippt, verliert.
 
 </div>
 
-📑 Inhaltsverzeichnis
-
-🔥 Features
-
-⚙️ Wie die XP berechnet werden
-
-📲 Installation (App & Web)
-
-🗺️ Roadmap
-
-🔥 Features
 
 🏆 33 Ränge: Ein gnadenloses, exponentielles Level-System.
 
@@ -74,7 +58,8 @@ Die App unterstützt über 30 echte Gym-Maschinen mit Suchfunktion (z.B. Hackens
 
 </details>
 
-⚙️ Wie die XP berechnet werden
+<details>
+<summary><b>⚙️ Wie die XP berechnet werden</b></summary>
 
 Die App berechnet deine Leistung in Echtzeit. Die Formel lautet:
 
@@ -120,6 +105,8 @@ x 2.5
 
 400 XP
 
+</details>
+
 📲 Installation
 
 🤖 Für Android-Nutzer (.apk)
@@ -134,7 +121,7 @@ Lade dir die neueste Gym-Ranker-1.1.apk herunter.
 
 Da Apple keine externen APKs zulässt, nutzt du die Progressive Web App (PWA) Version:
 
-Öffne den offiziellen Web-Link im Safari Browser: 👉 Hier klicken, um die App zu öffnen (<-- Link anpassen, falls nötig!)
+Öffne den offiziellen Web-Link im Safari Browser: https://emre1001.github.io/Gym-Ranker/
 
 Tippe unten auf den Teilen-Button (Viereck mit Pfeil).
 
@@ -142,21 +129,6 @@ Wähle "Zum Home-Bildschirm".
 
 Die App installiert sich nun nativ auf deinem iPhone!
 
-🗺️ Roadmap
-
-Was in Zukunft noch für den Gym Ranker geplant ist:
-
-[x] XP-Decay System einbauen (Bestrafung bei Pausen)
-
-[x] PWA Support für iOS hinzufügen
-
-[x] Über 30 Übungen mit Multiplikatoren balancieren
-
-[ ] Einen Dunkelmodus / Hellmodus Schalter einbauen
-
-[ ] Eine Statistik-Seite (Grafik), die den XP-Verlauf der letzten 30 Tage zeigt
-
-[ ] Cloud-Speicherung (Account-System) statt nur lokalem Speicher
 
 <div align="center">
 <i>Stay consistent. Don't skip leg day. Become a Champion.</i>
