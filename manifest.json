@@ -1,10 +1,14 @@
 {
   "name": "Gym Ranker Hardcore",
   "short_name": "GymRanker",
+  "description": "300+ exercises. Log sets, farm XP, rank up from Holz to Champion. Track strength per muscle group.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#dc2626",
+  "categories": ["fitness", "health", "sports"],
   "icons": [
     {
       "src": "icon.png",
@@ -12,5 +16,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
 }

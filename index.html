@@ -3,404 +3,1740 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- PWA Manifest & Android -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#dc2626">
-
-    <!-- === SEO & GOOGLE SUCHE === -->
-    <meta name="description" content="Gym Ranker Hardcore Edition - Das gnadenlose Ranglisten-System für dein Training. Logge deine Sätze, sammle XP und steige auf. Wer skippt, verliert!">
+    <meta name="description" content="Gym Ranker Hardcore Edition - Das gnadenlose Ranglisten-System fur dein Training. 300+ Ubungen, XP System, Streaks und mehr.">
     <meta name="keywords" content="Gym, Fitness Tracker, XP System, Gym Ranker, Hardcore Training, Fitness App, Workout Log, Gamification">
     <meta name="author" content="Emre">
-    
-    <!-- WhatsApp / Social Media Vorschau -->
     <meta property="og:title" content="Gym Ranker | Hardcore">
-    <meta property="og:description" content="Logge Sätze, farme XP und steige von Holz bis Champion auf. Traust du dich?">
+    <meta property="og:description" content="300+ Ubungen. Logge Satze, farme XP und steige von Holz bis Champion auf.">
     <meta property="og:image" content="https://emre1001.github.io/Gym-Ranker/icon.png">
     <meta property="og:url" content="https://emre1001.github.io/Gym-Ranker/">
-
-    <!-- === APPLE iOS OPTIMIERUNGEN === -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Gym Ranker">
     <link rel="apple-touch-icon" href="icon.png">
-    <!-- =============================== -->
-
     <title>Gym Ranker | Hardcore</title>
-    <style>
-        /* --- DESIGN TOKENS & VARIABLES --- */
-        :root {
-            --bg-dark: #000000; --bg-panel: #111111; --bg-panel-hover: #1f1f1f;
-            --accent: #dc2626; --accent-glow: rgba(220, 38, 38, 0.5);
-            --text-main: #f4f4f5; --text-muted: #71717a; --border: #27272a;
-            --success: #10b981; --error: #ef4444; --warning: #f59e0b; --radius: 12px;
-        }
+<style>
+:root {
+    --bg-dark:#000;--bg-panel:#111;--bg-panel-hover:#1a1a1a;--bg-input:#0a0a0a;--bg-card:#141414;
+    --accent:#dc2626;--accent-glow:rgba(220,38,38,.5);--accent-soft:rgba(220,38,38,.1);
+    --text-main:#f4f4f5;--text-muted:#71717a;--text-dim:#52525b;
+    --border:#27272a;--border-accent:#3f3f46;
+    --success:#10b981;--error:#ef4444;--warning:#f59e0b;
+    --radius:12px;--radius-sm:8px;--radius-full:99px;
+    --shadow:0 10px 40px rgba(0,0,0,.8);--nav-height:64px;
+}
+[data-theme="light"] {
+    --bg-dark:#f5f5f5;--bg-panel:#fff;--bg-panel-hover:#fafafa;--bg-input:#f0f0f0;--bg-card:#fff;
+    --text-main:#18181b;--text-muted:#71717a;--text-dim:#a1a1aa;
+    --border:#e4e4e7;--border-accent:#d4d4d8;--shadow:0 4px 20px rgba(0,0,0,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{background:var(--bg-dark);color:var(--text-main);display:flex;justify-content:center;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+.app-container{width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px;padding:16px 16px calc(var(--nav-height) + 24px);padding-top:max(16px,env(safe-area-inset-top));animation:fadeIn .4s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-        /* --- RANK COLORS --- */
-        .rank-holz { color: #8B5A2B; text-shadow: 0 0 5px rgba(139, 90, 43, 0.4); }
-        .rank-bronze { color: #CD7F32; text-shadow: 0 0 5px rgba(205, 127, 50, 0.4); }
-        .rank-stahl { color: #a1a1aa; text-shadow: 0 0 5px rgba(161, 161, 170, 0.4); }
-        .rank-silber { color: #e4e4e7; text-shadow: 0 0 10px rgba(228, 228, 231, 0.6); }
-        .rank-gold { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
-        .rank-diamant { color: #38bdf8; text-shadow: 0 0 15px rgba(56, 189, 248, 0.6); }
-        .rank-emerald { color: #34d399; text-shadow: 0 0 15px rgba(52, 211, 153, 0.6); }
-        .rank-ruby { color: #f43f5e; text-shadow: 0 0 20px rgba(244, 63, 94, 0.8); }
-        .rank-obsidian { color: #7c3aed; text-shadow: 0 0 20px rgba(124, 58, 237, 0.8); }
-        .rank-gymrat { color: #d946ef; text-shadow: 0 0 25px rgba(217, 70, 239, 0.9); }
-        .rank-champion { 
-            background: linear-gradient(90deg, #ff0000, #ff8c00, #ffd700, #ff0000);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: fire 2s linear infinite; text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-        }
-        @keyframes fire { to { background-position: 200% center; } }
+.rank-holz{color:#8B5A2B;text-shadow:0 0 5px rgba(139,90,43,.4)}.rank-bronze{color:#CD7F32;text-shadow:0 0 5px rgba(205,127,50,.4)}
+.rank-stahl{color:#a1a1aa;text-shadow:0 0 5px rgba(161,161,170,.4)}.rank-silber{color:#e4e4e7;text-shadow:0 0 10px rgba(228,228,231,.6)}
+.rank-gold{color:#fbbf24;text-shadow:0 0 15px rgba(251,191,36,.6)}.rank-diamant{color:#38bdf8;text-shadow:0 0 15px rgba(56,189,248,.6)}
+.rank-emerald{color:#34d399;text-shadow:0 0 15px rgba(52,211,153,.6)}.rank-ruby{color:#f43f5e;text-shadow:0 0 20px rgba(244,63,94,.8)}
+.rank-obsidian{color:#7c3aed;text-shadow:0 0 20px rgba(124,58,237,.8)}.rank-gymrat{color:#d946ef;text-shadow:0 0 25px rgba(217,70,239,.9)}
+.rank-champion{background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#ff0000);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fire 2s linear infinite;text-shadow:0 0 30px rgba(255,0,0,.5)}
+@keyframes fire{to{background-position:200% center}}
 
-        /* --- GLOBAL STYLES --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; padding: 20px; min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        
-        .app-container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page{display:none;flex-direction:column;gap:16px}.page.active{display:flex}
+.card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
 
-        /* --- HEADER & RANK DISPLAY --- */
-        .header-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; }
-        .status-badge { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
-        .status-active { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-danger { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+.header-panel{text-align:center;position:relative;padding:24px 20px}
+.status-badge{position:absolute;top:12px;right:12px;padding:5px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px}
+.streak-badge{position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:700;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.3);display:flex;align-items:center;gap:4px}
+.status-active{background:rgba(16,185,129,.1);color:var(--success);border:1px solid rgba(16,185,129,.3)}
+.status-warning{background:rgba(245,158,11,.1);color:var(--warning);border:1px solid rgba(245,158,11,.3)}
+.status-danger{background:rgba(239,68,68,.1);color:var(--error);border:1px solid rgba(239,68,68,.3);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}70%{box-shadow:0 0 0 10px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
 
-        .rank-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; margin-top: 15px; margin-bottom: 8px; font-weight: 600; }
-        .rank-name { font-size: 36px; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; text-transform: uppercase; }
-        .progress-container { width: 100%; background: #000; border-radius: 99px; height: 16px; overflow: hidden; position: relative; border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #991b1b, var(--accent)); width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px var(--accent-glow); }
-        .xp-text { font-size: 14px; font-weight: bold; margin-top: 12px; display: flex; justify-content: space-between; }
-        .xp-text span:first-child { color: var(--accent); }
+.rank-title{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:3px;margin-top:16px;margin-bottom:6px;font-weight:600}
+.rank-name{font-size:34px;font-weight:900;margin-bottom:16px;letter-spacing:-1px;text-transform:uppercase}
+.progress-container{width:100%;background:#000;border-radius:var(--radius-full);height:14px;overflow:hidden;position:relative;border:1px solid var(--border);box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+[data-theme="light"] .progress-container{background:#e4e4e7}
+.progress-bar{height:100%;background:linear-gradient(90deg,#991b1b,var(--accent));width:0%;transition:width 1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 15px var(--accent-glow)}
+.xp-text{font-size:13px;font-weight:bold;margin-top:10px;display:flex;justify-content:space-between}
+.xp-text span:first-child{color:var(--accent)}
 
-        /* --- INPUT SECTION --- */
-        .input-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
-        .input-group label { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-main); font-size: 16px; outline: none; transition: border-color 0.2s; font-weight: 500; -webkit-appearance: none; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2); }
+.today-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px}
+.today-stat{text-align:center;padding:10px 4px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.today-stat .val{font-size:20px;font-weight:800;color:var(--accent)}
+.today-stat .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 
-        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; margin-top: 4px; max-height: 220px; overflow-y: auto; z-index: 10; box-shadow: 0 10px 40px rgba(0,0,0,0.9); display: none; }
-        .search-results.active { display: block; }
-        .search-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .search-item:last-child { border-bottom: none; }
-        .search-item:hover { background: var(--bg-panel-hover); }
-        .item-name { font-weight: 600; font-size: 14px; }
-        .item-mult { font-size: 11px; color: var(--accent); background: rgba(220, 38, 38, 0.1); padding: 4px 6px; border-radius: 4px; font-weight: bold; }
+.recent-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none}
+.recent-row::-webkit-scrollbar{display:none}
+.recent-chip{flex-shrink:0;padding:8px 14px;border-radius:var(--radius-full);background:var(--bg-card);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.recent-chip:active{transform:scale(.96);background:var(--accent-soft);border-color:var(--accent)}
 
-        .row { display: flex; gap: 16px; }
-        .row .input-group { flex: 1; }
+.input-panel{display:flex;flex-direction:column;gap:14px}
+.input-group{display:flex;flex-direction:column;gap:6px;position:relative}
+.input-group label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type="text"],input[type="number"]{width:100%;padding:13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-input);color:var(--text-main);font-size:16px;outline:none;transition:border-color .2s;font-weight:500;-webkit-appearance:none}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(220,38,38,.15)}
 
-        /* --- BUTTONS --- */
-        .btn-primary { background: var(--accent); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.search-results{position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:4px;max-height:240px;overflow-y:auto;z-index:10;box-shadow:0 10px 40px rgba(0,0,0,.9);display:none}
+[data-theme="light"] .search-results{background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.search-results.active{display:block}
+.search-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.search-item:last-child{border-bottom:none}
+.search-item:hover,.search-item:active{background:var(--bg-panel-hover)}
+.item-name{font-weight:600;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-meta{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.item-muscle{font-size:10px;color:var(--text-muted);background:var(--bg-card);padding:2px 6px;border-radius:4px}
+.item-mult{font-size:11px;color:var(--accent);background:var(--accent-soft);padding:3px 6px;border-radius:4px;font-weight:bold}
 
-        .settings-row { display: flex; gap: 10px; margin-top: 10px; }
-        .settings-row button { flex: 1; }
+.row{display:flex;gap:12px}.row .input-group{flex:1}
+.btn-primary{background:var(--accent);color:#fff;border:none;padding:16px;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:2px;box-shadow:0 4px 15px rgba(220,38,38,.3)}
+.btn-primary:active{transform:scale(.98)}
+.btn-secondary{background:var(--bg-panel);color:var(--text-main);border:1px solid var(--border);padding:11px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary:active{transform:scale(.98)}
+.btn-danger{background:transparent;color:var(--error);border:1px solid var(--error);padding:11px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:var(--radius-sm)}
+.btn-icon{background:none;border:none;cursor:pointer;padding:4px;font-size:18px;line-height:1}
 
-        /* --- MODAL --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-panel); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius); width: 90%; max-width: 350px; text-align: center; transform: translateY(20px); transition: transform 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }
-        .modal-text { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
-        .modal-buttons button { flex: 1; padding: 12px; font-size: 14px; }
-        .backup-code-box { background: var(--bg-dark); border: 1px solid var(--border); color: var(--accent); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 15px; user-select: all; }
+.filter-section{display:flex;flex-direction:column;gap:8px}
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;padding:7px 14px;border-radius:var(--radius-full);background:var(--bg-card);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;color:var(--text-muted)}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-chip:active{transform:scale(.96)}
 
-        /* --- TOAST --- */
-        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; pointer-events: none; width: 90%; max-width: 400px; }
-        .toast { background: #18181b; border: 1px solid var(--border); color: white; padding: 16px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform: translateY(50px); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); display: flex; align-items: center; gap: 12px; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { border-left: 4px solid var(--success); }
-        .toast.error { border-left: 4px solid var(--error); }
-        .toast.levelup { border: 2px solid var(--accent); background: linear-gradient(45deg, #111, #450a0a); box-shadow: 0 0 30px rgba(220, 38, 38, 0.4); text-transform: uppercase; }
-    </style>
+.ex-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;padding-right:2px}
+.ex-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.ex-card:active{transform:scale(.98);background:var(--bg-panel-hover)}
+.ex-emoji{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+.ex-info{flex:1;min-width:0}
+.ex-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ex-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
+.ex-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ex-mult{font-size:11px;color:var(--accent);background:var(--accent-soft);padding:3px 7px;border-radius:4px;font-weight:bold}
+.ex-fav{font-size:16px;cursor:pointer;opacity:.3;transition:opacity .2s}
+.ex-fav.active{opacity:1}
+.ex-count{text-align:center;color:var(--text-muted);font-size:13px;padding:12px}
+
+.history-day{margin-bottom:12px}
+.history-date{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);padding:8px 0 6px;display:flex;justify-content:space-between;align-items:center}
+.history-date .h-xp{color:var(--accent);font-size:11px}
+.history-set{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:4px;font-size:13px}
+.history-set .h-name{font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-set .h-detail{color:var(--text-muted);flex-shrink:0;margin:0 8px}
+.history-set .h-earned{color:var(--success);font-weight:700;flex-shrink:0;font-size:12px}
+.history-empty{text-align:center;color:var(--text-muted);padding:40px 20px;font-size:14px}
+
+.stat-card{margin-bottom:12px}.stat-card h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:10px}
+.stat-card canvas{width:100%;border-radius:var(--radius-sm);background:var(--bg-card);border:1px solid var(--border)}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.stat-row:last-child{border-bottom:none}
+.stat-row .s-label{color:var(--text-muted)}.stat-row .s-value{font-weight:700}
+.pr-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:4px;font-size:13px}
+.pr-item .pr-name{font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-item .pr-val{color:var(--warning);font-weight:700;flex-shrink:0}
+.pr-item .pr-1rm{color:var(--text-muted);font-size:11px;flex-shrink:0;margin-left:8px}
+
+.settings-group{margin-bottom:8px}
+.settings-group h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:10px}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:500}
+.toggle-group{display:flex;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
+.toggle-btn{padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;background:var(--bg-card);color:var(--text-muted);border:none;transition:all .15s}
+.toggle-btn.active{background:var(--accent);color:#fff}
+.timer-presets{display:flex;gap:6px;flex-wrap:wrap}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-height);background:var(--bg-panel);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;z-index:50;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px 8px;border-radius:var(--radius-sm);transition:all .15s;-webkit-tap-highlight-color:transparent}
+.nav-item .nav-icon{font-size:20px;line-height:1}.nav-item .nav-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px}
+.nav-item.active .nav-label{color:var(--accent)}.nav-item:active{transform:scale(.92)}
+
+.timer-overlay{position:fixed;bottom:calc(var(--nav-height) + 16px);right:16px;width:80px;height:80px;z-index:40;display:none}
+.timer-overlay.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-circle{position:relative;width:80px;height:80px}
+.timer-circle canvas{width:80px;height:80px;border-radius:50%}
+.timer-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--text-main)}
+.timer-btns{display:flex;gap:4px;margin-top:4px}
+.timer-btns button{font-size:10px;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--border);background:var(--bg-panel);color:var(--text-main);cursor:pointer}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal-content{background:var(--bg-panel);border:1px solid var(--border);padding:24px;border-radius:var(--radius);width:90%;max-width:350px;text-align:center;transform:translateY(20px);transition:transform .3s;box-shadow:0 20px 50px rgba(0,0,0,.9)}
+.modal-overlay.active .modal-content{transform:translateY(0)}
+.modal-title{font-size:18px;font-weight:bold;margin-bottom:8px}.modal-text{font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.5}
+.modal-buttons{display:flex;gap:8px;justify-content:center}.modal-buttons button{flex:1;padding:12px;font-size:13px}
+.backup-code-box{background:var(--bg-input);border:1px solid var(--border);color:var(--accent);padding:10px;border-radius:6px;font-family:monospace;font-size:11px;word-break:break-all;margin-bottom:12px;user-select:all;max-height:120px;overflow-y:auto}
+
+.toast-container{position:fixed;bottom:calc(var(--nav-height) + 16px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:100;pointer-events:none;width:90%;max-width:400px}
+.toast{background:#18181b;border:1px solid var(--border);color:#fff;padding:14px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;box-shadow:0 10px 40px rgba(0,0,0,.8);transform:translateY(50px);opacity:0;transition:all .3s cubic-bezier(.68,-.55,.265,1.55);display:flex;align-items:center;gap:10px}
+[data-theme="light"] .toast{background:#fff;color:#18181b;border:1px solid #e4e4e7}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:4px solid var(--success)}.toast.error{border-left:4px solid var(--error)}
+.toast.levelup{border:2px solid var(--accent);background:linear-gradient(45deg,#111,#450a0a);box-shadow:0 0 30px rgba(220,38,38,.4);text-transform:uppercase}
+.toast.pr-toast{border:2px solid var(--warning);background:linear-gradient(45deg,#111,#422006);box-shadow:0 0 30px rgba(251,191,36,.3)}
+
+.body-views{display:flex;justify-content:center;gap:8px;margin-bottom:12px}
+.body-view{text-align:center}
+.body-view h4{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:700}
+.body-svg{width:160px;height:auto}
+.body-svg .outline{fill:none;stroke:var(--border);stroke-width:1.5}
+.body-svg .muscle-zone{opacity:.9;transition:opacity .2s,fill .3s;cursor:pointer;stroke:rgba(255,255,255,.15);stroke-width:1.2;stroke-linejoin:round}
+.body-svg .muscle-zone:hover{opacity:1;stroke:rgba(255,255,255,.4);stroke-width:1.8}
+[data-theme="light"] .body-svg .muscle-zone{stroke:rgba(0,0,0,.2)}
+[data-theme="light"] .body-svg .muscle-zone:hover{stroke:rgba(0,0,0,.4)}
+.body-svg .no-data{fill:#1f1f1f}
+[data-theme="light"] .body-svg .no-data{fill:#e4e4e7}
+.muscle-rank-list{display:flex;flex-direction:column;gap:4px}
+.muscle-rank-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px}
+.muscle-rank-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.muscle-rank-name{flex:1;font-weight:600}
+.muscle-rank-val{color:var(--text-muted);font-size:12px;margin-right:4px}
+.muscle-rank-label{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+</style>
 </head>
 <body>
+<div class="app-container">
 
-    <div class="app-container">
-        
-        <div class="header-panel">
-            <div id="statusBadge" class="status-badge status-active">
-                <span>🔥</span> Pump-Modus
-            </div>
-            <div class="rank-title">Hardcore Rang</div>
-            <div class="rank-name" id="rankDisplay">Lädt...</div>
-            <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-            <div class="xp-text">
-                <span id="currentXpDisplay">0 XP</span><span id="nextRankXpDisplay">0 XP</span>
-            </div>
-        </div>
-
-        <div class="input-panel">
-            <div class="input-group">
-                <label for="exerciseSearch">Übung (Multiplikator)</label>
-                <input type="text" id="exerciseSearch" placeholder="z.B. Bankdrücken..." autocomplete="off">
-                <div class="search-results" id="searchResults"></div>
-            </div>
-
-            <div class="row">
-                <div class="input-group">
-                    <label for="weight">Gewicht (kg)</label>
-                    <input type="number" id="weight" placeholder="0" inputmode="decimal">
-                </div>
-                <div class="input-group">
-                    <label for="reps">Wiederholungen</label>
-                    <input type="number" id="reps" placeholder="0" inputmode="numeric">
-                </div>
-            </div>
-            <button class="btn-primary" onclick="logWorkout()">Satz loggen</button>
-        </div>
-
-        <div class="settings-row">
-            <button class="btn-secondary" onclick="openBackupModal()">💾 Backup Code</button>
-            <button class="btn-secondary" onclick="openImportModal()">📥 Importieren</button>
-        </div>
-        <button class="btn-danger" style="width: 100%; margin-top: 5px;" onclick="openResetModal()">💀 Account löschen</button>
+<!-- ===== PAGE: HOME ===== -->
+<div class="page active" id="page-home">
+    <div class="card header-panel">
+        <div id="streakBadge" class="streak-badge" style="display:none"></div>
+        <div id="statusBadge" class="status-badge status-active"><span></span></div>
+        <div class="rank-title" id="rankTitle">Hardcore Rang</div>
+        <div class="rank-name" id="rankDisplay"></div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="xp-text"><span id="currentXpDisplay">0 XP</span><span id="nextRankXpDisplay">0 XP</span></div>
     </div>
-
-    <div class="toast-container" id="toastContainer"></div>
-
-    <div class="modal-overlay" id="customModal">
-        <div class="modal-content">
-            <div class="modal-title" id="modalTitle">Titel</div>
-            <div class="modal-text" id="modalText">Text</div>
-            <div id="modalExtra"></div>
-            <div class="modal-buttons" id="modalButtons"></div>
+    <div class="card input-panel">
+        <div id="recentContainer" style="display:none">
+            <label style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block" id="recentLabel">Zuletzt</label>
+            <div class="recent-row" id="recentRow"></div>
+        </div>
+        <div class="input-group">
+            <label for="exerciseSearch" id="lblExercise"></label>
+            <input type="text" id="exerciseSearch" autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="row">
+            <div class="input-group"><label for="weight" id="lblWeight"></label><input type="number" id="weight" placeholder="0" inputmode="decimal"></div>
+            <div class="input-group"><label for="reps" id="lblReps"></label><input type="number" id="reps" placeholder="0" inputmode="numeric"></div>
+        </div>
+        <button class="btn-primary" onclick="logWorkout()" id="btnLog"></button>
+    </div>
+    <div class="card" id="todaySummaryCard">
+        <div class="today-summary">
+            <div class="today-stat"><div class="val" id="todaySets">0</div><div class="lbl" id="todaySetsLbl">Sets</div></div>
+            <div class="today-stat"><div class="val" id="todayXp">0</div><div class="lbl">XP</div></div>
+            <div class="today-stat"><div class="val" id="todayExCount">0</div><div class="lbl" id="todayExLbl"></div></div>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- SERVICE WORKER REGISTRATION (Wichtig für Android!) ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => {
-                    console.log('Service Worker registriert!');
-                }).catch(err => console.log('Service Worker Fehler:', err));
+<!-- ===== PAGE: EXERCISES ===== -->
+<div class="page" id="page-exercises">
+    <div class="card" style="padding:16px">
+        <div class="input-group" style="margin-bottom:10px">
+            <input type="text" id="exBrowserSearch" autocomplete="off">
+        </div>
+        <div class="filter-section">
+            <div class="filter-row" id="muscleFilters"></div>
+            <div class="filter-row" id="equipFilters"></div>
+            <div class="filter-row"><div class="filter-chip" id="favFilterChip" onclick="toggleFavFilter()"></div></div>
+        </div>
+    </div>
+    <div class="ex-count" id="exCount"></div>
+    <div class="ex-list" id="exList"></div>
+</div>
+
+<!-- ===== PAGE: HISTORY ===== -->
+<div class="page" id="page-history">
+    <div id="historyContent"></div>
+</div>
+
+<!-- ===== PAGE: STATS ===== -->
+<div class="page" id="page-stats">
+    <div class="card stat-card"><h3 id="statXpTitle">XP (30 Tage)</h3><canvas id="chartXp" width="440" height="180"></canvas></div>
+    <div class="card stat-card"><h3 id="statFreqTitle">Sets (14 Tage)</h3><canvas id="chartFreq" width="440" height="140"></canvas></div>
+    <div class="card stat-card"><h3 id="statMuscleTtl"></h3><div id="muscleDistribution"></div></div>
+    <div class="card stat-card"><h3 id="statStreakTtl">Streak</h3><div id="streakStats"></div></div>
+    <div class="card stat-card"><h3 id="statPrTtl">Personal Records</h3><div id="prList"></div></div>
+    <div class="card stat-card"><h3 id="statTopTtl">Top 10</h3><div id="topExercises"></div></div>
+</div>
+
+<!-- ===== PAGE: BODY MAP ===== -->
+<div class="page" id="page-body">
+    <div class="card" style="padding:20px">
+        <h3 style="text-align:center;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px" id="bodyTitle">Strength Map</h3>
+        <div class="body-views">
+            <div class="body-view">
+                <h4 id="bodyFrontLabel">Front</h4>
+                <svg class="body-svg" id="bodySvgFront" viewBox="0 0 200 440" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Traps -->
+                    <path class="muscle-zone no-data" data-muscle="traps" d="M74,68 L91,62 L100,72 L100,72 L91,78 L74,82 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="traps" d="M126,68 L109,62 L100,72 L100,72 L109,78 L126,82 Z"/>
+                    <!-- Shoulders / Delts -->
+                    <path class="muscle-zone no-data" data-muscle="shoulders" d="M74,68 L62,72 L48,78 L44,92 L50,100 L56,96 L64,88 L74,82 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="shoulders" d="M126,68 L138,72 L152,78 L156,92 L150,100 L144,96 L136,88 L126,82 Z"/>
+                    <!-- Chest / Pecs -->
+                    <path class="muscle-zone no-data" data-muscle="chest" d="M64,88 L74,82 L91,78 L100,84 L100,108 L92,118 L78,120 L66,112 L60,100 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="chest" d="M136,88 L126,82 L109,78 L100,84 L100,108 L108,118 L122,120 L134,112 L140,100 Z"/>
+                    <!-- Biceps -->
+                    <path class="muscle-zone no-data" data-muscle="biceps" d="M50,100 L56,96 L60,100 L58,112 L54,128 L48,142 L42,148 L38,140 L38,120 L42,106 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="biceps" d="M150,100 L144,96 L140,100 L142,112 L146,128 L152,142 L158,148 L162,140 L162,120 L158,106 Z"/>
+                    <!-- Core / Abs -->
+                    <path class="muscle-zone no-data" data-muscle="core" d="M78,120 L92,118 L100,108 L108,118 L122,120 L122,170 L114,178 L100,180 L86,178 L78,170 Z"/>
+                    <!-- Forearms -->
+                    <path class="muscle-zone no-data" data-muscle="forearms" d="M42,148 L48,142 L52,148 L50,166 L46,182 L40,196 L34,196 L32,188 L36,170 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="forearms" d="M158,148 L152,142 L148,148 L150,166 L154,182 L160,196 L166,196 L168,188 L164,170 Z"/>
+                    <!-- Quads -->
+                    <path class="muscle-zone no-data" data-muscle="quads" d="M78,178 L86,178 L100,180 L100,180 L96,220 L94,250 L90,270 L84,278 L74,272 L68,254 L68,228 L70,204 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="quads" d="M122,178 L114,178 L100,180 L100,180 L104,220 L106,250 L110,270 L116,278 L126,272 L132,254 L132,228 L130,204 Z"/>
+                    <!-- Calves (front) -->
+                    <path class="muscle-zone no-data" data-muscle="calves" d="M74,296 L84,290 L90,296 L90,320 L88,346 L86,364 L80,370 L72,364 L68,340 L68,316 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="calves" d="M126,296 L116,290 L110,296 L110,320 L112,346 L114,364 L120,370 L128,364 L132,340 L132,316 Z"/>
+                    <!-- Body outline -->
+                    <path class="outline" d="M100,30 C88,30 80,20 80,10 C80,0 88,-6 100,-6 C112,-6 120,0 120,10 C120,20 112,30 100,30 Z"/>
+                    <path class="outline" d="M91,30 L91,62 M109,30 L109,62"/>
+                    <path class="outline" d="M91,62 L74,68 L62,72 L48,78 L44,92 L38,120 L38,140 L42,148 L36,170 L32,188 L34,196 L40,196 L46,182 L52,148 L58,112 L66,112 L78,120 L78,170 L78,178 L70,204 L68,228 L68,254 L74,272 L84,278 L74,296 L68,316 L68,340 L72,364 L80,370 L80,400 L74,420 L72,432 L92,432 L90,420 L86,400 L86,370 L90,346 L90,320 L90,296 L84,290 L90,270 L94,250 L96,220 L100,180"/>
+                    <path class="outline" d="M109,62 L126,68 L138,72 L152,78 L156,92 L162,120 L162,140 L158,148 L164,170 L168,188 L166,196 L160,196 L154,182 L148,148 L142,112 L134,112 L122,120 L122,170 L122,178 L130,204 L132,228 L132,254 L126,272 L116,278 L126,296 L132,316 L132,340 L128,364 L120,370 L120,400 L126,420 L128,432 L108,432 L110,420 L114,400 L114,370 L110,346 L110,320 L110,296 L116,290 L110,270 L106,250 L104,220 L100,180"/>
+                </svg>
+            </div>
+            <div class="body-view">
+                <h4 id="bodyBackLabel">Back</h4>
+                <svg class="body-svg" id="bodySvgBack" viewBox="0 0 200 440" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Traps -->
+                    <path class="muscle-zone no-data" data-muscle="traps" d="M74,68 L91,62 L100,72 L91,82 L74,86 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="traps" d="M126,68 L109,62 L100,72 L109,82 L126,86 Z"/>
+                    <!-- Rear Delts -->
+                    <path class="muscle-zone no-data" data-muscle="shoulders" d="M74,68 L62,72 L48,78 L44,92 L50,100 L56,96 L64,88 L74,86 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="shoulders" d="M126,68 L138,72 L152,78 L156,92 L150,100 L144,96 L136,88 L126,86 Z"/>
+                    <!-- Back / Lats -->
+                    <path class="muscle-zone no-data" data-muscle="back" d="M64,88 L74,86 L91,82 L100,72 L100,108 L96,122 L88,130 L78,134 L72,142 L68,156 L66,164 L78,170 L78,152 L82,140 L92,130 L100,126 L100,126 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="back" d="M136,88 L126,86 L109,82 L100,72 L100,108 L104,122 L112,130 L122,134 L128,142 L132,156 L134,164 L122,170 L122,152 L118,140 L108,130 L100,126 L100,126 Z"/>
+                    <!-- Triceps -->
+                    <path class="muscle-zone no-data" data-muscle="triceps" d="M50,100 L56,96 L60,102 L58,116 L54,132 L48,146 L42,152 L38,142 L38,122 L42,108 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="triceps" d="M150,100 L144,96 L140,102 L142,116 L146,132 L152,146 L158,152 L162,142 L162,122 L158,108 Z"/>
+                    <!-- Forearms back -->
+                    <path class="muscle-zone no-data" data-muscle="forearms" d="M42,152 L48,146 L52,152 L50,170 L46,186 L40,200 L34,200 L32,192 L36,174 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="forearms" d="M158,152 L152,146 L148,152 L150,170 L154,186 L160,200 L166,200 L168,192 L164,174 Z"/>
+                    <!-- Lower back -->
+                    <path class="muscle-zone no-data" data-muscle="back" d="M78,170 L86,178 L100,180 L114,178 L122,170 L134,164 L132,156 L128,142 L122,134 L112,130 L100,126 L88,130 L78,134 L72,142 L68,156 L66,164 Z"/>
+                    <!-- Glutes -->
+                    <path class="muscle-zone no-data" data-muscle="glutes" d="M78,178 L86,178 L100,180 L100,210 L94,218 L84,218 L76,210 L72,198 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="glutes" d="M122,178 L114,178 L100,180 L100,210 L106,218 L116,218 L124,210 L128,198 Z"/>
+                    <!-- Hamstrings -->
+                    <path class="muscle-zone no-data" data-muscle="hamstrings" d="M72,218 L84,218 L94,218 L96,240 L94,262 L90,278 L84,286 L74,280 L68,262 L66,240 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="hamstrings" d="M128,218 L116,218 L106,218 L104,240 L106,262 L110,278 L116,286 L126,280 L132,262 L134,240 Z"/>
+                    <!-- Calves back -->
+                    <path class="muscle-zone no-data" data-muscle="calves" d="M74,302 L84,296 L90,304 L90,328 L88,352 L86,370 L80,376 L72,370 L68,346 L68,322 Z"/>
+                    <path class="muscle-zone no-data" data-muscle="calves" d="M126,302 L116,296 L110,304 L110,328 L112,352 L114,370 L120,376 L128,370 L132,346 L132,322 Z"/>
+                    <!-- Body outline -->
+                    <path class="outline" d="M100,30 C88,30 80,20 80,10 C80,0 88,-6 100,-6 C112,-6 120,0 120,10 C120,20 112,30 100,30 Z"/>
+                    <path class="outline" d="M91,30 L91,62 M109,30 L109,62"/>
+                    <path class="outline" d="M91,62 L74,68 L62,72 L48,78 L44,92 L38,122 L38,142 L42,152 L36,174 L32,192 L34,200 L40,200 L46,186 L52,152 L58,116 L60,102 L64,88 L72,198 L76,210 L72,218 L66,240 L68,262 L74,280 L84,286 L74,302 L68,322 L68,346 L72,370 L80,376 L80,406 L74,424 L72,436 L92,436 L90,424 L86,406 L86,376 L90,352 L90,328 L90,304 L84,296 L90,278 L94,262 L96,240 L94,218 L100,210 L100,180"/>
+                    <path class="outline" d="M109,62 L126,68 L138,72 L152,78 L156,92 L162,122 L162,142 L158,152 L164,174 L168,192 L166,200 L160,200 L154,186 L148,152 L142,116 L140,102 L136,88 L128,198 L124,210 L128,218 L134,240 L132,262 L126,280 L116,286 L126,302 L132,322 L132,346 L128,370 L120,376 L120,406 L126,424 L128,436 L108,436 L110,424 L114,406 L114,376 L110,352 L110,328 L110,304 L116,296 L110,278 L106,262 L104,240 L106,218 L100,210 L100,180"/>
+                </svg>
+            </div>
+        </div>
+        <div class="muscle-rank-list" id="muscleRankList"></div>
+    </div>
+</div>
+
+<!-- ===== PAGE: SETTINGS ===== -->
+<div class="page" id="page-settings">
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setLangTitle"></h3>
+            <div class="setting-row"><span class="setting-label" id="setLangLabel"></span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setLang('de')" id="langDe">DE</button><button class="toggle-btn" onclick="setLang('en')" id="langEn">EN</button></div>
+            </div>
+        </div>
+        <div class="settings-group">
+            <h3 id="setThemeTitle">Theme</h3>
+            <div class="setting-row"><span class="setting-label" id="setThemeLabel"></span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setTheme('dark')" id="themeDark">Dark</button><button class="toggle-btn" onclick="setTheme('light')" id="themeLight">Light</button></div>
+            </div>
+        </div>
+        <div class="settings-group">
+            <h3 id="setTimerTitle">Timer</h3>
+            <div class="setting-row"><span class="setting-label" id="setTimerLabel"></span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setAutoTimer(true)" id="timerOn">ON</button><button class="toggle-btn" onclick="setAutoTimer(false)" id="timerOff">OFF</button></div>
+            </div>
+            <div class="setting-row"><span class="setting-label" id="setTimerDurLabel"></span>
+                <div class="timer-presets" id="timerPresets"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setNotifTitle">Notifications</h3>
+            <div class="setting-row"><span class="setting-label" id="setVibLabel">Vibration</span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setVibration(true)" id="vibOn">ON</button><button class="toggle-btn" onclick="setVibration(false)" id="vibOff">OFF</button></div>
+            </div>
+            <div class="setting-row"><span class="setting-label" id="setSoundLabel">Sound</span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setSound(true)" id="soundOn">ON</button><button class="toggle-btn" onclick="setSound(false)" id="soundOff">OFF</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setUnitsTitle">Units</h3>
+            <div class="setting-row"><span class="setting-label" id="setWeightUnitLabel">Weight</span>
+                <div class="toggle-group"><button class="toggle-btn" onclick="setWeightUnit('kg')" id="unitKg">KG</button><button class="toggle-btn" onclick="setWeightUnit('lbs')" id="unitLbs">LBS</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setGoalTitle">Daily Goal</h3>
+            <div class="setting-row"><span class="setting-label" id="setGoalSetsLabel">Sets / Day</span>
+                <div class="timer-presets" id="goalPresets"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setInstallTitle">Install App</h3>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.5" id="installDesc">Install as app on your device for offline use and quick access.</p>
+            <button class="btn-primary" style="width:100%;font-size:13px;padding:12px" onclick="installApp()" id="btnInstall">📲 Install App</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="settings-group">
+            <h3 id="setDataTitle">Data</h3>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+                <button class="btn-secondary" style="flex:1" onclick="openBackupModal()" id="btnBackup"></button>
+                <button class="btn-secondary" style="flex:1" onclick="openImportModal()" id="btnImport"></button>
+            </div>
+            <div style="margin-bottom:8px">
+                <button class="btn-secondary" style="width:100%" onclick="exportCSV()" id="btnExportCsv">📊 Export CSV</button>
+            </div>
+            <button class="btn-danger" style="width:100%" onclick="openResetModal()" id="btnReset"></button>
+        </div>
+    </div>
+</div>
+
+</div><!-- app-container -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+    <div class="nav-item active" onclick="navigateTo('home')"><span class="nav-icon">&#127968;</span><span class="nav-label" id="navHome">Home</span></div>
+    <div class="nav-item" onclick="navigateTo('exercises')"><span class="nav-icon">&#128170;</span><span class="nav-label" id="navExercises"></span></div>
+    <div class="nav-item" onclick="navigateTo('history')"><span class="nav-icon">&#128203;</span><span class="nav-label" id="navHistory"></span></div>
+    <div class="nav-item" onclick="navigateTo('stats')"><span class="nav-icon">&#128202;</span><span class="nav-label" id="navStats"></span></div>
+    <div class="nav-item" onclick="navigateTo('body')"><span class="nav-icon">&#129489;</span><span class="nav-label" id="navBody"></span></div>
+    <div class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">&#9881;</span><span class="nav-label" id="navSettings"></span></div>
+</nav>
+
+<!-- TIMER OVERLAY -->
+<div class="timer-overlay" id="timerOverlay">
+    <div class="timer-circle"><canvas id="timerCanvas" width="160" height="160"></canvas><div class="timer-text" id="timerText">0</div></div>
+    <div class="timer-btns"><button onclick="timerAdd30()" id="btnTimer30">+30s</button><button onclick="timerSkip()" id="btnTimerSkip">Skip</button></div>
+</div>
+
+<!-- TOAST + MODAL -->
+<div class="toast-container" id="toastContainer"></div>
+<div class="modal-overlay" id="customModal">
+    <div class="modal-content">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-text" id="modalText"></div>
+        <div id="modalExtra"></div>
+        <div class="modal-buttons" id="modalButtons"></div>
+    </div>
+</div>
+
+<script>
+// ==================== SERVICE WORKER ====================
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+
+// ==================== i18n ====================
+const i18n={
+en:{
+navHome:'Home',navExercises:'Exercises',navHistory:'History',navStats:'Stats',navSettings:'Settings',
+rankTitle:'Hardcore Rank',
+exercise:'Exercise (Multiplier)',weight:'Weight (kg)',reps:'Reps',logSet:'LOG SET',
+searchPh:'e.g. Bench Press...',selectEx:'Select an exercise!',invalidNum:'Enter valid numbers!',
+pumpMode:'Pump Mode',pause:'Pause',xpBleeding:'XP Bleeding',rookie:'Rookie',limitReached:'LIMIT REACHED',
+recentLabel:'Recent',todaySets:'Sets',todayExercises:'Exercises',
+muscleAll:'All',chest:'Chest',back:'Back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',
+quads:'Quads',hamstrings:'Hamstrings',glutes:'Glutes',calves:'Calves',core:'Core',forearms:'Forearms',traps:'Traps',fullBody:'Full Body',
+equipAll:'All',barbell:'Barbell',dumbbell:'Dumbbell',cable:'Cable',machine:'Machine',bodyweight:'Bodyweight',
+kettlebell:'Kettlebell',band:'Band',smith:'Smith',ezbar:'EZ Bar',
+favOnly:'Favorites',exCount:'{n} exercises',
+langTitle:'Language',langLabel:'Language',themeTitle:'Theme',themeLabel:'Appearance',
+timerTitle:'Rest Timer',timerLabel:'Auto-start',timerDurLabel:'Duration',
+dataTitle:'Data',btnBackup:'Backup',btnImport:'Import',btnReset:'Delete Account',
+backupTitle:'Backup Code',backupText:'Copy this code to restore your progress anytime.',
+importTitle:'Import Code',importText:'WARNING: Current progress will be overwritten!',importPh:'Paste your code here...',
+resetTitle:'WARNING',resetText:'Are you sure? All gains and XP will be deleted!',
+codeCopied:'Code copied!',copyManual:'Please copy manually.',loadSuccess:'Loaded successfully!',invalidCode:'Invalid code!',noCode:'No code entered',accountDeleted:'Account deleted.',
+cancel:'Cancel',close:'Close',copy:'Copy',load:'Load',yesDelete:'Yes, delete',
+laziness:'LAZINESS! {xp} XP lost!',derank:'DERANK! Dropped to {rank}!',levelUp:'LEVEL UP! {rank}!',
+newPr:'NEW PR! {ex}: {w}kg x {r} (est. 1RM: {rm}kg)',
+streakBonus:'Streak Bonus: +{xp} XP!',
+statXpTitle:'XP (30 Days)',statFreqTitle:'Sets (14 Days)',statMuscleTtl:'Muscle Distribution',
+statStreakTtl:'Streak',statPrTtl:'Personal Records',statTopTtl:'Top 10 Exercises',
+streakCurrent:'Current Streak',streakLongest:'Longest Streak',streakTotal:'Total Workout Days',
+days:'days',noHistory:'No workouts logged yet.',noPrs:'No personal records yet.',
+restDone:'Rest complete!',
+navBody:'Body',bodyTitle:'Strength Map',bodyFront:'Front',bodyBack:'Back',
+bodyNoData:'No data yet',
+rankHolz:'Holz',rankBronze:'Bronze',rankStahl:'Stahl',rankSilber:'Silber',rankGold:'Gold',
+rankDiamant:'Diamond',rankEmerald:'Emerald',rankRuby:'Ruby',rankObsidian:'Obsidian',rankGymrat:'Gym Rat',rankChampion:'Champion',
+notifTitle:'Notifications',vibLabel:'Vibration',soundLabel:'Sound',
+unitsTitle:'Units',weightUnitLabel:'Weight Unit',
+goalTitle:'Daily Goal',goalSetsLabel:'Sets / Day',
+installTitle:'Install App',installDesc:'Install as app on your device for offline use and quick access.',
+btnInstall:'Install App',btnExportCsv:'Export CSV',
+installIos:'Tap Share > Add to Home Screen',installAndroid:'Tap menu > Install App',installDesktop:'Click install icon in address bar',
+csvExported:'CSV exported!',goalReached:'Daily goal reached!',noGoal:'No goal set'
+},
+de:{
+navHome:'Home',navExercises:'Ubungen',navHistory:'Verlauf',navStats:'Statistik',navSettings:'Einstellungen',
+rankTitle:'Hardcore Rang',
+exercise:'Ubung (Multiplikator)',weight:'Gewicht (kg)',reps:'Wiederholungen',logSet:'SATZ LOGGEN',
+searchPh:'z.B. Bankdrucken...',selectEx:'Wahle eine Ubung aus!',invalidNum:'Trag gultige Zahlen ein!',
+pumpMode:'Pump-Modus',pause:'Pause',xpBleeding:'XP Bluten',rookie:'Neuling',limitReached:'LIMIT ERREICHT',
+recentLabel:'Zuletzt',todaySets:'Satze',todayExercises:'Ubungen',
+muscleAll:'Alle',chest:'Brust',back:'Rucken',shoulders:'Schultern',biceps:'Bizeps',triceps:'Trizeps',
+quads:'Quadrizeps',hamstrings:'Beinbeuger',glutes:'Gesass',calves:'Waden',core:'Bauch',forearms:'Unterarme',traps:'Trapez',fullBody:'Ganzkorper',
+equipAll:'Alle',barbell:'Langhantel',dumbbell:'Kurzhantel',cable:'Kabelzug',machine:'Maschine',bodyweight:'Korpergewicht',
+kettlebell:'Kettlebell',band:'Band',smith:'Multipresse',ezbar:'SZ-Stange',
+favOnly:'Favoriten',exCount:'{n} Ubungen',
+langTitle:'Sprache',langLabel:'Sprache',themeTitle:'Design',themeLabel:'Aussehen',
+timerTitle:'Pausentimer',timerLabel:'Autostart',timerDurLabel:'Dauer',
+dataTitle:'Daten',btnBackup:'Backup',btnImport:'Importieren',btnReset:'Account loschen',
+backupTitle:'Backup Code',backupText:'Kopiere diesen Code. Damit kannst du deinen Fortschritt jederzeit wiederherstellen.',
+importTitle:'Code Importieren',importText:'ACHTUNG: Dein aktueller Fortschritt wird uberschrieben!',importPh:'Code hier einfugen...',
+resetTitle:'WARNUNG',resetText:'Bist du sicher? Alle Gains und XP werden geloscht!',
+codeCopied:'Code kopiert!',copyManual:'Bitte manuell kopieren.',loadSuccess:'Erfolgreich geladen!',invalidCode:'Ungultiger Code!',noCode:'Kein Code eingegeben',accountDeleted:'Account geloscht.',
+cancel:'Abbrechen',close:'Schliessen',copy:'Kopieren',load:'Laden',yesDelete:'Ja, loschen',
+laziness:'FAULHEIT! {xp} XP verloren!',derank:'DERANK! Abgerutscht auf {rank}!',levelUp:'LEVEL UP! {rank}!',
+newPr:'NEUER PR! {ex}: {w}kg x {r} (est. 1RM: {rm}kg)',
+streakBonus:'Streak Bonus: +{xp} XP!',
+statXpTitle:'XP (30 Tage)',statFreqTitle:'Satze (14 Tage)',statMuscleTtl:'Muskelverteilung',
+statStreakTtl:'Streak',statPrTtl:'Personliche Rekorde',statTopTtl:'Top 10 Ubungen',
+streakCurrent:'Aktueller Streak',streakLongest:'Langster Streak',streakTotal:'Trainingstage gesamt',
+days:'Tage',noHistory:'Noch keine Workouts geloggt.',noPrs:'Noch keine Rekorde.',
+restDone:'Pause vorbei!',
+navBody:'Korper',bodyTitle:'Starke-Map',bodyFront:'Vorne',bodyBack:'Hinten',
+bodyNoData:'Keine Daten',
+rankHolz:'Holz',rankBronze:'Bronze',rankStahl:'Stahl',rankSilber:'Silber',rankGold:'Gold',
+rankDiamant:'Diamant',rankEmerald:'Emerald',rankRuby:'Rubin',rankObsidian:'Obsidian',rankGymrat:'Gym Rat',rankChampion:'Champion',
+notifTitle:'Benachrichtigungen',vibLabel:'Vibration',soundLabel:'Ton',
+unitsTitle:'Einheiten',weightUnitLabel:'Gewichtseinheit',
+goalTitle:'Tagesziel',goalSetsLabel:'Satze / Tag',
+installTitle:'App Installieren',installDesc:'Als App auf deinem Gerat installieren fur Offline-Nutzung und schnellen Zugriff.',
+btnInstall:'App Installieren',btnExportCsv:'CSV Exportieren',
+installIos:'Teilen > Zum Home-Bildschirm',installAndroid:'Menu > App installieren',installDesktop:'Installieren-Symbol in Adressleiste klicken',
+csvExported:'CSV exportiert!',goalReached:'Tagesziel erreicht!',noGoal:'Kein Ziel gesetzt'
+}};
+
+let lang=localStorage.getItem('gr_lang')||'de';
+function t(k){return(i18n[lang]&&i18n[lang][k])||i18n.de[k]||k}
+
+// ==================== EXERCISE DATABASE (315) ====================
+const MUSCLES={chest:'chest',back:'back',shoulders:'shoulders',biceps:'biceps',triceps:'triceps',quads:'quads',hamstrings:'hamstrings',glutes:'glutes',calves:'calves',core:'core',forearms:'forearms',traps:'traps',fullBody:'fullBody'};
+const EQUIPMENT={barbell:'barbell',dumbbell:'dumbbell',cable:'cable',machine:'machine',bodyweight:'bodyweight',kettlebell:'kettlebell',band:'band',smith:'smith',ezbar:'ezbar'};
+const muscleEmoji={chest:'💪',back:'🔙',shoulders:'🤷',biceps:'💪',triceps:'🦾',quads:'🦵',hamstrings:'🦿',glutes:'🍑',calves:'🦶',core:'🎯',forearms:'🤜',traps:'🪤',fullBody:'🏋️'};
+
+const exerciseDB=[
+// CHEST (28)
+{id:'chest_bb_flat',nameEn:'Barbell Bench Press (Flat)',nameDe:'Bankdrucken (Flachbank)',muscle:'chest',equipment:'barbell',mult:1.0},
+{id:'chest_bb_incline',nameEn:'Barbell Bench Press (Incline)',nameDe:'Bankdrucken (Schragbank)',muscle:'chest',equipment:'barbell',mult:1.2},
+{id:'chest_bb_decline',nameEn:'Barbell Bench Press (Decline)',nameDe:'Bankdrucken (Negativ)',muscle:'chest',equipment:'barbell',mult:1.1},
+{id:'chest_bb_close',nameEn:'Close-Grip Bench Press',nameDe:'Enges Bankdrucken',muscle:'chest',equipment:'barbell',mult:1.3},
+{id:'chest_db_flat',nameEn:'Dumbbell Bench Press (Flat)',nameDe:'Kurzhantel Bankdrucken (Flach)',muscle:'chest',equipment:'dumbbell',mult:1.4},
+{id:'chest_db_incline',nameEn:'Dumbbell Bench Press (Incline)',nameDe:'Kurzhantel Bankdrucken (Schrag)',muscle:'chest',equipment:'dumbbell',mult:1.5},
+{id:'chest_db_decline',nameEn:'Dumbbell Bench Press (Decline)',nameDe:'Kurzhantel Bankdrucken (Negativ)',muscle:'chest',equipment:'dumbbell',mult:1.4},
+{id:'chest_db_fly_flat',nameEn:'Dumbbell Fly (Flat)',nameDe:'Kurzhantel Fliegende (Flach)',muscle:'chest',equipment:'dumbbell',mult:2.5},
+{id:'chest_db_fly_incline',nameEn:'Dumbbell Fly (Incline)',nameDe:'Kurzhantel Fliegende (Schrag)',muscle:'chest',equipment:'dumbbell',mult:2.5},
+{id:'chest_db_pullover',nameEn:'Dumbbell Pullover',nameDe:'Kurzhantel Pullover',muscle:'chest',equipment:'dumbbell',mult:2.0},
+{id:'chest_mach_press',nameEn:'Machine Chest Press',nameDe:'Brustpresse (Maschine)',muscle:'chest',equipment:'machine',mult:0.8},
+{id:'chest_mach_incline',nameEn:'Machine Incline Press',nameDe:'Schragbankpresse (Maschine)',muscle:'chest',equipment:'machine',mult:0.9},
+{id:'chest_mach_fly',nameEn:'Machine Fly (Pec Deck)',nameDe:'Butterfly Maschine',muscle:'chest',equipment:'machine',mult:1.3},
+{id:'chest_cable_fly_low',nameEn:'Cable Fly (Low to High)',nameDe:'Kabelzug Fliegende (Tief-Hoch)',muscle:'chest',equipment:'cable',mult:2.2},
+{id:'chest_cable_fly_mid',nameEn:'Cable Fly (Mid)',nameDe:'Kabelzug Fliegende (Mitte)',muscle:'chest',equipment:'cable',mult:2.2},
+{id:'chest_cable_fly_high',nameEn:'Cable Fly (High to Low)',nameDe:'Kabelzug Fliegende (Hoch-Tief)',muscle:'chest',equipment:'cable',mult:2.2},
+{id:'chest_cable_cross',nameEn:'Cable Crossover',nameDe:'Cable Crossover',muscle:'chest',equipment:'cable',mult:1.8},
+{id:'chest_smith_flat',nameEn:'Smith Machine Bench Press (Flat)',nameDe:'Multipresse Bankdrucken (Flach)',muscle:'chest',equipment:'smith',mult:0.9},
+{id:'chest_smith_incline',nameEn:'Smith Machine Bench Press (Incline)',nameDe:'Multipresse Bankdrucken (Schrag)',muscle:'chest',equipment:'smith',mult:1.0},
+{id:'chest_bw_dip',nameEn:'Dips (Chest)',nameDe:'Dips (Brust)',muscle:'chest',equipment:'bodyweight',mult:2.0},
+{id:'chest_bw_pushup',nameEn:'Push-Ups (Weighted)',nameDe:'Liegestutze (Gewicht)',muscle:'chest',equipment:'bodyweight',mult:3.0},
+{id:'chest_bw_pushup_decline',nameEn:'Decline Push-Ups',nameDe:'Decline Liegestutze',muscle:'chest',equipment:'bodyweight',mult:3.5},
+{id:'chest_bw_pushup_diamond',nameEn:'Diamond Push-Ups',nameDe:'Diamant Liegestutze',muscle:'chest',equipment:'bodyweight',mult:3.5},
+{id:'chest_band_press',nameEn:'Resistance Band Chest Press',nameDe:'Widerstandsband Brustpresse',muscle:'chest',equipment:'band',mult:3.0},
+{id:'chest_band_fly',nameEn:'Resistance Band Fly',nameDe:'Widerstandsband Fliegende',muscle:'chest',equipment:'band',mult:3.5},
+{id:'chest_svend_press',nameEn:'Svend Press',nameDe:'Svend Press',muscle:'chest',equipment:'dumbbell',mult:5.0},
+{id:'chest_landmine_press',nameEn:'Landmine Press',nameDe:'Landmine Press',muscle:'chest',equipment:'barbell',mult:1.8},
+{id:'chest_floor_press',nameEn:'Floor Press',nameDe:'Floor Press',muscle:'chest',equipment:'barbell',mult:1.2},
+// BACK (32)
+{id:'back_bb_deadlift',nameEn:'Barbell Deadlift',nameDe:'Kreuzheben',muscle:'back',equipment:'barbell',mult:0.6},
+{id:'back_bb_row',nameEn:'Barbell Bent-Over Row',nameDe:'Langhantelrudern',muscle:'back',equipment:'barbell',mult:1.1},
+{id:'back_bb_pendlay',nameEn:'Pendlay Row',nameDe:'Pendlay Rudern',muscle:'back',equipment:'barbell',mult:1.1},
+{id:'back_bb_tbar',nameEn:'T-Bar Row',nameDe:'T-Bar Rudern',muscle:'back',equipment:'barbell',mult:1.0},
+{id:'back_db_row_one',nameEn:'One-Arm Dumbbell Row',nameDe:'Einarmiges Kurzhantelrudern',muscle:'back',equipment:'dumbbell',mult:1.6},
+{id:'back_db_row_two',nameEn:'Two-Arm Dumbbell Row',nameDe:'Kurzhantelrudern (Beidarmig)',muscle:'back',equipment:'dumbbell',mult:1.4},
+{id:'back_db_shrug',nameEn:'Dumbbell Shrug',nameDe:'Kurzhantel Shrugs',muscle:'back',equipment:'dumbbell',mult:1.5},
+{id:'back_db_pullover',nameEn:'Dumbbell Pullover (Back)',nameDe:'Kurzhantel Pullover (Rucken)',muscle:'back',equipment:'dumbbell',mult:2.0},
+{id:'back_cable_lat_wide',nameEn:'Lat Pulldown (Wide Grip)',nameDe:'Latzug (Breit)',muscle:'back',equipment:'cable',mult:1.2},
+{id:'back_cable_lat_close',nameEn:'Lat Pulldown (Close Grip)',nameDe:'Latzug (Eng)',muscle:'back',equipment:'cable',mult:1.3},
+{id:'back_cable_lat_rev',nameEn:'Lat Pulldown (Reverse Grip)',nameDe:'Latzug (Untergriff)',muscle:'back',equipment:'cable',mult:1.3},
+{id:'back_cable_lat_vbar',nameEn:'Lat Pulldown (V-Bar)',nameDe:'Latzug (V-Griff)',muscle:'back',equipment:'cable',mult:1.3},
+{id:'back_cable_row_seat',nameEn:'Seated Cable Row',nameDe:'Kabelrudern (Sitzend)',muscle:'back',equipment:'cable',mult:1.2},
+{id:'back_cable_row_stand',nameEn:'Standing Cable Row',nameDe:'Kabelrudern (Stehend)',muscle:'back',equipment:'cable',mult:1.4},
+{id:'back_cable_straight',nameEn:'Straight-Arm Pulldown',nameDe:'Straight-Arm Pulldown',muscle:'back',equipment:'cable',mult:2.0},
+{id:'back_cable_face',nameEn:'Face Pull',nameDe:'Face Pulls',muscle:'back',equipment:'cable',mult:4.0},
+{id:'back_mach_row',nameEn:'Machine Row',nameDe:'Rudermaschine',muscle:'back',equipment:'machine',mult:0.9},
+{id:'back_mach_lat',nameEn:'Machine Lat Pulldown',nameDe:'Latzugmaschine',muscle:'back',equipment:'machine',mult:1.0},
+{id:'back_mach_lowrow',nameEn:'Machine Low Row',nameDe:'Tiefes Rudern (Maschine)',muscle:'back',equipment:'machine',mult:0.9},
+{id:'back_mach_rear',nameEn:'Machine Rear Delt Fly',nameDe:'Reverse Butterfly (Maschine)',muscle:'back',equipment:'machine',mult:3.0},
+{id:'back_bw_pullup',nameEn:'Pull-Up (Weighted)',nameDe:'Klimmzuge (Zusatzgewicht)',muscle:'back',equipment:'bodyweight',mult:2.5},
+{id:'back_bw_chinup',nameEn:'Chin-Up (Weighted)',nameDe:'Chin-Up (Zusatzgewicht)',muscle:'back',equipment:'bodyweight',mult:2.5},
+{id:'back_bw_invrow',nameEn:'Inverted Row',nameDe:'Bodyweight Rudern',muscle:'back',equipment:'bodyweight',mult:3.0},
+{id:'back_smith_row',nameEn:'Smith Machine Row',nameDe:'Multipresse Rudern',muscle:'back',equipment:'smith',mult:1.0},
+{id:'back_smith_shrug',nameEn:'Smith Machine Shrug',nameDe:'Multipresse Shrugs',muscle:'back',equipment:'smith',mult:1.2},
+{id:'back_smith_deadlift',nameEn:'Smith Machine Deadlift',nameDe:'Multipresse Kreuzheben',muscle:'back',equipment:'smith',mult:0.7},
+{id:'back_bb_shrug',nameEn:'Barbell Shrug',nameDe:'Langhantel Shrugs',muscle:'back',equipment:'barbell',mult:1.2},
+{id:'back_bb_rackpull',nameEn:'Rack Pull',nameDe:'Rack Pull',muscle:'back',equipment:'barbell',mult:0.7},
+{id:'back_kb_swing',nameEn:'Kettlebell Swing',nameDe:'Kettlebell Swing',muscle:'back',equipment:'kettlebell',mult:2.0},
+{id:'back_kb_row',nameEn:'Kettlebell Row',nameDe:'Kettlebell Rudern',muscle:'back',equipment:'kettlebell',mult:2.0},
+{id:'back_band_pulldown',nameEn:'Resistance Band Pulldown',nameDe:'Widerstandsband Pulldown',muscle:'back',equipment:'band',mult:3.5},
+{id:'back_band_row',nameEn:'Resistance Band Row',nameDe:'Widerstandsband Rudern',muscle:'back',equipment:'band',mult:3.5},
+// SHOULDERS (30)
+{id:'shd_bb_ohp',nameEn:'Barbell Overhead Press',nameDe:'Military Press',muscle:'shoulders',equipment:'barbell',mult:1.5},
+{id:'shd_bb_push',nameEn:'Barbell Push Press',nameDe:'Push Press',muscle:'shoulders',equipment:'barbell',mult:1.3},
+{id:'shd_bb_btn',nameEn:'Behind-the-Neck Press',nameDe:'Nackendrucken',muscle:'shoulders',equipment:'barbell',mult:1.6},
+{id:'shd_bb_uprow',nameEn:'Barbell Upright Row',nameDe:'Aufrechtes Rudern (Langhantel)',muscle:'shoulders',equipment:'barbell',mult:2.0},
+{id:'shd_db_press',nameEn:'Dumbbell Shoulder Press',nameDe:'Kurzhantel Schulterdrucken',muscle:'shoulders',equipment:'dumbbell',mult:1.8},
+{id:'shd_db_arnold',nameEn:'Arnold Press',nameDe:'Arnold Press',muscle:'shoulders',equipment:'dumbbell',mult:1.8},
+{id:'shd_db_lateral',nameEn:'Dumbbell Lateral Raise',nameDe:'Seitheben (Kurzhantel)',muscle:'shoulders',equipment:'dumbbell',mult:8.0},
+{id:'shd_db_front',nameEn:'Dumbbell Front Raise',nameDe:'Frontheben (Kurzhantel)',muscle:'shoulders',equipment:'dumbbell',mult:6.0},
+{id:'shd_db_rear',nameEn:'Dumbbell Rear Delt Fly',nameDe:'Reverse Fliegende (Kurzhantel)',muscle:'shoulders',equipment:'dumbbell',mult:5.0},
+{id:'shd_db_uprow',nameEn:'Dumbbell Upright Row',nameDe:'Aufrechtes Rudern (Kurzhantel)',muscle:'shoulders',equipment:'dumbbell',mult:2.5},
+{id:'shd_db_yraise',nameEn:'Dumbbell Y-Raise',nameDe:'Y-Raise',muscle:'shoulders',equipment:'dumbbell',mult:7.0},
+{id:'shd_db_lraise',nameEn:'Dumbbell Lu Raise',nameDe:'Lu Raise',muscle:'shoulders',equipment:'dumbbell',mult:7.0},
+{id:'shd_cable_lateral',nameEn:'Cable Lateral Raise',nameDe:'Seitheben (Kabelzug)',muscle:'shoulders',equipment:'cable',mult:9.0},
+{id:'shd_cable_front',nameEn:'Cable Front Raise',nameDe:'Frontheben (Kabelzug)',muscle:'shoulders',equipment:'cable',mult:6.0},
+{id:'shd_cable_rear',nameEn:'Cable Rear Delt Fly',nameDe:'Reverse Fliegende (Kabelzug)',muscle:'shoulders',equipment:'cable',mult:5.0},
+{id:'shd_cable_uprow',nameEn:'Cable Upright Row',nameDe:'Aufrechtes Rudern (Kabelzug)',muscle:'shoulders',equipment:'cable',mult:2.5},
+{id:'shd_mach_press',nameEn:'Machine Shoulder Press',nameDe:'Schulterdrucken (Maschine)',muscle:'shoulders',equipment:'machine',mult:1.2},
+{id:'shd_mach_lateral',nameEn:'Machine Lateral Raise',nameDe:'Seitheben (Maschine)',muscle:'shoulders',equipment:'machine',mult:3.5},
+{id:'shd_mach_rear',nameEn:'Machine Rear Delt',nameDe:'Reverse Butterfly (Schulter)',muscle:'shoulders',equipment:'machine',mult:3.5},
+{id:'shd_smith_ohp',nameEn:'Smith Machine Overhead Press',nameDe:'Multipresse Schulterdrucken',muscle:'shoulders',equipment:'smith',mult:1.3},
+{id:'shd_smith_btn',nameEn:'Smith Machine Behind-Neck Press',nameDe:'Multipresse Nackendrucken',muscle:'shoulders',equipment:'smith',mult:1.4},
+{id:'shd_bw_pike',nameEn:'Pike Push-Up',nameDe:'Pike Liegestutze',muscle:'shoulders',equipment:'bodyweight',mult:4.0},
+{id:'shd_bw_hspu',nameEn:'Handstand Push-Up (Weighted)',nameDe:'Handstand Liegestutze',muscle:'shoulders',equipment:'bodyweight',mult:3.0},
+{id:'shd_kb_press',nameEn:'Kettlebell Press',nameDe:'Kettlebell Schulterdrucken',muscle:'shoulders',equipment:'kettlebell',mult:2.2},
+{id:'shd_kb_halo',nameEn:'Kettlebell Halo',nameDe:'Kettlebell Halo',muscle:'shoulders',equipment:'kettlebell',mult:4.0},
+{id:'shd_band_lateral',nameEn:'Band Lateral Raise',nameDe:'Widerstandsband Seitheben',muscle:'shoulders',equipment:'band',mult:8.0},
+{id:'shd_band_press',nameEn:'Band Shoulder Press',nameDe:'Widerstandsband Schulterdrucken',muscle:'shoulders',equipment:'band',mult:3.5},
+{id:'shd_band_pullapart',nameEn:'Band Pull-Apart',nameDe:'Band Pull-Apart',muscle:'shoulders',equipment:'band',mult:6.0},
+{id:'shd_ez_uprow',nameEn:'EZ-Bar Upright Row',nameDe:'Aufrechtes Rudern (SZ-Stange)',muscle:'shoulders',equipment:'ezbar',mult:2.0},
+{id:'shd_landmine_press',nameEn:'Landmine Shoulder Press',nameDe:'Landmine Schulterdrucken',muscle:'shoulders',equipment:'barbell',mult:1.8},
+// BICEPS (24)
+{id:'bi_bb_curl',nameEn:'Barbell Curl',nameDe:'Langhantel Curls',muscle:'biceps',equipment:'barbell',mult:2.5},
+{id:'bi_bb_drag',nameEn:'Barbell Drag Curl',nameDe:'Drag Curls (Langhantel)',muscle:'biceps',equipment:'barbell',mult:3.0},
+{id:'bi_bb_cheat',nameEn:'Barbell Cheat Curl',nameDe:'Cheat Curls',muscle:'biceps',equipment:'barbell',mult:2.0},
+{id:'bi_ez_curl',nameEn:'EZ-Bar Curl',nameDe:'SZ-Stange Curls',muscle:'biceps',equipment:'ezbar',mult:2.8},
+{id:'bi_ez_preacher',nameEn:'EZ-Bar Preacher Curl',nameDe:'SZ-Stange Preacher Curls',muscle:'biceps',equipment:'ezbar',mult:3.0},
+{id:'bi_ez_reverse',nameEn:'EZ-Bar Reverse Curl',nameDe:'SZ-Stange Reverse Curls',muscle:'biceps',equipment:'ezbar',mult:3.5},
+{id:'bi_ez_spider',nameEn:'EZ-Bar Spider Curl',nameDe:'SZ-Stange Spider Curls',muscle:'biceps',equipment:'ezbar',mult:3.5},
+{id:'bi_db_curl',nameEn:'Dumbbell Curl',nameDe:'Kurzhantel Curls',muscle:'biceps',equipment:'dumbbell',mult:3.5},
+{id:'bi_db_hammer',nameEn:'Dumbbell Hammer Curl',nameDe:'Hammer Curls',muscle:'biceps',equipment:'dumbbell',mult:3.0},
+{id:'bi_db_incline',nameEn:'Incline Dumbbell Curl',nameDe:'Schragbank Curls',muscle:'biceps',equipment:'dumbbell',mult:4.0},
+{id:'bi_db_conc',nameEn:'Concentration Curl',nameDe:'Konzentrationscurls',muscle:'biceps',equipment:'dumbbell',mult:4.0},
+{id:'bi_db_preacher',nameEn:'Dumbbell Preacher Curl',nameDe:'Kurzhantel Preacher Curls',muscle:'biceps',equipment:'dumbbell',mult:4.0},
+{id:'bi_db_zottman',nameEn:'Zottman Curl',nameDe:'Zottman Curls',muscle:'biceps',equipment:'dumbbell',mult:3.5},
+{id:'bi_db_cross',nameEn:'Cross-Body Hammer Curl',nameDe:'Cross-Body Hammer Curls',muscle:'biceps',equipment:'dumbbell',mult:3.5},
+{id:'bi_cable_curl',nameEn:'Cable Curl',nameDe:'Kabelzug Curls',muscle:'biceps',equipment:'cable',mult:3.0},
+{id:'bi_cable_hammer',nameEn:'Cable Hammer Curl (Rope)',nameDe:'Kabelzug Hammer Curls',muscle:'biceps',equipment:'cable',mult:3.0},
+{id:'bi_cable_high',nameEn:'Cable High Curl',nameDe:'Kabelzug High Curls',muscle:'biceps',equipment:'cable',mult:4.0},
+{id:'bi_cable_bayesian',nameEn:'Bayesian Cable Curl',nameDe:'Bayesian Curls (Kabelzug)',muscle:'biceps',equipment:'cable',mult:4.0},
+{id:'bi_mach_curl',nameEn:'Machine Bicep Curl',nameDe:'Bizepsmaschine',muscle:'biceps',equipment:'machine',mult:2.5},
+{id:'bi_mach_preacher',nameEn:'Machine Preacher Curl',nameDe:'Preacher Curl Maschine',muscle:'biceps',equipment:'machine',mult:3.0},
+{id:'bi_kb_curl',nameEn:'Kettlebell Curl',nameDe:'Kettlebell Curls',muscle:'biceps',equipment:'kettlebell',mult:3.5},
+{id:'bi_band_curl',nameEn:'Band Bicep Curl',nameDe:'Widerstandsband Curls',muscle:'biceps',equipment:'band',mult:4.5},
+{id:'bi_bw_chinup',nameEn:'Chin-Up (Bicep Focus)',nameDe:'Chin-Up (Bizeps Fokus)',muscle:'biceps',equipment:'bodyweight',mult:2.5},
+{id:'bi_db_waiter',nameEn:'Waiter Curl',nameDe:'Waiter Curls',muscle:'biceps',equipment:'dumbbell',mult:5.0},
+// TRICEPS (24)
+{id:'tri_cable_push',nameEn:'Cable Pushdown (Bar)',nameDe:'Trizepsdrucken (Stange)',muscle:'triceps',equipment:'cable',mult:2.5},
+{id:'tri_cable_rope',nameEn:'Cable Pushdown (Rope)',nameDe:'Trizepsdrucken (Seil)',muscle:'triceps',equipment:'cable',mult:2.5},
+{id:'tri_cable_over',nameEn:'Cable Overhead Extension',nameDe:'Kabelzug Uberkopf Trizeps',muscle:'triceps',equipment:'cable',mult:2.5},
+{id:'tri_cable_kick',nameEn:'Cable Kickback',nameDe:'Kabelzug Kickback',muscle:'triceps',equipment:'cable',mult:4.0},
+{id:'tri_cable_rev',nameEn:'Cable Reverse Pushdown',nameDe:'Trizepsdrucken Untergriff',muscle:'triceps',equipment:'cable',mult:3.0},
+{id:'tri_bb_close',nameEn:'Close-Grip Bench Press (Tricep)',nameDe:'Enges Bankdrucken (Trizeps)',muscle:'triceps',equipment:'barbell',mult:1.3},
+{id:'tri_bb_skull',nameEn:'Barbell Skull Crusher',nameDe:'Skull Crusher (Langhantel)',muscle:'triceps',equipment:'barbell',mult:2.5},
+{id:'tri_bb_jm',nameEn:'JM Press',nameDe:'JM Press',muscle:'triceps',equipment:'barbell',mult:2.0},
+{id:'tri_ez_skull',nameEn:'EZ-Bar Skull Crusher',nameDe:'Skull Crusher (SZ-Stange)',muscle:'triceps',equipment:'ezbar',mult:3.0},
+{id:'tri_ez_french',nameEn:'EZ-Bar French Press',nameDe:'French Press (SZ-Stange)',muscle:'triceps',equipment:'ezbar',mult:3.0},
+{id:'tri_db_over_one',nameEn:'One-Arm DB Overhead Extension',nameDe:'Einarmiges Trizepsstrecken',muscle:'triceps',equipment:'dumbbell',mult:4.0},
+{id:'tri_db_over_two',nameEn:'Two-Arm DB Overhead Extension',nameDe:'Beidarmiges Trizepsstrecken',muscle:'triceps',equipment:'dumbbell',mult:3.0},
+{id:'tri_db_kick',nameEn:'Dumbbell Kickback',nameDe:'Kurzhantel Kickback',muscle:'triceps',equipment:'dumbbell',mult:4.5},
+{id:'tri_db_skull',nameEn:'Dumbbell Skull Crusher',nameDe:'Kurzhantel Skull Crusher',muscle:'triceps',equipment:'dumbbell',mult:3.5},
+{id:'tri_db_tatepress',nameEn:'Dumbbell Tate Press',nameDe:'Tate Press',muscle:'triceps',equipment:'dumbbell',mult:3.5},
+{id:'tri_mach_dip',nameEn:'Machine Tricep Dip',nameDe:'Dip Maschine',muscle:'triceps',equipment:'machine',mult:1.5},
+{id:'tri_mach_ext',nameEn:'Machine Tricep Extension',nameDe:'Trizepsmaschine',muscle:'triceps',equipment:'machine',mult:2.0},
+{id:'tri_smith_close',nameEn:'Smith Machine Close-Grip Press',nameDe:'Multipresse Enges Drucken',muscle:'triceps',equipment:'smith',mult:1.2},
+{id:'tri_bw_dip',nameEn:'Dips (Tricep)',nameDe:'Dips (Trizeps)',muscle:'triceps',equipment:'bodyweight',mult:2.0},
+{id:'tri_bw_diamond',nameEn:'Diamond Push-Up (Weighted)',nameDe:'Diamant Liegestutze (Gewicht)',muscle:'triceps',equipment:'bodyweight',mult:3.5},
+{id:'tri_bw_bench_dip',nameEn:'Bench Dip',nameDe:'Bank Dips',muscle:'triceps',equipment:'bodyweight',mult:3.0},
+{id:'tri_band_push',nameEn:'Band Pushdown',nameDe:'Widerstandsband Trizepsdrucken',muscle:'triceps',equipment:'band',mult:4.0},
+{id:'tri_band_over',nameEn:'Band Overhead Extension',nameDe:'Widerstandsband Uberkopf Trizeps',muscle:'triceps',equipment:'band',mult:4.0},
+{id:'tri_kb_floor',nameEn:'Kettlebell Floor Press',nameDe:'Kettlebell Floor Press',muscle:'triceps',equipment:'kettlebell',mult:2.5},
+// QUADS (26)
+{id:'quad_bb_squat',nameEn:'Barbell Back Squat',nameDe:'Kniebeugen',muscle:'quads',equipment:'barbell',mult:0.8},
+{id:'quad_bb_front',nameEn:'Barbell Front Squat',nameDe:'Frontkniebeugen',muscle:'quads',equipment:'barbell',mult:1.0},
+{id:'quad_bb_zercher',nameEn:'Zercher Squat',nameDe:'Zercher Kniebeugen',muscle:'quads',equipment:'barbell',mult:1.0},
+{id:'quad_bb_lunge',nameEn:'Barbell Lunge',nameDe:'Ausfallschritte (Langhantel)',muscle:'quads',equipment:'barbell',mult:1.4},
+{id:'quad_bb_split',nameEn:'Barbell Bulgarian Split Squat',nameDe:'Bulgarische Kniebeugen (LH)',muscle:'quads',equipment:'barbell',mult:1.5},
+{id:'quad_bb_sissy',nameEn:'Barbell Sissy Squat',nameDe:'Sissy Squats',muscle:'quads',equipment:'barbell',mult:2.5},
+{id:'quad_db_squat',nameEn:'Dumbbell Goblet Squat',nameDe:'Goblet Squat',muscle:'quads',equipment:'dumbbell',mult:1.8},
+{id:'quad_db_lunge',nameEn:'Dumbbell Lunge',nameDe:'Ausfallschritte (Kurzhantel)',muscle:'quads',equipment:'dumbbell',mult:1.8},
+{id:'quad_db_split',nameEn:'Dumbbell Bulgarian Split Squat',nameDe:'Bulgarische Kniebeugen (KH)',muscle:'quads',equipment:'dumbbell',mult:2.0},
+{id:'quad_db_step',nameEn:'Dumbbell Step-Up',nameDe:'Step-Ups (Kurzhantel)',muscle:'quads',equipment:'dumbbell',mult:2.0},
+{id:'quad_db_walklunge',nameEn:'Dumbbell Walking Lunge',nameDe:'Walking Lunges (Kurzhantel)',muscle:'quads',equipment:'dumbbell',mult:1.8},
+{id:'quad_mach_legpress',nameEn:'Leg Press',nameDe:'Beinpresse',muscle:'quads',equipment:'machine',mult:0.3},
+{id:'quad_mach_hack',nameEn:'Hack Squat Machine',nameDe:'Hackenschmidt Maschine',muscle:'quads',equipment:'machine',mult:0.5},
+{id:'quad_mach_ext',nameEn:'Leg Extension',nameDe:'Beinstrecker',muscle:'quads',equipment:'machine',mult:1.4},
+{id:'quad_mach_vquat',nameEn:'V-Squat Machine',nameDe:'V-Squat Maschine',muscle:'quads',equipment:'machine',mult:0.6},
+{id:'quad_mach_pendulum',nameEn:'Pendulum Squat',nameDe:'Pendulum Squat',muscle:'quads',equipment:'machine',mult:0.6},
+{id:'quad_mach_belt',nameEn:'Belt Squat Machine',nameDe:'Belt Squat Maschine',muscle:'quads',equipment:'machine',mult:0.7},
+{id:'quad_smith_squat',nameEn:'Smith Machine Squat',nameDe:'Multipresse Kniebeugen',muscle:'quads',equipment:'smith',mult:0.7},
+{id:'quad_smith_front',nameEn:'Smith Machine Front Squat',nameDe:'Multipresse Frontkniebeugen',muscle:'quads',equipment:'smith',mult:0.8},
+{id:'quad_smith_split',nameEn:'Smith Machine Split Squat',nameDe:'Multipresse Bulgarische KB',muscle:'quads',equipment:'smith',mult:1.2},
+{id:'quad_smith_lunge',nameEn:'Smith Machine Lunge',nameDe:'Multipresse Ausfallschritte',muscle:'quads',equipment:'smith',mult:1.2},
+{id:'quad_bw_squat',nameEn:'Bodyweight Squat (Weighted)',nameDe:'Kniebeugen (Gewichtet)',muscle:'quads',equipment:'bodyweight',mult:2.5},
+{id:'quad_bw_lunge',nameEn:'Bodyweight Lunge',nameDe:'Ausfallschritte (Korpergewicht)',muscle:'quads',equipment:'bodyweight',mult:3.0},
+{id:'quad_bw_pistol',nameEn:'Pistol Squat (Weighted)',nameDe:'Pistol Squat (Gewichtet)',muscle:'quads',equipment:'bodyweight',mult:3.5},
+{id:'quad_kb_squat',nameEn:'Kettlebell Goblet Squat',nameDe:'Kettlebell Goblet Squat',muscle:'quads',equipment:'kettlebell',mult:1.8},
+{id:'quad_kb_lunge',nameEn:'Kettlebell Lunge',nameDe:'Kettlebell Ausfallschritte',muscle:'quads',equipment:'kettlebell',mult:2.0},
+// HAMSTRINGS (20)
+{id:'ham_bb_rdl',nameEn:'Barbell Romanian Deadlift',nameDe:'Rumanisches Kreuzheben',muscle:'hamstrings',equipment:'barbell',mult:0.9},
+{id:'ham_bb_sldl',nameEn:'Barbell Stiff-Leg Deadlift',nameDe:'Gestrecktes Kreuzheben',muscle:'hamstrings',equipment:'barbell',mult:0.9},
+{id:'ham_bb_goodmorn',nameEn:'Barbell Good Morning',nameDe:'Good Mornings',muscle:'hamstrings',equipment:'barbell',mult:1.5},
+{id:'ham_db_rdl',nameEn:'Dumbbell Romanian Deadlift',nameDe:'Rumanisches Kreuzheben (KH)',muscle:'hamstrings',equipment:'dumbbell',mult:1.3},
+{id:'ham_db_sldl_one',nameEn:'Single-Leg Dumbbell Deadlift',nameDe:'Einbeiniges Kreuzheben (KH)',muscle:'hamstrings',equipment:'dumbbell',mult:2.0},
+{id:'ham_db_rdl_one',nameEn:'Single-Leg Dumbbell RDL',nameDe:'Einbeiniges RDL (KH)',muscle:'hamstrings',equipment:'dumbbell',mult:2.0},
+{id:'ham_mach_curl_lying',nameEn:'Lying Leg Curl',nameDe:'Beinbeuger (Liegend)',muscle:'hamstrings',equipment:'machine',mult:1.5},
+{id:'ham_mach_curl_seat',nameEn:'Seated Leg Curl',nameDe:'Beinbeuger (Sitzend)',muscle:'hamstrings',equipment:'machine',mult:1.5},
+{id:'ham_mach_curl_stand',nameEn:'Standing Leg Curl',nameDe:'Beinbeuger (Stehend)',muscle:'hamstrings',equipment:'machine',mult:2.0},
+{id:'ham_cable_pull',nameEn:'Cable Pull-Through',nameDe:'Kabelzug Pull-Through',muscle:'hamstrings',equipment:'cable',mult:2.0},
+{id:'ham_cable_curl',nameEn:'Cable Leg Curl',nameDe:'Beinbeuger (Kabelzug)',muscle:'hamstrings',equipment:'cable',mult:2.0},
+{id:'ham_smith_rdl',nameEn:'Smith Machine Romanian Deadlift',nameDe:'Multipresse RDL',muscle:'hamstrings',equipment:'smith',mult:0.8},
+{id:'ham_bw_nordic',nameEn:'Nordic Hamstring Curl (Weighted)',nameDe:'Nordic Curls (Gewichtet)',muscle:'hamstrings',equipment:'bodyweight',mult:4.0},
+{id:'ham_bw_bridge',nameEn:'Glute-Ham Raise',nameDe:'Glute-Ham Raise',muscle:'hamstrings',equipment:'bodyweight',mult:3.5},
+{id:'ham_kb_rdl',nameEn:'Kettlebell Romanian Deadlift',nameDe:'Kettlebell RDL',muscle:'hamstrings',equipment:'kettlebell',mult:1.8},
+{id:'ham_kb_swing',nameEn:'Kettlebell Swing (Hamstring)',nameDe:'Kettlebell Swing (Beinbeuger)',muscle:'hamstrings',equipment:'kettlebell',mult:2.0},
+{id:'ham_band_curl',nameEn:'Band Leg Curl',nameDe:'Widerstandsband Beinbeuger',muscle:'hamstrings',equipment:'band',mult:4.0},
+{id:'ham_band_rdl',nameEn:'Band Romanian Deadlift',nameDe:'Widerstandsband RDL',muscle:'hamstrings',equipment:'band',mult:3.5},
+{id:'ham_bb_hip_thrust',nameEn:'Barbell Hip Thrust (Hamstring)',nameDe:'Hip Thrust (Beinbeuger)',muscle:'hamstrings',equipment:'barbell',mult:0.7},
+{id:'ham_mach_reverse_hyper',nameEn:'Reverse Hyperextension',nameDe:'Reverse Hyperextension',muscle:'hamstrings',equipment:'machine',mult:1.8},
+// GLUTES (20)
+{id:'glu_bb_hipthrust',nameEn:'Barbell Hip Thrust',nameDe:'Hip Thrust (Langhantel)',muscle:'glutes',equipment:'barbell',mult:0.7},
+{id:'glu_bb_squat_sumo',nameEn:'Barbell Sumo Squat',nameDe:'Sumo Kniebeugen',muscle:'glutes',equipment:'barbell',mult:0.9},
+{id:'glu_bb_sumo_dl',nameEn:'Barbell Sumo Deadlift',nameDe:'Sumo Kreuzheben',muscle:'glutes',equipment:'barbell',mult:0.7},
+{id:'glu_db_hipthrust',nameEn:'Dumbbell Hip Thrust',nameDe:'Hip Thrust (Kurzhantel)',muscle:'glutes',equipment:'dumbbell',mult:1.5},
+{id:'glu_db_frog',nameEn:'Dumbbell Frog Pump',nameDe:'Frog Pump (Kurzhantel)',muscle:'glutes',equipment:'dumbbell',mult:2.5},
+{id:'glu_db_sumo',nameEn:'Dumbbell Sumo Squat',nameDe:'Sumo Kniebeugen (KH)',muscle:'glutes',equipment:'dumbbell',mult:1.6},
+{id:'glu_cable_kick',nameEn:'Cable Glute Kickback',nameDe:'Kabelzug Kickback (Po)',muscle:'glutes',equipment:'cable',mult:3.5},
+{id:'glu_cable_pull',nameEn:'Cable Pull-Through (Glute)',nameDe:'Kabelzug Pull-Through (Po)',muscle:'glutes',equipment:'cable',mult:2.0},
+{id:'glu_cable_abduct',nameEn:'Cable Hip Abduction',nameDe:'Kabelzug Abduktion',muscle:'glutes',equipment:'cable',mult:3.5},
+{id:'glu_mach_kickback',nameEn:'Machine Glute Kickback',nameDe:'Po Kickback Maschine',muscle:'glutes',equipment:'machine',mult:1.5},
+{id:'glu_mach_abduct',nameEn:'Hip Abduction Machine',nameDe:'Abduktoren Maschine',muscle:'glutes',equipment:'machine',mult:1.0},
+{id:'glu_mach_adduct',nameEn:'Hip Adduction Machine',nameDe:'Adduktoren Maschine',muscle:'glutes',equipment:'machine',mult:1.0},
+{id:'glu_smith_hipthrust',nameEn:'Smith Machine Hip Thrust',nameDe:'Multipresse Hip Thrust',muscle:'glutes',equipment:'smith',mult:0.6},
+{id:'glu_smith_sumo',nameEn:'Smith Machine Sumo Squat',nameDe:'Multipresse Sumo Squat',muscle:'glutes',equipment:'smith',mult:0.8},
+{id:'glu_bw_bridge',nameEn:'Glute Bridge (Weighted)',nameDe:'Glute Bridge (Gewichtet)',muscle:'glutes',equipment:'bodyweight',mult:2.0},
+{id:'glu_bw_clamshell',nameEn:'Clamshell (Weighted)',nameDe:'Clamshell (Gewichtet)',muscle:'glutes',equipment:'bodyweight',mult:5.0},
+{id:'glu_bw_donkey',nameEn:'Donkey Kick (Weighted)',nameDe:'Donkey Kicks (Gewichtet)',muscle:'glutes',equipment:'bodyweight',mult:5.0},
+{id:'glu_kb_swing',nameEn:'Kettlebell Swing (Glute)',nameDe:'Kettlebell Swing (Po Fokus)',muscle:'glutes',equipment:'kettlebell',mult:2.0},
+{id:'glu_band_walk',nameEn:'Band Lateral Walk',nameDe:'Widerstandsband Seitwartsgehen',muscle:'glutes',equipment:'band',mult:5.0},
+{id:'glu_band_squat',nameEn:'Band Squat',nameDe:'Widerstandsband Kniebeugen',muscle:'glutes',equipment:'band',mult:3.5},
+// CALVES (14)
+{id:'cal_mach_stand',nameEn:'Standing Calf Raise (Machine)',nameDe:'Wadenheben Stehend (Maschine)',muscle:'calves',equipment:'machine',mult:0.6},
+{id:'cal_mach_seat',nameEn:'Seated Calf Raise (Machine)',nameDe:'Wadenheben Sitzend (Maschine)',muscle:'calves',equipment:'machine',mult:1.0},
+{id:'cal_mach_press',nameEn:'Calf Press on Leg Press',nameDe:'Wadenpresse (Beinpresse)',muscle:'calves',equipment:'machine',mult:0.4},
+{id:'cal_mach_donkey',nameEn:'Donkey Calf Raise (Machine)',nameDe:'Donkey Wadenheben (Maschine)',muscle:'calves',equipment:'machine',mult:0.8},
+{id:'cal_bb_stand',nameEn:'Standing Barbell Calf Raise',nameDe:'Wadenheben (Langhantel)',muscle:'calves',equipment:'barbell',mult:0.8},
+{id:'cal_db_stand',nameEn:'Standing Dumbbell Calf Raise',nameDe:'Wadenheben (Kurzhantel)',muscle:'calves',equipment:'dumbbell',mult:1.5},
+{id:'cal_db_one',nameEn:'Single-Leg DB Calf Raise',nameDe:'Einbeiniges Wadenheben (KH)',muscle:'calves',equipment:'dumbbell',mult:2.5},
+{id:'cal_smith_stand',nameEn:'Smith Machine Calf Raise',nameDe:'Multipresse Wadenheben',muscle:'calves',equipment:'smith',mult:0.7},
+{id:'cal_bw_stand',nameEn:'Bodyweight Calf Raise (Weighted)',nameDe:'Wadenheben (Gewichtet)',muscle:'calves',equipment:'bodyweight',mult:2.0},
+{id:'cal_bw_one',nameEn:'Single-Leg BW Calf Raise',nameDe:'Einbeiniges Wadenheben',muscle:'calves',equipment:'bodyweight',mult:3.0},
+{id:'cal_kb_stand',nameEn:'Kettlebell Calf Raise',nameDe:'Kettlebell Wadenheben',muscle:'calves',equipment:'kettlebell',mult:2.0},
+{id:'cal_band_raise',nameEn:'Band Calf Raise',nameDe:'Widerstandsband Wadenheben',muscle:'calves',equipment:'band',mult:3.5},
+{id:'cal_mach_hack',nameEn:'Hack Squat Calf Raise',nameDe:'Hackenschmidt Wadenheben',muscle:'calves',equipment:'machine',mult:0.5},
+{id:'cal_db_seat',nameEn:'Seated Dumbbell Calf Raise',nameDe:'Wadenheben Sitzend (KH)',muscle:'calves',equipment:'dumbbell',mult:2.0},
+// CORE (28)
+{id:'core_cable_crunch',nameEn:'Cable Crunch',nameDe:'Kabelzug Crunches',muscle:'core',equipment:'cable',mult:2.0},
+{id:'core_cable_wood_hi',nameEn:'Cable Woodchop (High to Low)',nameDe:'Kabelzug Woodchop (Hoch-Tief)',muscle:'core',equipment:'cable',mult:2.5},
+{id:'core_cable_wood_lo',nameEn:'Cable Woodchop (Low to High)',nameDe:'Kabelzug Woodchop (Tief-Hoch)',muscle:'core',equipment:'cable',mult:2.5},
+{id:'core_cable_pallof',nameEn:'Pallof Press',nameDe:'Pallof Press',muscle:'core',equipment:'cable',mult:3.5},
+{id:'core_cable_twist',nameEn:'Cable Torso Twist',nameDe:'Kabelzug Rumpfrotation',muscle:'core',equipment:'cable',mult:3.0},
+{id:'core_mach_crunch',nameEn:'Machine Crunch',nameDe:'Bauchpresse (Maschine)',muscle:'core',equipment:'machine',mult:1.2},
+{id:'core_mach_twist',nameEn:'Machine Torso Rotation',nameDe:'Rotationsmaschine',muscle:'core',equipment:'machine',mult:1.5},
+{id:'core_bb_rollout',nameEn:'Barbell Ab Rollout',nameDe:'Langhantel Ab Rollout',muscle:'core',equipment:'barbell',mult:3.0},
+{id:'core_bb_landmine_twist',nameEn:'Landmine Rotation',nameDe:'Landmine Rotation',muscle:'core',equipment:'barbell',mult:2.5},
+{id:'core_db_side_bend',nameEn:'Dumbbell Side Bend',nameDe:'Seitliches Beugen (KH)',muscle:'core',equipment:'dumbbell',mult:3.0},
+{id:'core_db_woodchop',nameEn:'Dumbbell Woodchop',nameDe:'Kurzhantel Woodchop',muscle:'core',equipment:'dumbbell',mult:3.0},
+{id:'core_db_renegade',nameEn:'Dumbbell Renegade Row',nameDe:'Renegade Row',muscle:'core',equipment:'dumbbell',mult:2.5},
+{id:'core_db_russian',nameEn:'Dumbbell Russian Twist',nameDe:'Russian Twist (KH)',muscle:'core',equipment:'dumbbell',mult:4.0},
+{id:'core_bw_crunch',nameEn:'Weighted Crunch',nameDe:'Gewichtete Crunches',muscle:'core',equipment:'bodyweight',mult:3.5},
+{id:'core_bw_situp',nameEn:'Weighted Sit-Up',nameDe:'Gewichtete Sit-Ups',muscle:'core',equipment:'bodyweight',mult:3.5},
+{id:'core_bw_legraise',nameEn:'Weighted Leg Raise (Hanging)',nameDe:'Beinheben (Hangend, Gewicht)',muscle:'core',equipment:'bodyweight',mult:4.0},
+{id:'core_bw_legraise_lying',nameEn:'Weighted Leg Raise (Lying)',nameDe:'Beinheben (Liegend, Gewicht)',muscle:'core',equipment:'bodyweight',mult:4.0},
+{id:'core_bw_knee',nameEn:'Weighted Knee Raise (Hanging)',nameDe:'Knieheben (Hangend, Gewicht)',muscle:'core',equipment:'bodyweight',mult:4.5},
+{id:'core_bw_plank',nameEn:'Weighted Plank',nameDe:'Gewichtete Plank',muscle:'core',equipment:'bodyweight',mult:4.0},
+{id:'core_bw_dragon',nameEn:'Dragon Flag (Weighted)',nameDe:'Dragon Flag (Gewichtet)',muscle:'core',equipment:'bodyweight',mult:3.5},
+{id:'core_bw_vup',nameEn:'Weighted V-Up',nameDe:'Gewichtete V-Ups',muscle:'core',equipment:'bodyweight',mult:4.0},
+{id:'core_bw_toes',nameEn:'Toes-to-Bar (Weighted)',nameDe:'Toes-to-Bar (Gewichtet)',muscle:'core',equipment:'bodyweight',mult:3.5},
+{id:'core_bw_ab_wheel',nameEn:'Ab Wheel Rollout',nameDe:'Ab Wheel Rollout',muscle:'core',equipment:'bodyweight',mult:3.5},
+{id:'core_kb_windmill',nameEn:'Kettlebell Windmill',nameDe:'Kettlebell Windmill',muscle:'core',equipment:'kettlebell',mult:3.0},
+{id:'core_kb_turkish',nameEn:'Turkish Get-Up',nameDe:'Turkish Get-Up',muscle:'core',equipment:'kettlebell',mult:2.5},
+{id:'core_band_crunch',nameEn:'Band Crunch',nameDe:'Widerstandsband Crunches',muscle:'core',equipment:'band',mult:4.5},
+{id:'core_band_twist',nameEn:'Band Rotation',nameDe:'Widerstandsband Rotation',muscle:'core',equipment:'band',mult:4.5},
+{id:'core_decline_situp',nameEn:'Decline Weighted Sit-Up',nameDe:'Schrages Sit-Up (Gewichtet)',muscle:'core',equipment:'bodyweight',mult:3.0},
+// FOREARMS (16)
+{id:'fore_bb_wristcurl',nameEn:'Barbell Wrist Curl',nameDe:'Handgelenkcurls (LH)',muscle:'forearms',equipment:'barbell',mult:5.0},
+{id:'fore_bb_wristcurl_rev',nameEn:'Barbell Reverse Wrist Curl',nameDe:'Reverse Handgelenkcurls (LH)',muscle:'forearms',equipment:'barbell',mult:6.0},
+{id:'fore_bb_reverse_curl',nameEn:'Barbell Reverse Curl',nameDe:'Reverse Curls (LH)',muscle:'forearms',equipment:'barbell',mult:3.0},
+{id:'fore_db_wristcurl',nameEn:'Dumbbell Wrist Curl',nameDe:'Handgelenkcurls (KH)',muscle:'forearms',equipment:'dumbbell',mult:5.5},
+{id:'fore_db_wristcurl_rev',nameEn:'Dumbbell Reverse Wrist Curl',nameDe:'Reverse Handgelenkcurls (KH)',muscle:'forearms',equipment:'dumbbell',mult:6.5},
+{id:'fore_db_hammer',nameEn:'Dumbbell Hammer Curl (Forearm)',nameDe:'Hammer Curls (Unterarm)',muscle:'forearms',equipment:'dumbbell',mult:3.0},
+{id:'fore_cable_wrist',nameEn:'Cable Wrist Curl',nameDe:'Kabelzug Handgelenkcurls',muscle:'forearms',equipment:'cable',mult:5.5},
+{id:'fore_cable_rev',nameEn:'Cable Reverse Wrist Curl',nameDe:'Kabelzug Reverse Handgelenkcurls',muscle:'forearms',equipment:'cable',mult:6.5},
+{id:'fore_ez_reverse',nameEn:'EZ-Bar Reverse Curl',nameDe:'SZ-Stange Reverse Curls',muscle:'forearms',equipment:'ezbar',mult:3.5},
+{id:'fore_bw_dead_hang',nameEn:'Weighted Dead Hang',nameDe:'Gewichtetes Hangen',muscle:'forearms',equipment:'bodyweight',mult:3.0},
+{id:'fore_bw_fingertip',nameEn:'Fingertip Push-Up (Weighted)',nameDe:'Fingerspitzen Liegestutze',muscle:'forearms',equipment:'bodyweight',mult:5.0},
+{id:'fore_db_hold',nameEn:"Farmer's Walk (Hold)",nameDe:"Farmer's Walk (Halten)",muscle:'forearms',equipment:'dumbbell',mult:1.5},
+{id:'fore_bb_hold',nameEn:'Barbell Hold',nameDe:'Langhantel Halten',muscle:'forearms',equipment:'barbell',mult:2.0},
+{id:'fore_kb_bottoms_up',nameEn:'Kettlebell Bottoms-Up Hold',nameDe:'Kettlebell Bottoms-Up',muscle:'forearms',equipment:'kettlebell',mult:4.0},
+{id:'fore_gripper',nameEn:'Gripper (Weighted)',nameDe:'Gripper (Gewichtet)',muscle:'forearms',equipment:'bodyweight',mult:5.0},
+{id:'fore_plate_pinch',nameEn:'Plate Pinch Hold',nameDe:'Plate Pinch',muscle:'forearms',equipment:'bodyweight',mult:4.0},
+// TRAPS (15)
+{id:'trap_bb_shrug',nameEn:'Barbell Shrug',nameDe:'Langhantel Shrugs',muscle:'traps',equipment:'barbell',mult:1.2},
+{id:'trap_bb_shrug_bh',nameEn:'Barbell Behind-Back Shrug',nameDe:'Langhantel Shrugs (Hinter Rucken)',muscle:'traps',equipment:'barbell',mult:1.5},
+{id:'trap_bb_uprow',nameEn:'Barbell Upright Row (Traps)',nameDe:'Aufrechtes Rudern (Trapez)',muscle:'traps',equipment:'barbell',mult:2.0},
+{id:'trap_db_shrug',nameEn:'Dumbbell Shrug',nameDe:'Kurzhantel Shrugs',muscle:'traps',equipment:'dumbbell',mult:1.5},
+{id:'trap_db_shrug_one',nameEn:'One-Arm Dumbbell Shrug',nameDe:'Einarmige Kurzhantel Shrugs',muscle:'traps',equipment:'dumbbell',mult:2.5},
+{id:'trap_cable_shrug',nameEn:'Cable Shrug',nameDe:'Kabelzug Shrugs',muscle:'traps',equipment:'cable',mult:1.8},
+{id:'trap_cable_uprow',nameEn:'Cable Upright Row (Traps)',nameDe:'Aufrechtes Rudern (Kabelzug)',muscle:'traps',equipment:'cable',mult:2.5},
+{id:'trap_mach_shrug',nameEn:'Machine Shrug',nameDe:'Shrug Maschine',muscle:'traps',equipment:'machine',mult:1.0},
+{id:'trap_smith_shrug',nameEn:'Smith Machine Shrug',nameDe:'Multipresse Shrugs',muscle:'traps',equipment:'smith',mult:1.0},
+{id:'trap_smith_shrug_bh',nameEn:'Smith Machine Behind-Back Shrug',nameDe:'Multipresse Shrugs (Hinten)',muscle:'traps',equipment:'smith',mult:1.2},
+{id:'trap_kb_shrug',nameEn:'Kettlebell Shrug',nameDe:'Kettlebell Shrugs',muscle:'traps',equipment:'kettlebell',mult:2.0},
+{id:'trap_db_farmer',nameEn:"Farmer's Walk",nameDe:"Farmer's Walk",muscle:'traps',equipment:'dumbbell',mult:1.5},
+{id:'trap_bb_power_shrug',nameEn:'Barbell Power Shrug',nameDe:'Power Shrugs (LH)',muscle:'traps',equipment:'barbell',mult:1.0},
+{id:'trap_band_shrug',nameEn:'Band Shrug',nameDe:'Widerstandsband Shrugs',muscle:'traps',equipment:'band',mult:3.5},
+{id:'trap_ez_uprow',nameEn:'EZ-Bar Upright Row (Traps)',nameDe:'SZ-Stange Aufrechtes Rudern',muscle:'traps',equipment:'ezbar',mult:2.0},
+// FULL BODY (38)
+{id:'fb_bb_deadlift',nameEn:'Barbell Deadlift (Conventional)',nameDe:'Konventionelles Kreuzheben',muscle:'fullBody',equipment:'barbell',mult:0.6},
+{id:'fb_bb_clean',nameEn:'Barbell Power Clean',nameDe:'Power Clean',muscle:'fullBody',equipment:'barbell',mult:1.0},
+{id:'fb_bb_snatch',nameEn:'Barbell Power Snatch',nameDe:'Power Snatch',muscle:'fullBody',equipment:'barbell',mult:1.2},
+{id:'fb_bb_cj',nameEn:'Barbell Clean & Jerk',nameDe:'Clean & Jerk',muscle:'fullBody',equipment:'barbell',mult:0.8},
+{id:'fb_bb_thruster',nameEn:'Barbell Thruster',nameDe:'Thruster (Langhantel)',muscle:'fullBody',equipment:'barbell',mult:1.0},
+{id:'fb_bb_hang_clean',nameEn:'Barbell Hang Clean',nameDe:'Hang Clean',muscle:'fullBody',equipment:'barbell',mult:1.0},
+{id:'fb_bb_hang_snatch',nameEn:'Barbell Hang Snatch',nameDe:'Hang Snatch',muscle:'fullBody',equipment:'barbell',mult:1.2},
+{id:'fb_bb_row_deadlift',nameEn:'Barbell Deadlift-Row Complex',nameDe:'Kreuzheben-Rudern Komplex',muscle:'fullBody',equipment:'barbell',mult:0.8},
+{id:'fb_bb_complex',nameEn:'Barbell Complex',nameDe:'Langhantel Komplex',muscle:'fullBody',equipment:'barbell',mult:0.8},
+{id:'fb_db_thruster',nameEn:'Dumbbell Thruster',nameDe:'Thruster (Kurzhantel)',muscle:'fullBody',equipment:'dumbbell',mult:1.5},
+{id:'fb_db_manmaker',nameEn:'Dumbbell Man Maker',nameDe:'Man Maker',muscle:'fullBody',equipment:'dumbbell',mult:1.5},
+{id:'fb_db_snatch',nameEn:'Dumbbell Snatch',nameDe:'Kurzhantel Snatch',muscle:'fullBody',equipment:'dumbbell',mult:2.0},
+{id:'fb_db_clean_press',nameEn:'Dumbbell Clean & Press',nameDe:'Kurzhantel Clean & Press',muscle:'fullBody',equipment:'dumbbell',mult:1.5},
+{id:'fb_db_swing',nameEn:'Dumbbell Swing',nameDe:'Kurzhantel Swing',muscle:'fullBody',equipment:'dumbbell',mult:2.0},
+{id:'fb_db_farmer_walk',nameEn:"Dumbbell Farmer's Walk",nameDe:"Farmer's Walk (KH)",muscle:'fullBody',equipment:'dumbbell',mult:1.5},
+{id:'fb_kb_swing',nameEn:'Kettlebell Swing (Full Body)',nameDe:'Kettlebell Swing (Ganzkorper)',muscle:'fullBody',equipment:'kettlebell',mult:2.0},
+{id:'fb_kb_snatch',nameEn:'Kettlebell Snatch',nameDe:'Kettlebell Snatch',muscle:'fullBody',equipment:'kettlebell',mult:2.0},
+{id:'fb_kb_clean',nameEn:'Kettlebell Clean',nameDe:'Kettlebell Clean',muscle:'fullBody',equipment:'kettlebell',mult:2.0},
+{id:'fb_kb_clean_press',nameEn:'Kettlebell Clean & Press',nameDe:'Kettlebell Clean & Press',muscle:'fullBody',equipment:'kettlebell',mult:1.8},
+{id:'fb_kb_thruster',nameEn:'Kettlebell Thruster',nameDe:'Kettlebell Thruster',muscle:'fullBody',equipment:'kettlebell',mult:1.8},
+{id:'fb_kb_turkish',nameEn:'Kettlebell Turkish Get-Up',nameDe:'Turkish Get-Up',muscle:'fullBody',equipment:'kettlebell',mult:2.5},
+{id:'fb_kb_complex',nameEn:'Kettlebell Complex',nameDe:'Kettlebell Komplex',muscle:'fullBody',equipment:'kettlebell',mult:1.8},
+{id:'fb_bw_burpee',nameEn:'Burpee (Weighted)',nameDe:'Burpees (Gewichtet)',muscle:'fullBody',equipment:'bodyweight',mult:3.0},
+{id:'fb_bw_thruster_jump',nameEn:'Jump Squat (Weighted)',nameDe:'Jump Squats (Gewichtet)',muscle:'fullBody',equipment:'bodyweight',mult:2.5},
+{id:'fb_bw_bear_crawl',nameEn:'Bear Crawl (Weighted)',nameDe:'Bear Crawl (Gewichtet)',muscle:'fullBody',equipment:'bodyweight',mult:3.5},
+{id:'fb_bw_mountain',nameEn:'Mountain Climber (Weighted)',nameDe:'Mountain Climber (Gewichtet)',muscle:'fullBody',equipment:'bodyweight',mult:4.0},
+{id:'fb_smith_thruster',nameEn:'Smith Machine Thruster',nameDe:'Multipresse Thruster',muscle:'fullBody',equipment:'smith',mult:0.9},
+{id:'fb_cable_woodchop',nameEn:'Cable Full-Body Woodchop',nameDe:'Kabelzug Ganzkorper Woodchop',muscle:'fullBody',equipment:'cable',mult:2.5},
+{id:'fb_band_squat_press',nameEn:'Band Squat to Press',nameDe:'Band Squat zu Press',muscle:'fullBody',equipment:'band',mult:3.5},
+{id:'fb_band_deadlift',nameEn:'Band Deadlift',nameDe:'Widerstandsband Kreuzheben',muscle:'fullBody',equipment:'band',mult:3.5},
+{id:'fb_bb_sots_press',nameEn:'Barbell Sots Press',nameDe:'Sots Press',muscle:'fullBody',equipment:'barbell',mult:1.5},
+{id:'fb_bb_overhead_squat',nameEn:'Barbell Overhead Squat',nameDe:'Overhead Squat',muscle:'fullBody',equipment:'barbell',mult:1.2},
+{id:'fb_db_devil_press',nameEn:'Devil Press',nameDe:'Devil Press',muscle:'fullBody',equipment:'dumbbell',mult:1.8},
+{id:'fb_kb_goblet_clean',nameEn:'Kettlebell Goblet Clean',nameDe:'Kettlebell Goblet Clean',muscle:'fullBody',equipment:'kettlebell',mult:2.0},
+{id:'fb_mach_cable_cross_lunge',nameEn:'Cable Cross Lunge',nameDe:'Kabelzug Cross Lunge',muscle:'fullBody',equipment:'cable',mult:2.5},
+{id:'fb_bb_sumo_hp',nameEn:'Barbell Sumo High Pull',nameDe:'Sumo High Pull',muscle:'fullBody',equipment:'barbell',mult:1.2},
+{id:'fb_kb_sumo_hp',nameEn:'Kettlebell Sumo High Pull',nameDe:'Kettlebell Sumo High Pull',muscle:'fullBody',equipment:'kettlebell',mult:2.0},
+{id:'fb_sandbag_carry',nameEn:'Sandbag Carry (or DB substitute)',nameDe:'Sandsack Tragen (KH Ersatz)',muscle:'fullBody',equipment:'dumbbell',mult:1.5}
+];
+
+function exName(ex){return lang==='en'?ex.nameEn:ex.nameDe}
+function muscleName(m){return t(m)}
+function equipName(e){return t(e)}
+
+// ==================== RANKS ====================
+const baseRanks=[
+{id:'holz',name:'Holz'},{id:'bronze',name:'Bronze'},{id:'stahl',name:'Stahl'},
+{id:'silber',name:'Silber'},{id:'gold',name:'Gold'},{id:'diamant',name:'Diamant'},
+{id:'emerald',name:'Emerald'},{id:'ruby',name:'Ruby'},{id:'obsidian',name:'Obsidian'},
+{id:'gymrat',name:'Gymrat'},{id:'champion',name:'Champion'}
+];
+const ranks=[];
+(function(){let xp=0,step=1000;baseRanks.forEach(r=>{for(let i=1;i<=3;i++){ranks.push({name:`${r.name} ${i}`,class:`rank-${r.id}`,xpRequired:Math.floor(xp)});xp+=step;step*=1.40}})})();
+
+// ==================== STATE ====================
+const MS_PER_DAY=86400000,GRACE_DAYS=3,DECAY_RATE=0.02;
+let totalXp,lastWorkoutTime,lastDecayTime,selectedExercise=null,currentRankIndex=0;
+
+function loadState(){
+    totalXp=parseFloat(localStorage.getItem('gr_xp')||'0');
+    lastWorkoutTime=parseInt(localStorage.getItem('gr_lastWorkout')||Date.now());
+    lastDecayTime=parseInt(localStorage.getItem('gr_lastDecay')||Date.now());
+}
+function saveState(){
+    localStorage.setItem('gr_xp',totalXp);
+    localStorage.setItem('gr_lastWorkout',lastWorkoutTime);
+    localStorage.setItem('gr_lastDecay',lastDecayTime);
+}
+
+// ==================== DATA MIGRATION ====================
+function migrateData(){
+    if(localStorage.getItem('gr_migrated'))return;
+    const oldXp=localStorage.getItem('hc_gymXp');
+    if(oldXp!==null){
+        localStorage.setItem('gr_xp',oldXp);
+        localStorage.setItem('gr_lastWorkout',localStorage.getItem('hc_lastWorkout')||Date.now());
+        localStorage.setItem('gr_lastDecay',localStorage.getItem('hc_lastDecay')||Date.now());
+    }
+    localStorage.setItem('gr_migrated','true');
+}
+
+// ==================== DECAY ====================
+function checkAndApplyDecay(){
+    if(totalXp<=0)return;
+    const now=Date.now(),penaltyStart=lastWorkoutTime+(GRACE_DAYS*MS_PER_DAY);
+    if(now>penaltyStart){
+        const decayFrom=Math.max(penaltyStart,lastDecayTime);
+        const days=Math.floor((now-decayFrom)/MS_PER_DAY);
+        if(days>0){
+            const oldXp=totalXp;
+            for(let i=0;i<days;i++)totalXp*=(1-DECAY_RATE);
+            lastDecayTime=decayFrom+(days*MS_PER_DAY);
+            saveState();
+            showToast('🚨 '+t('laziness').replace('{xp}',Math.floor(oldXp-totalXp).toLocaleString(lang==='de'?'de-DE':'en-US')),'error');
+        }
+    }
+}
+
+// ==================== RANK LOGIC ====================
+function getRankData(xp){
+    let idx=0;
+    for(let i=0;i<ranks.length;i++){if(xp>=ranks[i].xpRequired)idx=i;else break}
+    return{index:idx,current:ranks[idx],next:ranks[idx+1]||ranks[idx]};
+}
+
+function updateStatusBadge(){
+    const badge=document.getElementById('statusBadge');
+    const days=(Date.now()-lastWorkoutTime)/MS_PER_DAY;
+    if(totalXp===0){badge.className='status-badge status-warning';badge.innerHTML='<span>💤</span> '+t('rookie')}
+    else if(days<2){badge.className='status-badge status-active';badge.innerHTML='<span>🔥</span> '+t('pumpMode')}
+    else if(days<3){badge.className='status-badge status-warning';badge.innerHTML='<span>⚠️</span> '+t('pause')}
+    else{badge.className='status-badge status-danger';badge.innerHTML='<span>🩸</span> '+t('xpBleeding')}
+}
+
+function updateUI(animateLevelUp=false){
+    const rd=getRankData(totalXp);
+    if(animateLevelUp&&rd.index>currentRankIndex)showToast('🏆 '+t('levelUp').replace('{rank}',rd.current.name),'levelup');
+    if(!animateLevelUp&&rd.index<currentRankIndex)showToast('📉 '+t('derank').replace('{rank}',rd.current.name),'error');
+    currentRankIndex=rd.index;
+    const disp=document.getElementById('rankDisplay');
+    disp.innerText=rd.current.name;disp.className='rank-name '+rd.current.class;
+    const loc=lang==='de'?'de-DE':'en-US';
+    document.getElementById('currentXpDisplay').innerText=Math.floor(totalXp).toLocaleString(loc)+' XP';
+    const pb=document.getElementById('progressBar');
+    if(rd.index<ranks.length-1){
+        document.getElementById('nextRankXpDisplay').innerText=Math.floor(rd.next.xpRequired).toLocaleString(loc)+' XP';
+        pb.style.width=((totalXp-rd.current.xpRequired)/(rd.next.xpRequired-rd.current.xpRequired)*100)+'%';
+    }else{
+        document.getElementById('nextRankXpDisplay').innerText=t('limitReached');pb.style.width='100%';
+    }
+    updateStatusBadge();
+    updateStreakBadge();
+    updateTodaySummary();
+}
+
+// ==================== STREAK ====================
+function getStreak(){return JSON.parse(localStorage.getItem('gr_streak')||'{"current":0,"longest":0,"lastDay":"","bonusXpToday":false}')}
+function saveStreak(s){localStorage.setItem('gr_streak',JSON.stringify(s))}
+
+function updateStreak(){
+    const s=getStreak();
+    const today=new Date().toISOString().slice(0,10);
+    const yesterday=new Date(Date.now()-MS_PER_DAY).toISOString().slice(0,10);
+    if(s.lastDay===today)return s;
+    if(s.lastDay===yesterday)s.current++;
+    else s.current=1;
+    s.lastDay=today;s.longest=Math.max(s.longest,s.current);s.bonusXpToday=false;
+    saveStreak(s);return s;
+}
+
+function updateStreakBadge(){
+    const s=getStreak(),badge=document.getElementById('streakBadge');
+    if(s.current>0){badge.style.display='flex';badge.innerHTML='🔥 '+s.current}
+    else badge.style.display='none';
+}
+
+// ==================== FAVORITES ====================
+function getFavorites(){return JSON.parse(localStorage.getItem('gr_favorites')||'[]')}
+function saveFavorites(f){localStorage.setItem('gr_favorites',JSON.stringify(f))}
+function toggleFavorite(exId){
+    const f=getFavorites(),i=f.indexOf(exId);
+    if(i===-1)f.push(exId);else f.splice(i,1);
+    saveFavorites(f);renderExerciseBrowser();
+}
+
+// ==================== RECENT EXERCISES ====================
+function getRecent(){return JSON.parse(localStorage.getItem('gr_recent')||'[]')}
+function updateRecent(exId){
+    let r=getRecent().filter(id=>id!==exId);
+    r.unshift(exId);if(r.length>5)r.pop();
+    localStorage.setItem('gr_recent',JSON.stringify(r));renderRecent();
+}
+function renderRecent(){
+    const r=getRecent(),container=document.getElementById('recentContainer'),row=document.getElementById('recentRow');
+    if(r.length===0){container.style.display='none';return}
+    container.style.display='block';row.innerHTML='';
+    r.forEach(id=>{
+        const ex=exerciseDB.find(e=>e.id===id);
+        if(!ex)return;
+        const chip=document.createElement('div');chip.className='recent-chip';chip.textContent=exName(ex);
+        chip.onclick=()=>{selectedExercise=ex;document.getElementById('exerciseSearch').value=exName(ex);document.getElementById('searchResults').classList.remove('active')};
+        row.appendChild(chip);
+    });
+}
+
+// ==================== HISTORY ====================
+function getHistory(){return JSON.parse(localStorage.getItem('gr_history')||'[]')}
+function saveHistory(h){
+    if(h.length>5000)h=h.slice(h.length-5000);
+    localStorage.setItem('gr_history',JSON.stringify(h));
+}
+function addHistoryEntry(exId,weight,reps,xp){
+    const h=getHistory();
+    h.push({ts:Date.now(),exId,weight,reps,xp});
+    saveHistory(h);
+}
+
+// ==================== PR TRACKING ====================
+function getPRs(){return JSON.parse(localStorage.getItem('gr_prs')||'{}')}
+function savePRs(p){localStorage.setItem('gr_prs',JSON.stringify(p))}
+function checkPR(exId,weight,reps){
+    const prs=getPRs();
+    const oneRM=reps<=12?Math.round(weight*(36/(37-reps))):Math.round(weight);
+    if(!prs[exId]||oneRM>prs[exId].oneRM){
+        prs[exId]={weight,reps,date:Date.now(),oneRM};
+        savePRs(prs);return{isPR:true,oneRM};
+    }
+    return{isPR:false,oneRM};
+}
+
+// ==================== STRENGTH RANKS (PER MUSCLE) ====================
+const strengthRanks=[
+    {name:'rankHolz',color:'#8B5A2B',cls:'rank-holz'},
+    {name:'rankBronze',color:'#CD7F32',cls:'rank-bronze'},
+    {name:'rankStahl',color:'#71717a',cls:'rank-stahl'},
+    {name:'rankSilber',color:'#c4c4c8',cls:'rank-silber'},
+    {name:'rankGold',color:'#fbbf24',cls:'rank-gold'},
+    {name:'rankDiamant',color:'#38bdf8',cls:'rank-diamant'},
+    {name:'rankEmerald',color:'#34d399',cls:'rank-emerald'},
+    {name:'rankRuby',color:'#f43f5e',cls:'rank-ruby'},
+    {name:'rankObsidian',color:'#7c3aed',cls:'rank-obsidian'},
+    {name:'rankGymrat',color:'#d946ef',cls:'rank-gymrat'},
+    {name:'rankChampion',color:'#ff4500',cls:'rank-champion'}
+];
+
+// Realistic 1RM thresholds (kg) per muscle group. Index = rank index (0=Holz..10=Champion)
+// These represent estimated 1RM from exercises targeting that muscle
+const muscleThresholds={
+    chest:     [0, 30, 50, 70, 90, 110, 130, 150, 170, 190, 220],
+    back:      [0, 35, 60, 80, 105, 130, 155, 180, 210, 240, 280],
+    shoulders: [0, 20, 35, 50, 65, 80, 95, 110, 125, 140, 160],
+    biceps:    [0, 12, 20, 28, 36, 44, 52, 60, 70, 80, 95],
+    triceps:   [0, 15, 25, 35, 48, 60, 72, 85, 100, 115, 135],
+    quads:     [0, 40, 70, 100, 135, 170, 210, 250, 300, 350, 420],
+    hamstrings:[0, 25, 45, 65, 85, 110, 135, 160, 190, 220, 260],
+    glutes:    [0, 30, 55, 80, 110, 145, 180, 220, 265, 310, 370],
+    calves:    [0, 20, 40, 60, 80, 100, 125, 150, 180, 210, 250],
+    core:      [0, 10, 20, 32, 45, 60, 78, 95, 115, 135, 160],
+    forearms:  [0, 10, 18, 26, 35, 44, 53, 63, 74, 86, 100],
+    traps:     [0, 25, 45, 65, 85, 110, 135, 160, 190, 220, 260],
+    fullBody:  [0, 35, 60, 85, 115, 145, 180, 220, 260, 310, 370]
+};
+
+// Map exercises to which muscles they contribute to for strength ranking
+// Most exercises hit their primary muscle, but compounds hit multiple
+const exerciseMuscleMap={};
+exerciseDB.forEach(ex=>{
+    if(!exerciseMuscleMap[ex.id])exerciseMuscleMap[ex.id]=[ex.muscle];
+});
+// Add secondary muscles for key compound exercises
+const secondaryMuscles={
+    'chest_bb_flat':['triceps'],'chest_bb_incline':['triceps','shoulders'],'chest_bb_decline':['triceps'],
+    'chest_bb_close':['triceps'],'chest_db_flat':['triceps'],'chest_db_incline':['triceps','shoulders'],
+    'chest_bw_dip':['triceps'],'chest_smith_flat':['triceps'],'chest_smith_incline':['triceps','shoulders'],
+    'chest_floor_press':['triceps'],
+    'back_bb_deadlift':['glutes','hamstrings','traps'],'back_bb_row':['biceps'],
+    'back_bb_pendlay':['biceps'],'back_bb_tbar':['biceps'],
+    'back_bw_pullup':['biceps'],'back_bw_chinup':['biceps'],
+    'back_cable_lat_wide':['biceps'],'back_cable_lat_close':['biceps'],
+    'shd_bb_ohp':['triceps'],'shd_bb_push':['triceps'],'shd_db_press':['triceps'],
+    'shd_db_arnold':['triceps'],'shd_smith_ohp':['triceps'],
+    'bi_bb_cheat':['forearms'],'bi_ez_reverse':['forearms'],'bi_db_zottman':['forearms'],
+    'tri_bb_close':['chest'],'tri_bw_dip':['chest'],
+    'fb_bb_clean':['shoulders','traps'],'fb_bb_snatch':['shoulders','traps'],
+    'fb_bb_deadlift_sumo':['glutes','hamstrings']
+};
+Object.entries(secondaryMuscles).forEach(([id,muscles])=>{
+    if(exerciseMuscleMap[id])exerciseMuscleMap[id]=exerciseMuscleMap[id].concat(muscles);
+    else exerciseMuscleMap[id]=[...muscles];
+});
+
+function getMuscleStrengthRanks(){
+    const prs=getPRs();
+    const best1RM={};
+    // For each PR, get the 1RM and assign to all muscles that exercise targets
+    Object.entries(prs).forEach(([exId,pr])=>{
+        const muscles=exerciseMuscleMap[exId]||[];
+        const ex=exerciseDB.find(e=>e.id===exId);
+        if(!ex)return;
+        muscles.forEach(m=>{
+            if(!best1RM[m]||pr.oneRM>best1RM[m])best1RM[m]=pr.oneRM;
+        });
+    });
+    // Determine rank per muscle
+    const result={};
+    Object.keys(muscleThresholds).forEach(muscle=>{
+        const rm=best1RM[muscle]||0;
+        const thresholds=muscleThresholds[muscle];
+        let rankIdx=-1;
+        for(let i=thresholds.length-1;i>=0;i--){
+            if(rm>=thresholds[i]){rankIdx=i;break}
+        }
+        result[muscle]={
+            oneRM:rm,
+            rankIndex:rankIdx,
+            rank:rankIdx>=0?strengthRanks[rankIdx]:null,
+            nextThreshold:rankIdx<thresholds.length-1?thresholds[rankIdx+1]:null
+        };
+    });
+    return result;
+}
+
+function renderBodyMap(){
+    const ranks=getMuscleStrengthRanks();
+    // Color SVG muscle zones
+    document.querySelectorAll('.muscle-zone').forEach(zone=>{
+        const muscle=zone.getAttribute('data-muscle');
+        const r=ranks[muscle];
+        if(r&&r.rank){
+            zone.style.fill=r.rank.color;
+            zone.classList.remove('no-data');
+        }else{
+            zone.style.fill='';
+            zone.classList.add('no-data');
+        }
+    });
+    // Render muscle rank list
+    const list=document.getElementById('muscleRankList');
+    const muscleOrder=['chest','back','shoulders','biceps','triceps','quads','hamstrings','glutes','calves','core','forearms','traps','fullBody'];
+    let html='';
+    muscleOrder.forEach(m=>{
+        const r=ranks[m];
+        const emoji=muscleEmoji[m]||'';
+        const name=muscleName(m);
+        const color=r&&r.rank?r.rank.color:'#3f3f46';
+        const rankName=r&&r.rank?t(r.rank.name):t('bodyNoData');
+        const val=r&&r.oneRM>0?`${r.oneRM}kg 1RM`:'—';
+        const nextInfo=r&&r.nextThreshold?` / ${r.nextThreshold}kg`:'';
+        html+=`<div class="muscle-rank-item"><div class="muscle-rank-dot" style="background:${color}"></div><span class="muscle-rank-name">${emoji} ${name}</span><span class="muscle-rank-val">${val}${nextInfo}</span><span class="muscle-rank-label" style="color:${color}">${rankName}</span></div>`;
+    });
+    list.innerHTML=html;
+}
+
+// ==================== TODAY SUMMARY ====================
+function updateTodaySummary(){
+    const today=new Date().toISOString().slice(0,10);
+    const h=getHistory().filter(e=>new Date(e.ts).toISOString().slice(0,10)===today);
+    document.getElementById('todaySets').textContent=dailyGoal>0?h.length+'/'+dailyGoal:h.length;
+    document.getElementById('todayXp').textContent=Math.floor(h.reduce((s,e)=>s+e.xp,0)).toLocaleString(lang==='de'?'de-DE':'en-US');
+    const unique=new Set(h.map(e=>e.exId));
+    document.getElementById('todayExCount').textContent=unique.size;
+}
+
+// ==================== SEARCH ENGINE ====================
+let searchDebounce=null;
+function searchExercises(query,filters={}){
+    const q=query.toLowerCase().trim();
+    let results=exerciseDB;
+    if(filters.muscle&&filters.muscle!=='all')results=results.filter(ex=>ex.muscle===filters.muscle);
+    if(filters.equipment&&filters.equipment!=='all')results=results.filter(ex=>ex.equipment===filters.equipment);
+    if(filters.favoritesOnly){const favs=getFavorites();results=results.filter(ex=>favs.includes(ex.id))}
+    if(!q)return results.sort((a,b)=>exName(a).localeCompare(exName(b)));
+    return results.map(ex=>{
+        const en=ex.nameEn.toLowerCase(),de=ex.nameDe.toLowerCase();
+        let score=0;
+        if(en.startsWith(q)||de.startsWith(q))score=100;
+        else if(en.split(/[\s\-\(\)]+/).some(w=>w.startsWith(q))||de.split(/[\s\-\(\)]+/).some(w=>w.startsWith(q)))score=75;
+        else if(en.includes(q)||de.includes(q))score=50;
+        else{const tokens=q.split(/\s+/);if(tokens.every(tok=>en.includes(tok)||de.includes(tok)))score=30}
+        return{...ex,score};
+    }).filter(ex=>ex.score>0).sort((a,b)=>b.score-a.score);
+}
+
+// ==================== HOME SEARCH ====================
+const searchInput=document.getElementById('exerciseSearch');
+const searchResults=document.getElementById('searchResults');
+
+searchInput.addEventListener('input',function(){
+    clearTimeout(searchDebounce);
+    searchDebounce=setTimeout(()=>{
+        const q=this.value;
+        searchResults.innerHTML='';
+        if(q.length===0){searchResults.classList.remove('active');selectedExercise=null;return}
+        const filtered=searchExercises(q);
+        if(filtered.length>0){
+            searchResults.classList.add('active');
+            filtered.slice(0,20).forEach(ex=>{
+                const div=document.createElement('div');div.className='search-item';
+                div.innerHTML=`<span class="item-name">${exName(ex)}</span><span class="item-meta"><span class="item-muscle">${muscleName(ex.muscle)}</span><span class="item-mult">x${ex.mult.toFixed(1)}</span></span>`;
+                div.onclick=()=>{selectedExercise=ex;searchInput.value=exName(ex);searchResults.classList.remove('active')};
+                searchResults.appendChild(div);
             });
-        }
+        }else searchResults.classList.remove('active');
+    },150);
+});
+document.addEventListener('click',e=>{if(e.target!==searchInput&&!searchResults.contains(e.target))searchResults.classList.remove('active')});
 
-        // --- DATA & RANKS ---
-        const exerciseDB = [
-            { id: 'bp_flat', name: 'Bankdrücken (Flachbank)', mult: 1.0 },
-            { id: 'bp_incline', name: 'Bankdrücken (Schrägbank)', mult: 1.2 },
-            { id: 'db_flat', name: 'Kurzhantel Bankdrücken', mult: 1.4 },
-            { id: 'chest_press', name: 'Brustpresse (Maschine)', mult: 0.8 },
-            { id: 'butterfly_mach', name: 'Butterfly (Maschine)', mult: 1.3 },
-            { id: 'cable_cross', name: 'Cable Cross (Kabelzug)', mult: 1.8 },
-            { id: 'dips', name: 'Dips (Zusatzgewicht)', mult: 2.0 },
-            { id: 'deadlift', name: 'Kreuzheben', mult: 0.6 },
-            { id: 'lat_wide', name: 'Latzug (Breit)', mult: 1.2 },
-            { id: 'pullup', name: 'Klimmzüge (Zusatzgewicht)', mult: 2.5 },
-            { id: 'row_barbell', name: 'Langhantelrudern', mult: 1.1 },
-            { id: 'row_mach', name: 'Rudermaschine', mult: 0.9 },
-            { id: 'squat', name: 'Kniebeugen', mult: 0.8 },
-            { id: 'leg_press', name: 'Beinpresse', mult: 0.3 }, 
-            { id: 'hack_squat', name: 'Hackenschmidt Maschine', mult: 0.5 },
-            { id: 'leg_ext', name: 'Beinstrecker', mult: 1.4 },
-            { id: 'leg_curl_lying', name: 'Beinbeuger', mult: 1.5 },
-            { id: 'calf_stand', name: 'Wadenheben', mult: 0.6 },
-            { id: 'military', name: 'Military Press', mult: 1.5 },
-            { id: 'shoulder_db', name: 'Kurzhantel Schulterdrücken', mult: 1.8 },
-            { id: 'lateral_db', name: 'Seitheben (Kurzhantel)', mult: 8.0 },
-            { id: 'lateral_cable', name: 'Seitheben (Kabelzug)', mult: 9.0 },
-            { id: 'reverse_fly', name: 'Reverse Butterfly', mult: 3.5 },
-            { id: 'facepulls', name: 'Face Pulls', mult: 4.0 },
-            { id: 'tri_pushdown', name: 'Trizepsdrücken', mult: 2.5 },
-            { id: 'french_press', name: 'French Press', mult: 3.0 },
-            { id: 'curl_bb', name: 'Langhantel Curls', mult: 2.5 },
-            { id: 'curl_db', name: 'Kurzhantel Curls', mult: 3.5 },
-            { id: 'curl_cable', name: 'Bizeps Kabelzug', mult: 3.0 },
-            { id: 'crunch_cable', name: 'Crunches Kabelzug', mult: 2.0 },
-            { id: 'leg_raise_weight', name: 'Beinheben (Hantel)', mult: 4.0 }
-        ];
-        exerciseDB.sort((a, b) => a.name.localeCompare(b.name));
+// ==================== WORKOUT LOGGING ====================
+function logWorkout(){
+    if(!selectedExercise)return showToast(t('selectEx'),'error');
+    const w=parseFloat(document.getElementById('weight').value.replace(',','.'));
+    const r=parseInt(document.getElementById('reps').value);
+    if(isNaN(w)||isNaN(r)||w<=0||r<=0)return showToast(t('invalidNum'),'error');
 
-        const baseRanks = [
-            { id: 'holz', name: 'Holz' }, { id: 'bronze', name: 'Bronze' }, { id: 'stahl', name: 'Stahl' }, 
-            { id: 'silber', name: 'Silber' }, { id: 'gold', name: 'Gold' }, { id: 'diamant', name: 'Diamant' }, 
-            { id: 'emerald', name: 'Emerald' }, { id: 'ruby', name: 'Ruby' }, { id: 'obsidian', name: 'Obsidian' }, 
-            { id: 'gymrat', name: 'Gymrat' }, { id: 'champion', name: 'Champion' }
-        ];
-        const ranks = []; let currentXpReq = 0; let step = 1000; 
-        baseRanks.forEach(rank => {
-            for (let i = 1; i <= 3; i++) {
-                ranks.push({ name: `${rank.name} ${i}`, class: `rank-${rank.id}`, xpRequired: Math.floor(currentXpReq) });
-                currentXpReq += step; step = step * 1.40;
-            }
+    const xp=w*r*selectedExercise.mult;
+    const streak=updateStreak();
+    let bonusXp=0;
+    if(!streak.bonusXpToday){bonusXp=Math.min(streak.current*50,500);streak.bonusXpToday=true;saveStreak(streak)}
+
+    totalXp+=xp+bonusXp;
+    const now=Date.now();lastWorkoutTime=now;lastDecayTime=now;
+    saveState();
+    addHistoryEntry(selectedExercise.id,w,r,xp);
+    updateRecent(selectedExercise.id);
+
+    const loc=lang==='de'?'de-DE':'en-US';
+    showToast('+ '+Math.floor(xp).toLocaleString(loc)+' XP!','success');
+    if(bonusXp>0)showToast('🔥 '+t('streakBonus').replace('{xp}',bonusXp),'success');
+
+    const pr=checkPR(selectedExercise.id,w,r);
+    if(pr.isPR){
+        showToast('🏅 '+t('newPr').replace('{ex}',exName(selectedExercise)).replace('{w}',w).replace('{r}',r).replace('{rm}',pr.oneRM),'pr-toast');
+    }
+
+    // Check daily goal
+    if(dailyGoal>0){
+        const today2=new Date().toISOString().slice(0,10);
+        const todaySetsCount=getHistory().filter(e=>new Date(e.ts).toISOString().slice(0,10)===today2).length;
+        if(todaySetsCount===dailyGoal)showToast('🎯 '+t('goalReached'),'levelup');
+    }
+
+    updateUI(true);
+    document.getElementById('weight').value='';document.getElementById('reps').value='';
+
+    if(autoTimerEnabled)startTimer();
+}
+
+// ==================== TIMER ====================
+let autoTimerEnabled=localStorage.getItem('gr_autoTimer')!=='false';
+let timerDuration=parseInt(localStorage.getItem('gr_timerDuration')||'90');
+let timerInterval=null,timerRemaining=0;
+
+function startTimer(dur){
+    timerRemaining=dur||timerDuration;
+    clearInterval(timerInterval);
+    document.getElementById('timerOverlay').classList.add('active');
+    drawTimer();
+    timerInterval=setInterval(()=>{
+        timerRemaining--;drawTimer();
+        if(timerRemaining<=0){stopTimer();if(vibEnabled&&navigator.vibrate)navigator.vibrate([200,100,200]);playTimerSound();showToast(t('restDone'),'success')}
+    },1000);
+}
+function stopTimer(){clearInterval(timerInterval);timerInterval=null;document.getElementById('timerOverlay').classList.remove('active')}
+function timerAdd30(){timerRemaining+=30;drawTimer()}
+function timerSkip(){stopTimer()}
+function drawTimer(){
+    document.getElementById('timerText').textContent=timerRemaining;
+    const canvas=document.getElementById('timerCanvas'),ctx=canvas.getContext('2d');
+    const size=160,cx=size/2,cy=size/2,radius=70,lw=8;
+    ctx.clearRect(0,0,size,size);
+    ctx.beginPath();ctx.arc(cx,cy,radius,0,Math.PI*2);ctx.strokeStyle='#27272a';ctx.lineWidth=lw;ctx.stroke();
+    const pct=timerRemaining/(timerDuration||90);
+    const start=-Math.PI/2,end=start+(Math.PI*2*pct);
+    ctx.beginPath();ctx.arc(cx,cy,radius,start,end);ctx.strokeStyle='#dc2626';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();
+}
+
+// ==================== EXERCISE BROWSER ====================
+let browserMuscle='all',browserEquip='all',browserFavOnly=false,browserQuery='';
+
+function buildFilterChips(){
+    const mf=document.getElementById('muscleFilters'),ef=document.getElementById('equipFilters');
+    mf.innerHTML='';ef.innerHTML='';
+    const muscles=['all','chest','back','shoulders','biceps','triceps','quads','hamstrings','glutes','calves','core','forearms','traps','fullBody'];
+    muscles.forEach(m=>{
+        const c=document.createElement('div');c.className='filter-chip'+(browserMuscle===m?' active':'');
+        c.textContent=m==='all'?t('muscleAll'):muscleName(m);
+        c.onclick=()=>{browserMuscle=m;buildFilterChips();renderExerciseBrowser()};
+        mf.appendChild(c);
+    });
+    const equips=['all','barbell','dumbbell','cable','machine','bodyweight','kettlebell','band','smith','ezbar'];
+    equips.forEach(e=>{
+        const c=document.createElement('div');c.className='filter-chip'+(browserEquip===e?' active':'');
+        c.textContent=e==='all'?t('equipAll'):equipName(e);
+        c.onclick=()=>{browserEquip=e;buildFilterChips();renderExerciseBrowser()};
+        ef.appendChild(c);
+    });
+    document.getElementById('favFilterChip').className='filter-chip'+(browserFavOnly?' active':'');
+    document.getElementById('favFilterChip').textContent='⭐ '+t('favOnly');
+}
+
+function toggleFavFilter(){browserFavOnly=!browserFavOnly;buildFilterChips();renderExerciseBrowser()}
+
+function renderExerciseBrowser(){
+    const list=document.getElementById('exList');list.innerHTML='';
+    const results=searchExercises(browserQuery,{muscle:browserMuscle,equipment:browserEquip,favoritesOnly:browserFavOnly});
+    document.getElementById('exCount').textContent=t('exCount').replace('{n}',results.length);
+    const favs=getFavorites();
+    results.forEach(ex=>{
+        const card=document.createElement('div');card.className='ex-card';
+        const isFav=favs.includes(ex.id);
+        card.innerHTML=`<span class="ex-emoji">${muscleEmoji[ex.muscle]||'🏋️'}</span><div class="ex-info"><div class="ex-name">${exName(ex)}</div><div class="ex-sub">${muscleName(ex.muscle)} • ${equipName(ex.equipment)}</div></div><div class="ex-right"><span class="ex-mult">x${ex.mult.toFixed(1)}</span><span class="ex-fav${isFav?' active':''}" data-id="${ex.id}">${isFav?'★':'☆'}</span></div>`;
+        card.querySelector('.ex-fav').onclick=e=>{e.stopPropagation();toggleFavorite(ex.id)};
+        card.onclick=()=>{selectedExercise=ex;document.getElementById('exerciseSearch').value=exName(ex);navigateTo('home')};
+        list.appendChild(card);
+    });
+}
+
+document.getElementById('exBrowserSearch').addEventListener('input',function(){
+    clearTimeout(searchDebounce);
+    searchDebounce=setTimeout(()=>{browserQuery=this.value;renderExerciseBrowser()},150);
+});
+
+// ==================== HISTORY PAGE ====================
+function renderHistory(){
+    const container=document.getElementById('historyContent');
+    const h=getHistory();
+    if(h.length===0){container.innerHTML=`<div class="history-empty">${t('noHistory')}</div>`;return}
+    const grouped={};
+    h.slice().reverse().forEach(entry=>{
+        const d=new Date(entry.ts).toISOString().slice(0,10);
+        if(!grouped[d])grouped[d]=[];
+        grouped[d].push(entry);
+    });
+    const loc=lang==='de'?'de-DE':'en-US';
+    let html='';
+    const days=Object.keys(grouped).slice(0,30);
+    days.forEach(day=>{
+        const sets=grouped[day];
+        const dayXp=Math.floor(sets.reduce((s,e)=>s+e.xp,0));
+        const dateStr=new Date(day+'T00:00:00').toLocaleDateString(loc,{weekday:'short',day:'numeric',month:'short'});
+        html+=`<div class="history-day"><div class="history-date"><span>${dateStr} • ${sets.length} sets</span><span class="h-xp">+${dayXp.toLocaleString(loc)} XP</span></div>`;
+        sets.forEach(s=>{
+            const ex=exerciseDB.find(e=>e.id===s.exId);
+            const name=ex?exName(ex):s.exId;
+            html+=`<div class="history-set"><span class="h-name">${name}</span><span class="h-detail">${s.weight}kg x ${s.reps}</span><span class="h-earned">+${Math.floor(s.xp).toLocaleString(loc)}</span></div>`;
         });
+        html+='</div>';
+    });
+    container.innerHTML=html;
+}
 
-        // --- STATE & DECAY ---
-        let totalXp = localStorage.getItem('hc_gymXp') ? parseFloat(localStorage.getItem('hc_gymXp')) : 0;
-        let lastWorkoutTime = localStorage.getItem('hc_lastWorkout') ? parseInt(localStorage.getItem('hc_lastWorkout')) : Date.now();
-        let lastDecayTime = localStorage.getItem('hc_lastDecay') ? parseInt(localStorage.getItem('hc_lastDecay')) : Date.now();
-        let selectedExercise = null; let currentRankIndex = 0;
-        const MS_PER_DAY = 86400000; const GRACE_DAYS = 3; const DECAY_RATE = 0.02; 
+// ==================== STATS PAGE ====================
+function renderStats(){
+    drawXpChart();drawFreqChart();renderMuscleDistribution();renderStreakStats();renderPRList();renderTopExercises();
+}
 
-        function checkAndApplyDecay() {
-            if (totalXp <= 0) return;
-            const now = Date.now();
-            const penaltyStartTime = lastWorkoutTime + (GRACE_DAYS * MS_PER_DAY);
-            if (now > penaltyStartTime) {
-                const decayFrom = Math.max(penaltyStartTime, lastDecayTime);
-                const msInDecayZone = now - decayFrom;
-                const daysToDecay = Math.floor(msInDecayZone / MS_PER_DAY);
-                if (daysToDecay > 0) {
-                    const oldXp = totalXp;
-                    for(let i = 0; i < daysToDecay; i++) totalXp = totalXp * (1 - DECAY_RATE);
-                    saveDataLocally();
-                    localStorage.setItem('hc_lastDecay', decayFrom + (daysToDecay * MS_PER_DAY));
-                    showToast(`🚨 FAULHEIT! ${Math.floor(oldXp - totalXp).toLocaleString('de-DE')} XP verloren!`, 'error');
-                }
+function drawXpChart(){
+    const canvas=document.getElementById('chartXp'),ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+    const h=getHistory(),days={};
+    for(let i=29;i>=0;i--){const d=new Date(Date.now()-i*MS_PER_DAY).toISOString().slice(0,10);days[d]=0}
+    h.forEach(e=>{const d=new Date(e.ts).toISOString().slice(0,10);if(days[d]!==undefined)days[d]+=e.xp});
+    const vals=Object.values(days),maxV=Math.max(...vals,1);
+    const pad={l:10,r:10,t:10,b:20},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+    ctx.strokeStyle='#27272a';ctx.lineWidth=1;
+    for(let i=0;i<4;i++){const y=pad.t+ch*(i/3);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke()}
+    if(vals.some(v=>v>0)){
+        ctx.beginPath();
+        vals.forEach((v,i)=>{const x=pad.l+(i/(vals.length-1))*cw,y=pad.t+ch-(v/maxV)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+        ctx.strokeStyle='#dc2626';ctx.lineWidth=2;ctx.stroke();
+        ctx.lineTo(pad.l+cw,pad.t+ch);ctx.lineTo(pad.l,pad.t+ch);ctx.closePath();
+        const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
+        grad.addColorStop(0,'rgba(220,38,38,0.3)');grad.addColorStop(1,'rgba(220,38,38,0)');
+        ctx.fillStyle=grad;ctx.fill();
+    }
+}
+
+function drawFreqChart(){
+    const canvas=document.getElementById('chartFreq'),ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+    const h=getHistory(),days={};
+    for(let i=13;i>=0;i--){const d=new Date(Date.now()-i*MS_PER_DAY).toISOString().slice(0,10);days[d]=0}
+    h.forEach(e=>{const d=new Date(e.ts).toISOString().slice(0,10);if(days[d]!==undefined)days[d]++});
+    const vals=Object.values(days),maxV=Math.max(...vals,1);
+    const pad={l:10,r:10,t:10,b:20},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+    const bw=cw/vals.length*0.7,gap=cw/vals.length*0.3;
+    vals.forEach((v,i)=>{
+        const x=pad.l+i*(bw+gap)+gap/2,bh=(v/maxV)*ch,y=pad.t+ch-bh;
+        ctx.fillStyle=v>0?'#dc2626':'#27272a';
+        ctx.beginPath();ctx.roundRect(x,y,bw,bh,3);ctx.fill();
+    });
+}
+
+function renderMuscleDistribution(){
+    const container=document.getElementById('muscleDistribution');
+    const h=getHistory(),dist={};
+    h.forEach(e=>{const ex=exerciseDB.find(x=>x.id===e.exId);if(ex){dist[ex.muscle]=(dist[ex.muscle]||0)+e.xp}});
+    const maxXp=Math.max(...Object.values(dist),1);
+    const muscles=Object.keys(MUSCLES);
+    let html='';
+    muscles.forEach(m=>{
+        const xp=dist[m]||0;const pct=Math.round(xp/maxXp*100);
+        html+=`<div class="stat-row"><span class="s-label">${muscleEmoji[m]||''} ${muscleName(m)}</span><div style="flex:1;margin:0 10px;height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:4px"></div></div><span class="s-value">${Math.floor(xp).toLocaleString(lang==='de'?'de-DE':'en-US')}</span></div>`;
+    });
+    container.innerHTML=html;
+}
+
+function renderStreakStats(){
+    const s=getStreak(),container=document.getElementById('streakStats');
+    const h=getHistory(),totalDays=new Set(h.map(e=>new Date(e.ts).toISOString().slice(0,10))).size;
+    container.innerHTML=`<div class="stat-row"><span class="s-label">${t('streakCurrent')}</span><span class="s-value">🔥 ${s.current} ${t('days')}</span></div><div class="stat-row"><span class="s-label">${t('streakLongest')}</span><span class="s-value">🏆 ${s.longest} ${t('days')}</span></div><div class="stat-row"><span class="s-label">${t('streakTotal')}</span><span class="s-value">${totalDays} ${t('days')}</span></div>`;
+}
+
+function renderPRList(){
+    const prs=getPRs(),container=document.getElementById('prList');
+    const entries=Object.entries(prs).sort((a,b)=>b[1].date-a[1].date);
+    if(entries.length===0){container.innerHTML=`<div style="color:var(--text-muted);font-size:13px;padding:8px 0">${t('noPrs')}</div>`;return}
+    let html='';
+    entries.slice(0,20).forEach(([id,pr])=>{
+        const ex=exerciseDB.find(e=>e.id===id);
+        const name=ex?exName(ex):id;
+        html+=`<div class="pr-item"><span class="pr-name">${name}</span><span class="pr-val">${pr.weight}kg x ${pr.reps}</span><span class="pr-1rm">1RM: ${pr.oneRM}kg</span></div>`;
+    });
+    container.innerHTML=html;
+}
+
+function renderTopExercises(){
+    const container=document.getElementById('topExercises'),h=getHistory();
+    const counts={};h.forEach(e=>{counts[e.exId]=(counts[e.exId]||0)+1});
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    if(sorted.length===0){container.innerHTML=`<div style="color:var(--text-muted);font-size:13px;padding:8px 0">-</div>`;return}
+    let html='';
+    sorted.forEach(([id,count],i)=>{
+        const ex=exerciseDB.find(e=>e.id===id);
+        const name=ex?exName(ex):id;
+        html+=`<div class="stat-row"><span class="s-label">${i+1}. ${name}</span><span class="s-value">${count} sets</span></div>`;
+    });
+    container.innerHTML=html;
+}
+
+// ==================== NAVIGATION ====================
+let currentPage='home';
+function navigateTo(page){
+    currentPage=page;
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+page).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach((n,i)=>{n.classList.toggle('active',['home','exercises','history','stats','body','settings'][i]===page)});
+    location.hash=page;
+    if(page==='exercises'){buildFilterChips();renderExerciseBrowser()}
+    if(page==='history')renderHistory();
+    if(page==='stats')renderStats();
+    if(page==='body')renderBodyMap();
+}
+
+window.addEventListener('hashchange',()=>{
+    const h=location.hash.replace('#','');
+    if(['home','exercises','history','stats','body','settings'].includes(h)&&h!==currentPage)navigateTo(h);
+});
+
+// ==================== SETTINGS ====================
+function setLang(l){lang=l;localStorage.setItem('gr_lang',l);applyLanguage()}
+function setTheme(th){
+    localStorage.setItem('gr_theme',th);
+    document.documentElement.setAttribute('data-theme',th);
+    document.getElementById('themeDark').classList.toggle('active',th==='dark');
+    document.getElementById('themeLight').classList.toggle('active',th==='light');
+}
+function setAutoTimer(v){
+    autoTimerEnabled=v;localStorage.setItem('gr_autoTimer',v);
+    document.getElementById('timerOn').classList.toggle('active',v);
+    document.getElementById('timerOff').classList.toggle('active',!v);
+}
+function setTimerDuration(s){
+    timerDuration=s;localStorage.setItem('gr_timerDuration',s);
+    renderTimerPresets();
+}
+function renderTimerPresets(){
+    const c=document.getElementById('timerPresets');c.innerHTML='';
+    [30,60,90,120,180].forEach(s=>{
+        const b=document.createElement('button');
+        b.className='btn-sm btn-secondary'+(timerDuration===s?' active':'');
+        if(timerDuration===s)b.style.cssText='background:var(--accent);color:#fff;border-color:var(--accent)';
+        b.textContent=s+'s';b.onclick=()=>setTimerDuration(s);
+        c.appendChild(b);
+    });
+}
+
+// ==================== NEW SETTINGS ====================
+let vibEnabled=localStorage.getItem('gr_vibration')!=='false';
+let soundEnabled=localStorage.getItem('gr_sound')!=='false';
+let weightUnit=localStorage.getItem('gr_weightUnit')||'kg';
+let dailyGoal=parseInt(localStorage.getItem('gr_dailyGoal')||'0');
+let deferredInstallPrompt=null;
+
+function setVibration(v){
+    vibEnabled=v;localStorage.setItem('gr_vibration',v);
+    document.getElementById('vibOn').classList.toggle('active',v);
+    document.getElementById('vibOff').classList.toggle('active',!v);
+}
+function setSound(v){
+    soundEnabled=v;localStorage.setItem('gr_sound',v);
+    document.getElementById('soundOn').classList.toggle('active',v);
+    document.getElementById('soundOff').classList.toggle('active',!v);
+}
+function setWeightUnit(u){
+    weightUnit=u;localStorage.setItem('gr_weightUnit',u);
+    document.getElementById('unitKg').classList.toggle('active',u==='kg');
+    document.getElementById('unitLbs').classList.toggle('active',u==='lbs');
+    applyLanguage();
+}
+function setDailyGoal(n){
+    dailyGoal=n;localStorage.setItem('gr_dailyGoal',n);
+    renderGoalPresets();updateTodaySummary();
+}
+function renderGoalPresets(){
+    const c=document.getElementById('goalPresets');c.innerHTML='';
+    [0,10,15,20,30].forEach(n=>{
+        const b=document.createElement('button');
+        b.className='btn-sm btn-secondary'+(dailyGoal===n?' active':'');
+        if(dailyGoal===n)b.style.cssText='background:var(--accent);color:#fff;border-color:var(--accent)';
+        b.textContent=n===0?'OFF':n;b.onclick=()=>setDailyGoal(n);
+        c.appendChild(b);
+    });
+}
+function playTimerSound(){
+    if(!soundEnabled)return;
+    try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=880;g.gain.value=0.3;o.start();g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.5);o.stop(ac.currentTime+0.5)}catch(e){}
+}
+
+// PWA Install
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e});
+function installApp(){
+    if(deferredInstallPrompt){
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(r=>{deferredInstallPrompt=null});
+    }else{
+        // Show platform-specific instructions
+        const ua=navigator.userAgent;
+        let msg='';
+        if(/iPad|iPhone|iPod/.test(ua))msg=t('installIos');
+        else if(/android/i.test(ua))msg=t('installAndroid');
+        else msg=t('installDesktop');
+        showToast('📲 '+msg,'success');
+    }
+}
+
+// CSV Export
+function exportCSV(){
+    const h=getHistory();
+    if(h.length===0)return showToast('No data','error');
+    const wu=weightUnit==='lbs'?2.20462:1;
+    const unit=weightUnit.toUpperCase();
+    let csv='Date,Time,Exercise,Weight ('+unit+'),Reps,XP\n';
+    h.forEach(e=>{
+        const ex=exerciseDB.find(x=>x.id===e.exId);
+        const name=ex?(lang==='en'?ex.nameEn:ex.nameDe):e.exId;
+        const d=new Date(e.ts);
+        const date=d.toISOString().slice(0,10);
+        const time=d.toTimeString().slice(0,5);
+        const w=Math.round(e.weight*wu*10)/10;
+        csv+=`${date},${time},"${name}",${w},${e.reps},${Math.floor(e.xp)}\n`;
+    });
+    const blob=new Blob([csv],{type:'text/csv'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='gym-ranker-export.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    showToast(t('csvExported'),'success');
+}
+
+function applyLanguage(){
+    document.getElementById('rankTitle').textContent=t('rankTitle');
+    document.getElementById('lblExercise').textContent=t('exercise');
+    document.getElementById('exerciseSearch').placeholder=t('searchPh');
+    document.getElementById('exBrowserSearch').placeholder=t('searchPh');
+    document.getElementById('lblWeight').textContent=weightUnit==='lbs'?(lang==='de'?'Gewicht (lbs)':'Weight (lbs)'):t('weight');
+    document.getElementById('lblReps').textContent=t('reps');
+    document.getElementById('btnLog').textContent=t('logSet');
+    document.getElementById('recentLabel').textContent=t('recentLabel');
+    document.getElementById('todaySetsLbl').textContent=t('todaySets');
+    document.getElementById('todayExLbl').textContent=t('todayExercises');
+    document.getElementById('navHome').textContent=t('navHome');
+    document.getElementById('navExercises').textContent=t('navExercises');
+    document.getElementById('navHistory').textContent=t('navHistory');
+    document.getElementById('navStats').textContent=t('navStats');
+    document.getElementById('navSettings').textContent=t('navSettings');
+    document.getElementById('navBody').textContent=t('navBody');
+    document.getElementById('bodyTitle').textContent=t('bodyTitle');
+    document.getElementById('bodyFrontLabel').textContent=t('bodyFront');
+    document.getElementById('bodyBackLabel').textContent=t('bodyBack');
+    document.getElementById('setLangTitle').textContent=t('langTitle');
+    document.getElementById('setLangLabel').textContent=t('langLabel');
+    document.getElementById('setThemeTitle').textContent=t('themeTitle');
+    document.getElementById('setThemeLabel').textContent=t('themeLabel');
+    document.getElementById('setTimerTitle').textContent=t('timerTitle');
+    document.getElementById('setTimerLabel').textContent=t('timerLabel');
+    document.getElementById('setTimerDurLabel').textContent=t('timerDurLabel');
+    document.getElementById('setDataTitle').textContent=t('dataTitle');
+    document.getElementById('btnBackup').textContent='💾 '+t('btnBackup');
+    document.getElementById('btnImport').textContent='📥 '+t('btnImport');
+    document.getElementById('btnReset').textContent='💀 '+t('btnReset');
+    document.getElementById('btnExportCsv').textContent='📊 '+t('btnExportCsv');
+    document.getElementById('setNotifTitle').textContent=t('notifTitle');
+    document.getElementById('setVibLabel').textContent=t('vibLabel');
+    document.getElementById('setSoundLabel').textContent=t('soundLabel');
+    document.getElementById('setUnitsTitle').textContent=t('unitsTitle');
+    document.getElementById('setWeightUnitLabel').textContent=t('weightUnitLabel');
+    document.getElementById('setGoalTitle').textContent=t('goalTitle');
+    document.getElementById('setGoalSetsLabel').textContent=t('goalSetsLabel');
+    document.getElementById('setInstallTitle').textContent=t('installTitle');
+    document.getElementById('installDesc').textContent=t('installDesc');
+    document.getElementById('btnInstall').textContent='📲 '+t('btnInstall');
+    document.getElementById('statXpTitle').textContent=t('statXpTitle');
+    document.getElementById('statFreqTitle').textContent=t('statFreqTitle');
+    document.getElementById('statMuscleTtl').textContent=t('statMuscleTtl');
+    document.getElementById('statStreakTtl').textContent=t('statStreakTtl');
+    document.getElementById('statPrTtl').textContent=t('statPrTtl');
+    document.getElementById('statTopTtl').textContent=t('statTopTtl');
+    document.getElementById('langDe').classList.toggle('active',lang==='de');
+    document.getElementById('langEn').classList.toggle('active',lang==='en');
+    updateUI();renderRecent();
+    if(currentPage==='exercises'){buildFilterChips();renderExerciseBrowser()}
+    if(currentPage==='history')renderHistory();
+    if(currentPage==='stats')renderStats();
+    if(currentPage==='body')renderBodyMap();
+}
+
+// ==================== MODAL & BACKUP ====================
+const modal=document.getElementById('customModal');
+function closeModal(){modal.classList.remove('active')}
+function showModal(title,text,extra,buttons){
+    document.getElementById('modalTitle').innerText=title;
+    document.getElementById('modalText').innerText=text;
+    document.getElementById('modalExtra').innerHTML=extra;
+    document.getElementById('modalButtons').innerHTML=buttons;
+    modal.classList.add('active');
+}
+
+function openBackupModal(){
+    const data={v:2,xp:totalXp,lw:lastWorkoutTime,ld:lastDecayTime,
+        h:getHistory(),pr:getPRs(),fav:getFavorites(),str:getStreak(),
+        lang,theme:localStorage.getItem('gr_theme')||'dark',timer:timerDuration,
+        vib:vibEnabled,sound:soundEnabled,wUnit:weightUnit,goal:dailyGoal};
+    const code=btoa(JSON.stringify(data));
+    showModal(t('backupTitle'),t('backupText'),
+        `<div class="backup-code-box">${code}</div>`,
+        `<button class="btn-secondary" onclick="closeModal()">${t('close')}</button><button class="btn-primary" onclick="copyCode('${code}')">${t('copy')}</button>`);
+}
+
+function copyCode(code){
+    if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>showToast(t('codeCopied'),'success'));
+    else{const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(t('codeCopied'),'success')}catch(e){showToast(t('copyManual'),'error')}document.body.removeChild(ta)}
+    closeModal();
+}
+
+function openImportModal(){
+    showModal(t('importTitle'),t('importText'),
+        `<input type="text" id="importInput" placeholder="${t('importPh')}" style="width:100%;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-main);margin-bottom:12px">`,
+        `<button class="btn-secondary" onclick="closeModal()">${t('cancel')}</button><button class="btn-primary" onclick="processImport()">${t('load')}</button>`);
+}
+
+function processImport(){
+    const code=document.getElementById('importInput').value.trim();
+    if(!code)return showToast(t('noCode'),'error');
+    try{
+        const d=JSON.parse(atob(code));
+        if(d.xp!==undefined&&d.lw!==undefined){
+            totalXp=d.xp;lastWorkoutTime=d.lw;lastDecayTime=d.ld||d.lw;saveState();
+            if(d.v===2){
+                if(d.h)saveHistory(d.h);if(d.pr)savePRs(d.pr);if(d.fav)saveFavorites(d.fav);if(d.str)saveStreak(d.str);
+                if(d.lang)setLang(d.lang);if(d.theme)setTheme(d.theme);if(d.timer)setTimerDuration(d.timer);
+                if(d.vib!==undefined)setVibration(d.vib);if(d.sound!==undefined)setSound(d.sound);
+                if(d.wUnit)setWeightUnit(d.wUnit);if(d.goal!==undefined)setDailyGoal(d.goal);
             }
-        }
+            updateUI();closeModal();showToast(t('loadSuccess'),'success');
+        }else throw 0;
+    }catch(e){showToast(t('invalidCode'),'error')}
+}
 
-        function saveDataLocally() {
-            localStorage.setItem('hc_gymXp', totalXp);
-            localStorage.setItem('hc_lastWorkout', lastWorkoutTime);
-            localStorage.setItem('hc_lastDecay', lastDecayTime);
-        }
+function openResetModal(){
+    showModal('💀 '+t('resetTitle'),t('resetText'),'',
+        `<button class="btn-secondary" onclick="closeModal()">${t('cancel')}</button><button class="btn-danger" style="background:var(--error);color:#fff;border:none" onclick="confirmReset()">${t('yesDelete')}</button>`);
+}
 
-        function getRankData(xp) {
-            let rankIndex = 0;
-            for (let i = 0; i < ranks.length; i++) { if (xp >= ranks[i].xpRequired) rankIndex = i; else break; }
-            return { index: rankIndex, current: ranks[rankIndex], next: ranks[rankIndex + 1] || ranks[rankIndex] };
-        }
+function confirmReset(){
+    totalXp=0;lastWorkoutTime=Date.now();lastDecayTime=Date.now();
+    localStorage.clear();localStorage.setItem('gr_migrated','true');saveState();
+    updateUI();closeModal();showToast(t('accountDeleted'),'error');
+}
 
-        function updateStatusBadge() {
-            const badge = document.getElementById('statusBadge');
-            const daysSinceWorkout = (Date.now() - lastWorkoutTime) / MS_PER_DAY;
-            if (totalXp === 0) { badge.className = 'status-badge status-warning'; badge.innerHTML = '<span>💤</span> Neuling'; } 
-            else if (daysSinceWorkout < 2) { badge.className = 'status-badge status-active'; badge.innerHTML = '<span>🔥</span> Pump-Modus'; } 
-            else if (daysSinceWorkout < 3) { badge.className = 'status-badge status-warning'; badge.innerHTML = '<span>⚠️</span> Pause'; } 
-            else { badge.className = 'status-badge status-danger'; badge.innerHTML = '<span>🩸</span> XP Bluten'; }
-        }
+// ==================== TOAST ====================
+function showToast(msg,type='success'){
+    const c=document.getElementById('toastContainer');
+    const t=document.createElement('div');t.className='toast '+type;t.innerHTML=`<span>${msg}</span>`;
+    c.appendChild(t);
+    setTimeout(()=>t.classList.add('show'),10);
+    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300)},4000);
+}
 
-        function updateUI(animateLevelUp = false) {
-            const rankData = getRankData(totalXp);
-            if (animateLevelUp && rankData.index > currentRankIndex) showToast(`🏆 LEVEL UP! ${rankData.current.name}!`, 'levelup');
-            if (!animateLevelUp && rankData.index < currentRankIndex) showToast(`📉 DERANK! Abgerutscht auf ${rankData.current.name}!`, 'error');
-            currentRankIndex = rankData.index;
+// ==================== INIT ====================
+migrateData();
+loadState();
+const theme=localStorage.getItem('gr_theme')||'dark';
+document.documentElement.setAttribute('data-theme',theme);
+checkAndApplyDecay();
+const initRank=getRankData(totalXp);currentRankIndex=initRank.index;
+applyLanguage();
+renderRecent();
+renderTimerPresets();
+renderGoalPresets();
+document.getElementById('themeDark').classList.toggle('active',theme==='dark');
+document.getElementById('themeLight').classList.toggle('active',theme==='light');
+document.getElementById('timerOn').classList.toggle('active',autoTimerEnabled);
+document.getElementById('timerOff').classList.toggle('active',!autoTimerEnabled);
+document.getElementById('vibOn').classList.toggle('active',vibEnabled);
+document.getElementById('vibOff').classList.toggle('active',!vibEnabled);
+document.getElementById('soundOn').classList.toggle('active',soundEnabled);
+document.getElementById('soundOff').classList.toggle('active',!soundEnabled);
+document.getElementById('unitKg').classList.toggle('active',weightUnit==='kg');
+document.getElementById('unitLbs').classList.toggle('active',weightUnit==='lbs');
+updateUI();
 
-            const rankDisplay = document.getElementById('rankDisplay');
-            rankDisplay.innerText = rankData.current.name; rankDisplay.className = `rank-name ${rankData.current.class}`;
-            document.getElementById('currentXpDisplay').innerText = Math.floor(totalXp).toLocaleString('de-DE') + ' XP';
-            
-            const progressBar = document.getElementById('progressBar');
-            if (rankData.index < ranks.length - 1) {
-                document.getElementById('nextRankXpDisplay').innerText = Math.floor(rankData.next.xpRequired).toLocaleString('de-DE') + ' XP';
-                const xpIntoLevel = totalXp - rankData.current.xpRequired;
-                const xpNeededForLevel = rankData.next.xpRequired - rankData.current.xpRequired;
-                progressBar.style.width = `${(xpIntoLevel / xpNeededForLevel) * 100}%`;
-            } else {
-                document.getElementById('nextRankXpDisplay').innerText = 'LIMIT ERREICHT'; progressBar.style.width = '100%';
-            }
-            updateStatusBadge();
-        }
-
-        // --- SEARCH & LOGIC ---
-        const searchInput = document.getElementById('exerciseSearch');
-        const searchResults = document.getElementById('searchResults');
-
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase();
-            searchResults.innerHTML = '';
-            if (query.length === 0) { searchResults.classList.remove('active'); selectedExercise = null; return; }
-
-            const filtered = exerciseDB.filter(ex => ex.name.toLowerCase().includes(query));
-            if (filtered.length > 0) {
-                searchResults.classList.add('active');
-                filtered.forEach(ex => {
-                    const div = document.createElement('div'); div.className = 'search-item';
-                    div.innerHTML = `<span class="item-name">${ex.name}</span> <span class="item-mult">x${ex.mult.toFixed(1)}</span>`;
-                    div.onclick = () => { selectedExercise = ex; searchInput.value = ex.name; searchResults.classList.remove('active'); };
-                    searchResults.appendChild(div);
-                });
-            } else { searchResults.classList.remove('active'); }
-        });
-        document.addEventListener('click', function(e) { if (e.target !== searchInput && e.target !== searchResults) searchResults.classList.remove('active'); });
-
-        function logWorkout() {
-            if (!selectedExercise) return showToast('Wähle eine Übung aus!', 'error');
-            const weight = parseFloat(document.getElementById('weight').value.replace(',', '.'));
-            const reps = parseInt(document.getElementById('reps').value);
-            if (isNaN(weight) || isNaN(reps) || weight <= 0 || reps <= 0) return showToast('Trag gültige Zahlen ein!', 'error');
-
-            const earnedXp = weight * reps * selectedExercise.mult; totalXp += earnedXp;
-            const now = Date.now(); lastWorkoutTime = now; lastDecayTime = now;
-            saveDataLocally(); showToast(`+ ${Math.floor(earnedXp).toLocaleString('de-DE')} XP!`, 'success'); updateUI(true);
-            document.getElementById('weight').value = ''; document.getElementById('reps').value = '';
-        }
-
-        // --- MODAL & BACKUP ---
-        const modal = document.getElementById('customModal');
-        function closeModal() { modal.classList.remove('active'); }
-        function showModal(title, text, extraHtml, buttonsHtml) {
-            document.getElementById('modalTitle').innerText = title; document.getElementById('modalText').innerText = text;
-            document.getElementById('modalExtra').innerHTML = extraHtml; document.getElementById('modalButtons').innerHTML = buttonsHtml;
-            modal.classList.add('active');
-        }
-
-        function openBackupModal() {
-            const saveObj = { xp: totalXp, lw: lastWorkoutTime, ld: lastDecayTime };
-            const saveCode = btoa(JSON.stringify(saveObj));
-            const extra = `<div class="backup-code-box" id="backupCodeText">${saveCode}</div>`;
-            const buttons = `<button class="btn-secondary" onclick="closeModal()">Schließen</button><button class="btn-primary" onclick="copyBackupCode('${saveCode}')">Kopieren</button>`;
-            showModal('Backup Code', 'Kopiere diesen Code. Damit kannst du deinen Fortschritt jederzeit wiederherstellen.', extra, buttons);
-        }
-
-        function copyBackupCode(code) {
-            const textArea = document.createElement("textarea"); textArea.value = code; document.body.appendChild(textArea); textArea.select();
-            try { document.execCommand('copy'); showToast('Code kopiert!', 'success'); } 
-            catch (err) { showToast('Bitte manuell kopieren.', 'error'); }
-            document.body.removeChild(textArea); closeModal();
-        }
-
-        function openImportModal() {
-            const extra = `<input type="text" id="importInput" placeholder="Füge deinen Code hier ein..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--bg-dark); color:white; margin-bottom:15px;">`;
-            const buttons = `<button class="btn-secondary" onclick="closeModal()">Abbrechen</button><button class="btn-primary" onclick="processImport()">Laden</button>`;
-            showModal('Code Importieren', 'ACHTUNG: Dein aktueller Fortschritt wird überschrieben!', extra, buttons);
-        }
-
-        function processImport() {
-            const code = document.getElementById('importInput').value.trim();
-            if(!code) return showToast('Kein Code eingegeben', 'error');
-            try {
-                const decoded = JSON.parse(atob(code));
-                if(decoded.xp !== undefined && decoded.lw !== undefined) {
-                    totalXp = decoded.xp; lastWorkoutTime = decoded.lw; lastDecayTime = decoded.ld || decoded.lw;
-                    saveDataLocally(); updateUI(); closeModal(); showToast('Erfolgreich geladen!', 'success');
-                } else throw new Error("Invalid format");
-            } catch(e) { showToast('Ungültiger Code!', 'error'); }
-        }
-
-        function openResetModal() {
-            const buttons = `<button class="btn-secondary" onclick="closeModal()">Abbrechen</button><button class="btn-danger" style="background:var(--error); color:white; border:none;" onclick="confirmReset()">Ja, löschen</button>`;
-            showModal('💀 WARNUNG', 'Bist du sicher? Alle Gains und XP werden gelöscht!', '', buttons);
-        }
-
-        function confirmReset() {
-            totalXp = 0; lastWorkoutTime = Date.now(); lastDecayTime = Date.now();
-            localStorage.clear(); saveDataLocally(); updateUI(); closeModal(); showToast('Account gelöscht.', 'error');
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.innerHTML = `<span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
-        }
-
-        // Init
-        checkAndApplyDecay(); const initialRank = getRankData(totalXp); currentRankIndex = initialRank.index; updateUI();
-    </script>
+const initHash=location.hash.replace('#','');
+navigateTo(['home','exercises','history','stats','body','settings'].includes(initHash)?initHash:'home');
+</script>
 </body>
 </html>
