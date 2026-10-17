@@ -19,6 +19,19 @@ Logge deine Sätze, sammle XP und steige auf.
 
 ---
 
+## ✨ Neu in v3 — komplettes Redesign
+
+- **Neues Logo & Design-System** — eigene Icons statt Emojis, Rang-Embleme für alle 33 Ränge, flüssige Animationen (Spring-Physik, Sheets, Count-Ups, Konfetti beim Rang-Aufstieg)
+- **Liest dein Gerät** — Sprache (DE / EN / TR), Hell/Dunkel-Modus und kg/lbs werden automatisch erkannt und live übernommen; respektiert „Bewegung reduzieren"
+- **Schnelleres Loggen** — Stepper, letzter Satz wird vorausgefüllt, Live-XP-Vorschau, PR-Hinweis, Rückgängig-Button
+- **Fortschritt** — interaktiver XP-Graph, Aktivitäts-Heatmap, Muskelverteilung, Stärke-Map mit Rang-Leiter pro Muskel
+- **Tools** — Pausentimer (läuft auch nach Neustart weiter), Scheibenrechner, 1RM-Rechner
+- **Eigene Übungen**, Favoriten, Sätze löschen/wiederholen, Backup als Code oder Datei, CSV-Export
+- **Desktop-Layout** mit Seitenleiste und Tastenkürzeln (`/` suchen, `Enter` loggen, `1–5` Tabs)
+- Alte Spielstände und Backup-Codes funktionieren weiter
+
+---
+
 ## ⚡ Kernmechaniken
 
 ### 🏆 33 Ränge — Von Holz bis Champion
@@ -130,9 +143,10 @@ Da Apple keine externen APKs erlaubt, nutze die **Progressive Web App**:
 - [x] Base64-Backup
 - [x] Android APK
 - [x] iOS PWA
-- [ ] Statistik-Verlauf (Graphen)
+- [x] Statistik-Verlauf (Graphen)
 - [ ] Freundes-Rangliste (Lokal)
-- [ ] Streak-Bonus für tägliches Training
+- [x] Streak-Bonus für tägliches Training
+- [x] Übersetzungen (DE / EN / TR)
 
 ---
 
@@ -141,7 +155,7 @@ Da Apple keine externen APKs erlaubt, nutze die **Progressive Web App**:
 Pull Requests willkommen! Besonders gesucht:
 - Neue Übungen mit Multiplikatoren
 - UI-Verbesserungen
-- Übersetzungen (EN / TR)
+- Weitere Übersetzungen
 
 ---
 

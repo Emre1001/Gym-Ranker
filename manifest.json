@@ -1,22 +1,25 @@
 {
-  "name": "Gym Ranker Hardcore",
-  "short_name": "GymRanker",
-  "description": "300+ exercises. Log sets, farm XP, rank up from Holz to Champion. Track strength per muscle group.",
-  "start_url": "./index.html",
+  "name": "Gym Ranker — Hardcore",
+  "short_name": "Gym Ranker",
+  "description": "Log sets, farm XP, rank up through 33 ranks from Wood to Champion. 300+ exercises, strength map, records, rest timer. Offline, no account.",
+  "id": "./",
+  "start_url": "./index.html#train",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#000000",
-  "theme_color": "#dc2626",
+  "theme_color": "#000000",
   "categories": ["fitness", "health", "sports"],
   "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
-  "screenshots": [],
+  "shortcuts": [
+    { "name": "Log set", "short_name": "Train", "url": "./index.html#train", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Progress", "short_name": "Progress", "url": "./index.html#progress", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ],
   "prefer_related_applications": false
 }
