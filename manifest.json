@@ -1,25 +1,94 @@
 {
   "name": "Gym Ranker — Hardcore",
   "short_name": "Gym Ranker",
-  "description": "Log sets, farm XP, rank up through 33 ranks from Wood to Champion. 300+ exercises, strength map, records, rest timer. Offline, no account.",
+  "description": "Log sets, farm XP and rank up from Wood to Champion. Calorie calculator, weight journey, steps, calisthenics skills, daily and weekly quests, achievements. Offline, no account.",
   "id": "./",
   "start_url": "./index.html#train",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "categories": ["fitness", "health", "sports"],
+  "categories": [
+    "fitness",
+    "health",
+    "sports"
+  ],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ],
   "shortcuts": [
-    { "name": "Log set", "short_name": "Train", "url": "./index.html#train", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Progress", "short_name": "Progress", "url": "./index.html#progress", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Log set",
+      "short_name": "Train",
+      "url": "./index.html#train",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Nutrition",
+      "short_name": "Food",
+      "url": "./index.html#food",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Body",
+      "short_name": "Body",
+      "url": "./index.html#body",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Progress",
+      "short_name": "Progress",
+      "url": "./index.html#progress",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ],
   "prefer_related_applications": false
 }
