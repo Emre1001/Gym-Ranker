@@ -3,14 +3,14 @@
    ============================================================ */
 const TMR={end:0,total:0,iv:null};
 function startTimer(sec){sec=sec||pref.timer;TMR.total=sec;TMR.end=Date.now()+sec*1000;LS.set('gr_tEnd',TMR.end);LS.set('gr_tTot',sec);runTimer()}
-function runTimer(){clearInterval(TMR.iv);$('#timerPill').classList.add('show');tickTimer();TMR.iv=setInterval(tickTimer,250)}
+function runTimer(){clearInterval(TMR.iv);$('#timerPill').classList.add('show');document.body.classList.add('timer-on');tickTimer();TMR.iv=setInterval(tickTimer,250)}
 function tickTimer(){
   const left=Math.max(0,TMR.end-Date.now()),s=Math.ceil(left/1000);
   $('#tpTime').textContent=fmtClock(s);$('#tpFg').style.strokeDashoffset=String(100-(left/(TMR.total*1000))*100);
   if(left<=0)finishTimer();
 }
 function finishTimer(){const p=$('#timerPill');stopTimer();haptic([200,100,200]);SFX.timer();toast(t('restDone'),{type:'good',icon:'timer',sub:t('restDoneSub')});p.classList.add('done');setTimeout(()=>p.classList.remove('done'),600)}
-function stopTimer(){clearInterval(TMR.iv);TMR.end=0;LS.del('gr_tEnd');$('#timerPill').classList.remove('show')}
+function stopTimer(){clearInterval(TMR.iv);TMR.end=0;LS.del('gr_tEnd');$('#timerPill').classList.remove('show');document.body.classList.remove('timer-on')}
 function openTimerSheet(){
   const opts=[30,45,60,90,120,150,180,240,300];
   const b=openSheet({title:t('toolTimer'),body:`<p class="sheet-text">${esc(t('timerPick'))}</p><div class="pct-table">${opts.map(s=>`<button class="btn btn-secondary" data-s="${s}" style="height:58px;font-size:18px;font-weight:750${s===pref.timer?';box-shadow:0 0 0 2px var(--accent) inset':''}">${fmtClock(s)}</button>`).join('')}</div>${TMR.end?`<div class="sheet-actions"><button class="btn btn-danger" data-stop="1">${esc(t('stopTimer'))}</button></div>`:''}`});
@@ -63,14 +63,14 @@ function celebrate(i){
   $('#celSub').textContent=RANKS[i+1]?t('rankUpSub',{xp:fmtN(Math.max(0,RANKS[i+1].xp-totalXp)),rank:rankName(i+1)}):t('maxRank');
   $('#celBtn').textContent=t('continue');
   c.classList.remove('show');void c.offsetWidth;c.classList.add('show');
-  releaseCelebrate=BackStack.push('celebrate',()=>closeCelebrate(true));
+  releaseCelebrate=BackStack.push('celebrate',()=>closeCelebrate(true));setInert(true);
   haptic([20,60,30,60,90]);SFX.rank();burst(TIERS[r.tier].c.concat(['#ffffff']));
   setTimeout(()=>$('#celBtn').focus({preventScroll:true}),900);
 }
 let releaseCelebrate=null;
 function closeCelebrate(fromBack){
   const c=$('#celebrate');if(!c.classList.contains('show'))return;
-  c.classList.remove('show');
+  c.classList.remove('show');if(!SH.open&&!OB.el)setInert(false);
   const rel=releaseCelebrate;releaseCelebrate=null;if(rel&&fromBack!==true)rel();
   rewardClosed();
 }

@@ -332,7 +332,7 @@ textarea.input{height:110px;padding:12px 16px;resize:none;font-family:ui-monospa
 .heat i.f{visibility:hidden}
 .heat-legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:10px;font-size:11px;color:var(--text-3);font-weight:600}
 .heat-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.dist-row{display:grid;grid-template-columns:110px 1fr 54px;align-items:center;gap:12px;padding:7px 0;font-size:14px}
+.dist-row{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:12px;padding:7px 0;font-size:14px}
 .dist-row .dn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px}
 .dist-row .dn::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex-shrink:0}
 .dist-row .dt{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden}

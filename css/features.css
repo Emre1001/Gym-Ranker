@@ -4,6 +4,18 @@
    ============================================================ */
 :root{--z-bar:40;--z-nav:50;--z-pill:45;--z-sheet-backdrop:100;--z-sheet:101;--z-ob:150;--z-toast:200;--z-reward:300}
 
+/* ---------- app shell ----------
+   Only #main scrolls. On phones the tab bar gets its own strip below it,
+   so content never slides under the bar (no hidden last row, no covered buttons). */
+:root{--nav-space:calc(var(--tab-h) + 20px + var(--safe-b))}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{min-height:0}
+.main{height:calc(100dvh - var(--nav-space));overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:28px;scroll-padding-top:calc(var(--safe-t) + 60px)}
+body.timer-on .main{padding-bottom:96px}
+.main{max-width:none;margin:0}
+.page{max-width:600px;margin-inline:auto}
+@media (min-width:960px){:root{--nav-space:0px}.main{margin-left:var(--side-w);padding-bottom:72px}.page{max-width:1100px}}
+
 /* ---------- page header ---------- */
 .ph-main{min-width:0;flex:1}
 .ph-title{overflow-wrap:break-word;hyphens:auto}
@@ -108,7 +120,7 @@
 .mc-bar{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-top:7px}
 .mc-bar i{display:block;height:100%;border-radius:inherit;background:var(--c);transform-origin:left;animation:growX 1s var(--ease) both}
 .glasses{display:flex;flex-wrap:wrap;gap:6px}
-.glass{width:40px;height:46px;display:grid;place-items:center;border-radius:10px;transition:transform .25s var(--spring)}
+.glass{width:44px;height:48px;display:grid;place-items:center;border-radius:10px;transition:transform .25s var(--spring)}
 .glass:active{transform:scale(.88)}
 .glass svg{width:26px;height:30px}
 .g-out{fill:none;stroke:var(--line-2);stroke-width:1.6;stroke-linejoin:round}
@@ -322,3 +334,23 @@
   .tabbar{width:calc(100% - 16px)}
   .tab{font-size:10px}
 }
+
+/* touch targets ≥ 44px */
+.streak-pill{height:44px;padding:0 16px 0 12px}
+.stepper input{height:100%}
+@media (max-width:380px){.hero-rank{font-size:23px}}
+@media (max-width:959px){
+  .seg button,.seg.lg button{height:44px}
+  .btn-sm,.btn-ghost{height:44px}
+  .day-nav .icon-btn{width:44px;height:44px}
+}
+/* the full-screen setup hides the app behind it once it has slid in */
+body.ob-open #main,body.ob-open #tabbar,body.ob-open .navbar,body.ob-open .timer-pill{visibility:hidden}
+
+/* splash with the new mark */
+.splash-logo .lg-badge{transform-box:fill-box;transform-origin:center;animation:badgeIn .7s var(--spring) both}
+.splash-logo .c3{animation-delay:.3s}.splash-logo .c2{animation-delay:.45s}.splash-logo .c1{animation-delay:.6s}
+@keyframes badgeIn{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+.sheet-head .icon-btn{width:44px;height:44px}
+.ph-eyebrow{text-transform:none}
+#todayDate{text-transform:capitalize}

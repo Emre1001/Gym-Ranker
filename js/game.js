@@ -251,7 +251,7 @@ function rewardScreen({color,art,eyebrow,name,sub,colors}){
   const n=$('#celName');n.textContent=name;n.classList.remove('tier-fire');n.classList.toggle('long',name.length>16);
   $('#celSub').textContent=sub;$('#celBtn').textContent=t('continue');
   c.classList.remove('show');void c.offsetWidth;c.classList.add('show');
-  releaseCelebrate=BackStack.push('celebrate',()=>closeCelebrate(true));
+  releaseCelebrate=BackStack.push('celebrate',()=>closeCelebrate(true));setInert(true);
   burst(colors.concat(['#ffffff']));
   setTimeout(()=>$('#celBtn').focus({preventScroll:true}),900);
 }

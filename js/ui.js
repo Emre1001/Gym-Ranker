@@ -26,6 +26,8 @@ function toast(msg,o={}){
 
 /* ---------- Sheet ---------- */
 const SH={open:false,onClose:null,last:null};
+/* while an overlay is open the page behind it can't be focused, tapped or read out */
+function setInert(on){['#main','#tabbar','#timerPill'].forEach(s=>{const el=$(s);if(el)el.inert=on})}
 function openSheet({title='',body='',tall=false,onClose=null}){
   const s=$('#sheet'),b=$('#sheetBody');
   if(SH.open&&SH.onClose){const cb=SH.onClose;SH.onClose=null;cb()}
@@ -38,8 +40,8 @@ function openSheet({title='',body='',tall=false,onClose=null}){
   s.classList.toggle('tall',tall);s.style.transform='';
   if(!SH.open){
     SH.last=document.activeElement;
-    $('#main').style.transformOrigin='50% '+(scrollY+innerHeight/2)+'px';
-    document.body.classList.add('sheet-open','locked');
+    $('#main').style.transformOrigin='50% 50%';
+    document.body.classList.add('sheet-open','locked');setInert(true);
     requestAnimationFrame(()=>{s.classList.add('show');$('#sheetBackdrop').classList.add('show')});
     SH.release=BackStack.push('sheet',()=>closeSheet(true));
     setTimeout(()=>{if(SH.open&&!s.contains(document.activeElement))s.focus({preventScroll:true})},60);
@@ -52,7 +54,7 @@ function closeSheet(fromBack){
   const rel=SH.release;SH.release=null;if(rel&&fromBack!==true)rel();
   const s=$('#sheet');s.classList.remove('show');s.style.transform='';
   $('#sheetBackdrop').classList.remove('show');$('#sheetBackdrop').style.opacity='';
-  document.body.classList.remove('sheet-open','locked');
+  document.body.classList.remove('sheet-open','locked');setInert(false);
   const cb=SH.onClose;SH.onClose=null;if(cb)cb();
   if(SH.last&&SH.last.focus&&finePointer())try{SH.last.focus({preventScroll:true})}catch(e){}
 }

@@ -17,14 +17,14 @@ function renderPage(p){RENDER[p]()}
 function renderAll(){renderPage(PAGE||'train');if(PAGE!=='train')renderTrain()}
 function go(p){
   p=LEGACY[p]||p;if(!PAGES.includes(p))p='train';
-  if(p===PAGE){window.scrollTo({top:0,behavior:reduceMotion()?'auto':'smooth'});return}
+  if(p===PAGE){$('#main').scrollTo({top:0,behavior:reduceMotion()?'auto':'smooth'});return}
   const sub=SUBS.includes(p)&&!wide();
   if(subRelease&&!SUBS.includes(p)){const r=subRelease;subRelease=null;r()}
   if(sub&&!subRelease){subParent=PAGE&&TABS.includes(PAGE)?PAGE:'profile';subRelease=BackStack.push('page',()=>{subRelease=null;show(subParent,-1)})}
   show(p,sub?1:0);
 }
 function show(p,dir){
-  if(PAGE)scrollMem[PAGE]=scrollY;
+  const mainEl=$('#main');if(PAGE)scrollMem[PAGE]=mainEl.scrollTop;
   const prev=PAGE;PAGE=p;
   $$('.page').forEach(s=>s.classList.toggle('active',s.id==='page-'+p));
   const hl=SUBS.includes(p)&&!wide()?'profile':p;
@@ -33,7 +33,7 @@ function show(p,dir){
   renderPage(p);
   const el=$('#page-'+p);[...el.children].forEach((c,i)=>c.style.setProperty('--i',i));
   el.classList.remove('in','fwd','bwd');void el.offsetWidth;el.classList.add('in',dir>0?'fwd':dir<0?'bwd':'tabin');
-  window.scrollTo(0,dir>0?0:(scrollMem[p]||0));
+  mainEl.scrollTop=dir>0?0:(scrollMem[p]||0);
   // after a pending history.back() from a closing overlay has landed
   setTimeout(()=>{if(PAGE===p&&location.hash!=='#'+p)history.replaceState(history.state,'','#'+p)},160);
   $('#navbarTitle').textContent=t(el.dataset.title);

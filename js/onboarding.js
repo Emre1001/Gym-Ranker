@@ -12,8 +12,9 @@ function openOnboarding(edit){
   if(!p||!getWeights().length)OB.draft.weight=p&&p.weight?p.weight:75;
   const el=document.createElement('div');el.id='onboard';el.className='ob';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
   el.innerHTML=`<div class="ob-top"><button class="icon-btn" id="obBack" aria-label="${esc(t('goBack'))}">${ico('chev-l','sm')}</button><div class="ob-dots" id="obDots"></div>${edit?`<button class="icon-btn" id="obClose" aria-label="${esc(t('close'))}">${ico('x','sm')}</button>`:'<span style="width:36px"></span>'}</div><div class="ob-body" id="obBody"></div><div class="ob-foot"><button class="btn btn-primary btn-block btn-log" id="obNext"></button></div>`;
-  document.body.appendChild(el);OB.el=el;document.body.classList.add('locked');
+  document.body.appendChild(el);OB.el=el;document.body.classList.add('locked');setInert(true);
   requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{if(OB.el===el)document.body.classList.add('ob-open')},450);
   OB.release=BackStack.push('onboard',obBack);
   $('#obBack',el).onclick=()=>history.back();
   if(edit)$('#obClose',el).onclick=()=>closeOnboarding();
@@ -30,7 +31,7 @@ function obBack(){
 function closeOnboarding(fromBack){
   const el=OB.el;if(!el)return;
   const rel=OB.release;OB.release=null;if(rel&&fromBack!==true)rel();
-  el.classList.remove('show');document.body.classList.remove('locked');
+  document.body.classList.remove('ob-open');el.classList.remove('show');document.body.classList.remove('locked');if(!SH.open)setInert(false);
   setTimeout(()=>el.remove(),450);OB.el=null;
 }
 function obStepper(id,val,unit,step){return `<div class="stepper ob-stepper"><button type="button" data-ob="${id}" data-d="-${step}" aria-label="−">${ico('minus')}</button><div class="obs-val"><input id="${id}" class="num" inputmode="${step<1?'decimal':'numeric'}" value="${val}"><span>${esc(unit)}</span></div><button type="button" data-ob="${id}" data-d="${step}" aria-label="+">${ico('plus')}</button></div>`}

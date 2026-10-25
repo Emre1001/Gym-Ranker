@@ -1,112 +1,144 @@
 <div align="center">
 
-# 🏋️‍♂️ Gym Ranker | Hardcore Edition
+<img src="docs/logo.png" width="128" alt="Gym Ranker Logo">
 
-**Das gnadenloseste Fitness-Ranking-System das du je gesehen hast.**
+# Gym Ranker
 
-[![Android](https://img.shields.io/badge/Android-APK%20Download-3DDC84?style=for-the-badge&logo=android)](https://github.com/Emre1001/Gym-Ranker/releases)
-[![PWA](https://img.shields.io/badge/iOS%20%2F%20Web-PWA%20Ready-000000?style=for-the-badge&logo=safari)](https://emre1001.github.io/Gym-Ranker/)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+**Training, Ernährung und Körper in einem Spiel.**<br>
+Jeder Satz, jeder Schritt und jede Mahlzeit bringt XP. Wer skippt, verliert.
 
-> *„Der einzige schlechte Workout ist der, den du nicht gemacht hast."*
+[![Web-App öffnen](https://img.shields.io/badge/Web--App-öffnen-ff4d2e?style=for-the-badge&logo=googlechrome&logoColor=white)](https://emre1001.github.io/Gym-Ranker/)
+[![Android](https://img.shields.io/badge/Android-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Emre1001/Gym-Ranker/releases)
+[![Offline](https://img.shields.io/badge/PWA-offline%20%C2%B7%20ohne%20Account-111?style=for-the-badge)](#-installation)
+[![Lizenz](https://img.shields.io/badge/Lizenz-MIT-blue?style=for-the-badge)](LICENSE)
 
-Gym Ranker ist kein normaler Fitness-Tracker.  
-Es ist ein **gnadenloses, gamifiziertes Ranglisten-System**.  
-Logge deine Sätze, sammle XP und steige auf.  
-**Wer skippt, verliert.**
+<br>
+
+<img src="docs/screenshots/home.png" width="23%" alt="Startseite mit Rang und Satz-Logger">
+<img src="docs/screenshots/food.png" width="23%" alt="Ernährung mit Kalorienring und Makros">
+<img src="docs/screenshots/body.png" width="23%" alt="Gewichts-Journey mit Prognose">
+<img src="docs/screenshots/reward.png" width="23%" alt="Belohnung für einen freigeschalteten Skill">
 
 </div>
 
 ---
 
-## ✨ Neu in v3 — komplettes Redesign
+## Was ist neu in v4
 
-- **Neues Logo & Design-System** — eigene Icons statt Emojis, Rang-Embleme für alle 33 Ränge, flüssige Animationen (Spring-Physik, Sheets, Count-Ups, Konfetti beim Rang-Aufstieg)
-- **Liest dein Gerät** — Sprache (DE / EN / TR), Hell/Dunkel-Modus und kg/lbs werden automatisch erkannt und live übernommen; respektiert „Bewegung reduzieren"
-- **Schnelleres Loggen** — Stepper, letzter Satz wird vorausgefüllt, Live-XP-Vorschau, PR-Hinweis, Rückgängig-Button
-- **Fortschritt** — interaktiver XP-Graph, Aktivitäts-Heatmap, Muskelverteilung, Stärke-Map mit Rang-Leiter pro Muskel
-- **Tools** — Pausentimer (läuft auch nach Neustart weiter), Scheibenrechner, 1RM-Rechner
-- **Eigene Übungen**, Favoriten, Sätze löschen/wiederholen, Backup als Code oder Datei, CSV-Export
-- **Desktop-Layout** mit Seitenleiste und Tastenkürzeln (`/` suchen, `Enter` loggen, `1–5` Tabs)
-- Alte Spielstände und Backup-Codes funktionieren weiter
+| | |
+|:---|:---|
+| 👋 **Persönliches Setup** | Beim ersten Start: Name, Alter, Größe, Gewicht, Aktivität und Ziel. Danach begrüßt dich die App mit „Hallo Emre“ und reagiert auf das, was du tust. |
+| 🍽️ **Kalorientracker + Rechner** | Wie viel du essen sollst und darfst: für **Cut, Lean Bulk, Gewicht halten und Body Recomposition**, mit erlaubtem Bereich, Makros, Wasser und Lebensmittel-Datenbank. |
+| 📉 **Abnehm- / Zunehm-Journey** | Gewichtskurve mit 7-Tage-Schnitt, Ziellinie, Fortschritt in %, Tempo pro Woche und Prognose, wann du dein Ziel erreichst. |
+| 🚶 **Schritte mit Coach** | Tägliche Schritte eintragen, die App antwortet: von „mehr wäre besser“ bis „Wie hast du das geschafft?“. |
+| 🤸 **Calisthenics** | 110+ Körpergewichts-Übungen. Wiederholungen mit **optionalem Zusatzgewicht**, Halte-Übungen **in Sekunden mit Stoppuhr** (Dead Hang, Handstand, L-Sit, Front Lever …). |
+| ✨ **Skill-Bäume** | 11 Bäume, 72 Skills vom ersten Klimmzug bis zur Full Planche. Freischalten = Belohnungs-Screen mit Konfetti und Bonus-XP. |
+| 🎯 **Quests & Erfolge** | 3 tägliche Quests + Tageskiste, **3 Wochen-Quests, die sich an dich anpassen**, 48 Erfolge. |
+| 📱 **Handy zuerst** | 5-Tab-Navigation, Zurück-Geste schließt Fenster statt die App, Safe-Areas für Kamera-Loch und Gestenleiste, getestet von 320 px bis Desktop. |
+| 🗂️ **Aufgeräumter Code** | Keine 230-KB-Einzeldatei mehr: CSS, Seiten, Daten und Sprachen liegen in eigenen Dateien. |
 
 ---
 
-## ⚡ Kernmechaniken
+## 🏋️ Training & Rang
 
-### 🏆 33 Ränge — Von Holz bis Champion
+### 33 Ränge, von Holz bis Champion
 
-Ein exponentielles Level-System bei dem jeder Rang **40% mehr XP** als der vorherige kostet.
+Jeder Rang kostet **40 % mehr XP** als der vorherige. Champion III ist eine echte Lebensleistung.
 
 <details>
-<summary><b>🏆 Alle 33 Ränge anzeigen</b></summary>
+<summary><b>Alle Ränge anzeigen</b></summary>
 
 | Tier | Ränge | Schwierigkeit |
 |:---|:---|:---|
-| 🪵 **Holz** | 1 – 2 – 3 | Einstieg |
-| 🥉 **Bronze** | 1 – 2 – 3 | Anfänger |
-| ⚙️ **Stahl** | 1 – 2 – 3 | Regelmäßig |
-| 🥈 **Silber** | 1 – 2 – 3 | Konsistent |
-| 🥇 **Gold** | 1 – 2 – 3 | Fortgeschritten |
-| 💎 **Diamant** | 1 – 2 – 3 | Ernsthaft |
-| ❇️ **Emerald** | 1 – 2 – 3 | Dediziert |
-| 🩸 **Ruby** | 1 – 2 – 3 | Elite |
-| 🌌 **Obsidian** | 1 – 2 – 3 | Top 1% |
-| 🧬 **Gymrat** | 1 – 2 – 3 | Lifestyle |
-| 👑 **Champion** | 1 – 2 – 3 | Jahrelanges hartes Training |
-
-> Das System skaliert exponentiell. Champion 3 zu erreichen ist eine echte Lebensleistung.
+| 🪵 **Holz** | I – II – III | Einstieg |
+| 🥉 **Bronze** | I – II – III | Anfänger |
+| ⚙️ **Stahl** | I – II – III | Regelmäßig |
+| 🥈 **Silber** | I – II – III | Konsistent |
+| 🥇 **Gold** | I – II – III | Fortgeschritten |
+| 💎 **Diamant** | I – II – III | Ernsthaft |
+| ❇️ **Emerald** | I – II – III | Dediziert |
+| 🩸 **Rubin** | I – II – III | Elite |
+| 🌌 **Obsidian** | I – II – III | Top 1 % |
+| 🧬 **Gym Rat** | I – II – III | Lifestyle |
+| 👑 **Champion** | I – II – III | Jahrelanges hartes Training |
 
 </details>
 
----
+### Faire XP für jede Übung
 
-### ⚖️ Smartes Multiplikator-System
+100 kg Beinpresse sind nicht dasselbe wie 100 kg Bankdrücken. Jede Übung hat einen Multiplikator:
 
-100 kg Beinpresse sind **nicht** gleich 100 kg Bankdrücken. Unsichtbare Multiplikatoren im Code sorgen für absolute Fairness zwischen allen Übungen.
-
-<details>
-<summary><b>⚙️ XP-Formel & Beispiele</b></summary>
-
-**Die Formel:**
 ```
-Gewicht (kg) × Wiederholungen × Übungs-Multiplikator = XP
+Gewicht × Wiederholungen × Multiplikator                       = XP   (Hanteln & Maschinen)
+(Körpergewicht × Anteil + Zusatzgewicht) × Wdh. × Multiplikator = XP   (Calisthenics)
+(Körpergewicht × Anteil + Zusatzgewicht) × Sek. × Multiplikator = XP   (Halte-Übungen)
 ```
 
-**Beispiele:**
+Der **Anteil** ist, wie viel deines Körpergewichts die Übung wirklich bewegt: Liegestütz ≈ 64 %, Klimmzug 100 %. Deshalb bringt ein Klimmzug mit 80 kg Körpergewicht mehr als einer mit 60 kg, und Zusatzgewicht zählt obendrauf.
 
-| Übung | Multiplikator | Beispiel-Set | Erzielte XP |
-|:---|:---:|:---|:---:|
-| Bankdrücken (Flach) | × 1.0 | 80 kg × 10 Reps | **800 XP** |
-| Beinpresse | × 0.3 | 200 kg × 10 Reps | **600 XP** |
-| Seitheben (Kurzhantel) | × 8.0 | 15 kg × 10 Reps | **1.200 XP** |
-| Klimmzüge (Zusatzgew.) | × 2.5 | 20 kg × 8 Reps | **400 XP** |
+### XP bluten
 
-> Die App unterstützt über **30 echte Gym-Maschinen** mit Suchfunktion — Hackenschmidt, Cable Cross, Dips, Facepulls und viele mehr.
+Nach **3 Tagen Pause** verlierst du **2 % deiner XP pro Tag**. Bleibst du zu lange weg, steigst du ab. Das System belohnt Konstanz, nicht Einzelleistungen.
 
-</details>
+### Werkzeuge
+
+Pausentimer (läuft auch nach Neustart weiter), Scheibenrechner, 1RM-Rechner, Stärke-Map mit Rang pro Muskel, Rekorde, Verlauf, eigene Übungen, Favoriten.
 
 ---
 
-### 🩸 XP Bluten — Das Decay System
+## 🤸 Calisthenics & Skills
 
-Nach **3 Tagen Pause** verlierst du täglich **2% deiner gesamten XP**.  
-Machst du zu lange Pause, steigst du im Rang ab (**Derank**).
+<img src="docs/screenshots/skills.png" width="30%" align="right" alt="Skill-Baum Klimmzüge">
 
-```
-Tag 0–3:   Keine Strafe. Erholung ist Teil des Trainings.
-Tag 4+:    −2% gesamt-XP pro Tag
-Zu lange:  Derank — der Rang sinkt
-```
+- **Wiederholungen:** Zusatzgewicht eintragen oder leer lassen (= nur Körpergewicht).
+- **Halten:** Sekunden eintippen oder die eingebaute **Stoppuhr** nutzen.
+- **11 Skill-Bäume:** Klimmzüge, Liegestütze, Dips, Muscle-Up, Handstand, Front Lever, Planche, Bauch & L-Sit, Beine, Flag & Lever, Griffkraft.
+- Skills schalten sich **von selbst frei**, sobald ein geloggter Satz sie erreicht, z. B. *10 Klimmzüge*, *Freier Handstand 30 s*, *Klimmzug + 25 kg × 3*.
+- Jeder Skill bringt **100 bis 3.000 XP** und einen eigenen Belohnungs-Screen.
+- Der Logger zeigt live, welcher Skill als Nächstes kommt.
 
-> Das System belohnt **Konsistenz** — nicht Einzelleistungen.
+<br clear="right">
 
 ---
 
-### 💾 Backup-System
+## 🍽️ Ernährung & Kalorienrechner
 
-Sichere deinen gesamten Spielstand als **verschlüsselten Base64-Code** lokal auf deinem Gerät.  
-Kein Cloud-Zwang, kein Account, volle Kontrolle.
+Der Rechner nutzt die **Mifflin-St-Jeor-Formel** mit deinem Aktivitätslevel und zeigt alle Ziele nebeneinander:
+
+| Ziel | Kalorien | Protein | Was passiert |
+|:---|:---|:---|:---|
+| **Abnehmen (Cut)** | Erhaltung −10 / −20 / −25 % (langsam / normal / schnell) | 2,2 g/kg | Fett runter, Muskeln bleiben |
+| **Lean Bulk** | Erhaltung +5 / +10 / +15 % | 1,8 g/kg | Muskeln rauf, wenig Fett |
+| **Gewicht halten** | Erhaltung ± 5 % | 1,8 g/kg | Stärker werden ohne Diät |
+| **Body Recomposition** | Trainingstage +5 %, Ruhetage −15 % | 2,2 g/kg | Gleichzeitig Fett verlieren und Muskeln aufbauen |
+
+- Zu jedem Ziel: **Zielwert und erlaubter Bereich** („Erlaubt: 2.090–2.370 kcal“) plus erwartete Veränderung pro Woche.
+- Ein Minimum (1.500 kcal für Männer, 1.200 kcal für Frauen) wird nie unterschritten.
+- **Mahlzeiten:** Frühstück, Mittag, Abend, Snacks. Über 70 Lebensmittel (auch Döner, Lahmacun, Simit, Ayran …) mit Grammzahl, oder eigene Werte schnell eintragen.
+- **Wasser** mit Ziel nach Körpergewicht (35 ml/kg), 7-Tage-Verlauf, Tipps passend zu deinem Ziel.
+
+---
+
+## 📉 Körper
+
+- **Gewichts-Journey:** Kurve mit 7-Tage-Schnitt, Ziellinie, Start → Ziel in %, kg pro Woche, Prognosedatum.
+- **Schritte:** eintragen, Wochenbalken mit Ziellinie, ca. verbrannte kcal, und ein Coach, der antwortet.
+- **Körpermaße:** Taille, Brust, Arm, Hüfte, Oberschenkel, Hals mit Veränderung zur letzten Messung, BMI und Körperfett-Schätzung (US-Navy-Formel).
+- **Tipps zum Abnehmen und Zunehmen**, passend zu deinem Ziel.
+
+---
+
+## 🎯 Quests & Erfolge
+
+<img src="docs/screenshots/quests.png" width="30%" align="right" alt="Tägliche Quests und Tagesübersicht">
+
+**Tägliche Quests** (3 pro Tag): z. B. *15 Sätze loggen*, *Beine: 4 Sätze*, *8.000 Schritte*, *Protein-Ziel schaffen*, *In deinem Kalorienbereich landen*. Alle drei geschafft → **Tageskiste mit +300 XP**.
+
+**Wochen-Quests** (3 pro Woche) passen sich an dich an: Ziel = dein Schnitt der letzten 4 aktiven Wochen **plus 20–30 %**, nie unter einem realistischen Startwert. Wer sonst 800 Liegestütze pro Woche schafft, bekommt *1.000 Liegestütze diese Woche*. Die Ziele werden montags festgelegt und ändern sich während der Woche nicht.
+
+**48 Erfolge**, von *Erste Wiederholung* über *Unzerbrechlich (30 Tage Streak)* bis *Skill-Meister*.
+
+<br clear="right">
 
 ---
 
@@ -114,50 +146,82 @@ Kein Cloud-Zwang, kein Account, volle Kontrolle.
 
 ### 🤖 Android (.apk)
 
-1. Gehe auf den **[Releases-Tab](https://github.com/Emre1001/Gym-Ranker/releases)** dieser Seite
-2. Lade die neueste `Gym-Ranker-x.x.apk` herunter
-3. Öffne die Datei auf deinem Handy und installiere sie
+1. Öffne den **[Releases-Tab](https://github.com/Emre1001/Gym-Ranker/releases)**
+2. Lade die neueste `.apk` herunter und installiere sie
+3. Falls nötig: „Installation aus unbekannten Quellen“ erlauben
 
-> ⚠️ **Hinweis:** „Installation aus unbekannten Quellen" muss in den Einstellungen erlaubt sein.
-
----
-
-### 🍏 iOS (iPhone) & Web — PWA
-
-Da Apple keine externen APKs erlaubt, nutze die **Progressive Web App**:
+### 🍏 iPhone & 🌐 Web (PWA)
 
 | Schritt | Aktion |
 |:---:|:---|
-| **1** | Öffne **[emre1001.github.io/Gym-Ranker](https://emre1001.github.io/Gym-Ranker/)** im **Safari** |
-| **2** | Tippe auf den **Teilen-Button** (Viereck mit Pfeil nach oben) |
-| **3** | Wähle **„Zum Home-Bildschirm"** |
-| **4** | App installiert sich nativ — mit Fullscreen & Offline-Support |
+| **1** | **[emre1001.github.io/Gym-Ranker](https://emre1001.github.io/Gym-Ranker/)** in Safari bzw. Chrome öffnen |
+| **2** | iPhone: *Teilen* → *Zum Home-Bildschirm* · Android: Menü ⋮ → *App installieren* |
+| **3** | Fertig: Vollbild, offline, ohne Account |
+
+---
+
+## 🔒 Deine Daten
+
+Alles bleibt **auf deinem Gerät** (localStorage). Kein Account, keine Cloud, kein Tracking.
+Unter *Profil → Einstellungen → Daten* kannst du ein Backup als Code oder Datei sichern, wiederherstellen und alle Sätze als CSV exportieren. Alte Spielstände und Backup-Codes funktionieren weiter.
+
+**Sprachen:** Deutsch, English, Türkçe · **Design:** Hell / Dunkel / Automatisch · **Einheiten:** kg / lbs
+
+---
+
+## 🛠️ Entwicklung
+
+Reines HTML, CSS und JavaScript, ohne Build-Schritt und ohne Abhängigkeiten.
+
+```bash
+git clone https://github.com/Emre1001/Gym-Ranker.git
+cd Gym-Ranker
+python3 -m http.server 8000      # dann http://localhost:8000 öffnen
+```
+
+<details>
+<summary><b>Projektstruktur</b></summary>
+
+```
+index.html              Gerüst: Seiten, Tab-Leiste, Icons
+css/app.css             Design-System (Farben, Karten, Buttons, Sheets)
+css/features.css        App-Hülle, Quests, Ernährung, Körper, Profil, Skills, Setup
+js/core.js              Hilfsfunktionen, Einstellungen, Ränge, XP, Rekorde
+js/ui.js                Toasts, Bottom-Sheets, Segment-Schalter
+js/health.js            Profil, Kalorienrechner, Gewicht, Schritte, Wasser, Essen, Maße
+js/game.js              Quests, Wochen-Quests, Erfolge, Skills, Belohnungs-Screens
+js/onboarding.js        Einrichtung beim ersten Start
+js/back-stack.js        Zurück-Geste: schließt Fenster und Unterseiten zuerst
+js/tools.js             Pausentimer, Scheiben- und 1RM-Rechner, Rang-Aufstieg
+js/app.js               Navigation und Start
+js/pages/*.js           Training, Ernährung, Körper, Fortschritt, Profil, Übungen, Verlauf, Einstellungen
+js/data/*.js            Übungen, Calisthenics, Skill-Bäume, Lebensmittel, Tipps
+js/i18n/{de,en,tr}.js   Alle Texte
+sw.js                   Offline-Cache
+```
+
+</details>
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] 33-Rang-System mit exponentiellem XP
-- [x] Decay-System (XP Bluten)
-- [x] Multiplikator-System für 30+ Übungen
-- [x] Base64-Backup
-- [x] Android APK
-- [x] iOS PWA
-- [x] Statistik-Verlauf (Graphen)
-- [ ] Freundes-Rangliste (Lokal)
-- [x] Streak-Bonus für tägliches Training
-- [x] Übersetzungen (DE / EN / TR)
+- [x] 33-Rang-System mit Decay
+- [x] 300+ Gym-Übungen mit Multiplikatoren
+- [x] Kalorienrechner für Cut / Lean Bulk / Halten / Recomp
+- [x] Gewichts-Journey, Schritte, Körpermaße
+- [x] Calisthenics mit Zusatzgewicht und Halte-Übungen
+- [x] Skill-Bäume mit Belohnungen
+- [x] Tägliche und anpassende Wochen-Quests, Erfolge
+- [x] Deutsch / English / Türkçe
+- [ ] Freundes-Rangliste
+- [ ] Schritte automatisch vom Handy übernehmen
 
 ---
 
 ## 🤝 Mitmachen
 
-Pull Requests willkommen! Besonders gesucht:
-- Neue Übungen mit Multiplikatoren
-- UI-Verbesserungen
-- Weitere Übersetzungen
-
----
+Pull Requests sind willkommen, besonders neue Übungen, Lebensmittel, Skills und Übersetzungen.
 
 <div align="center">
 
