@@ -123,4 +123,5 @@ obActivity:'How active are you?',obActivitySub:'Your everyday life plus training
 act_sed:'Sitting',actd_sed:'Office job, little movement, little training',act_light:'Lightly active',actd_light:'Training 1–3× a week or a lot of walking',act_mod:'Active',actd_mod:'Training 3–5× a week',act_high:'Very active',actd_high:'Training 6–7× a week or a physical job',act_ath:'Athlete',actd_ath:'Hard training twice a day',
 obGoal:'What’s your goal?',obGoalSub:'You can change it anytime.',targetWeight:'Target weight',obTargetCut:'For a cut the target must be below your weight',obTargetBulk:'For a bulk the target must be above your weight',
 obPlan:'Your plan, {name}',obPlanSub:'{g}: this is how much you should eat.',obGo:'Start training',obDone:'Welcome, {name}. Let’s go.'
+,ageBonus:'Age bonus +{p} %',ageBonusInfo:'At {a} you get +{p} % XP on every set. The same weight is a bigger achievement at your age, and quests start at targets that fit you.',teenNote:'Under 18: technique before weight, no max attempts without supervision. Diets stay at the slow pace because your body still needs energy to grow.'
 });

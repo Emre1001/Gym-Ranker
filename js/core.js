@@ -145,7 +145,7 @@ const exMode=ex=>(ex&&ex.mode)||'w';
 const isCali=ex=>exMode(ex)!=='w';
 const setSecs=e=>e.s!=null?e.s:(e.reps||0);
 const setLoad=(e,ex)=>(e.bw||0)*((ex&&ex.bwf)||1)+(e.weight||0);
-function calcXp(ex,w,r,s,bw){const m=exMode(ex);if(m==='w')return w*r*ex.mult;const load=bw*(ex.bwf||1)+(w||0);return(m==='time'?s:r)*load*ex.mult}
+function calcXp(ex,w,r,s,bw){const m=exMode(ex),age=ageXpFactor();if(m==='w')return w*r*ex.mult*age;const load=bw*(ex.bwf||1)+(w||0);return(m==='time'?s:r)*load*ex.mult*age}
 function setScore(e,ex){
   const m=exMode(ex);
   if(m==='time'){const base=Math.max(1,(e.bw||bodyWeight())*(ex.bwf||1));return Math.round(setSecs(e)*(1+(e.weight||0)/base))}

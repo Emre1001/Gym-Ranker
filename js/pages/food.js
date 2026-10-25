@@ -50,10 +50,11 @@ function planCard(){
   const cur=planFor(p);
   const rows=GOALS.map(g=>{const pl=planFor(p,g);const wk=pl.weekly;
     return `<button class="goal-row${g===p.goal?' on':''}" data-goal="${g}"><span class="gr-ico">${ico(GOAL_ICONS[g],'sm')}</span><span class="gr-main"><b>${esc(t('goal_'+g))}</b><span>${g==='recomp'?esc(t('recompDays',{tr:fmtN(pl.train),rest:fmtN(pl.rest)})):esc(Math.abs(wk)<.02?t('weeklyZero'):t('weeklyChange',{v:(wk>0?'+':'−')+fmtW(Math.abs(wk))}))}</span></span><span class="gr-kcal num">${fmtN(pl.target)}<small>kcal</small></span></button>`}).join('');
-  const paceSeg=p.goal==='cut'||p.goal==='bulk'?`<div class="seg" id="paceSeg" style="margin-top:12px">${['slow','normal','fast'].map(v=>`<button data-v="${v}">${esc(t('pace_'+v))}</button>`).join('')}</div>`:'';
+  const paceSeg=(p.goal==='cut'||p.goal==='bulk')&&!cur.teen?`<div class="seg" id="paceSeg" style="margin-top:12px">${['slow','normal','fast'].map(v=>`<button data-v="${v}">${esc(t('pace_'+v))}</button>`).join('')}</div>`:'';
   return `<div class="card plan-card"><div class="card-head"><h3 class="card-title">${esc(t('calcTitle'))}</h3><button class="btn btn-ghost btn-sm" data-act="editProfile">${ico('pencil','xs')}${esc(t('edit'))}</button></div>
     <div class="plan-kv"><div class="kv"><b class="num">${fmtN(cur.bmr)}</b><span>${esc(t('bmr'))}</span></div><div class="kv"><b class="num">${fmtN(cur.tdee)}</b><span>${esc(t('tdee'))}</span></div><div class="kv"><b class="num">${fmtN(cur.target)}</b><span>${esc(t('yourTarget'))}</span></div></div>
     <div class="goal-rows">${rows}</div>${paceSeg}
+    ${cur.teen?`<p class="set-note warn-note">${ico('info','xs')} ${esc(t('teenNote'))}</p>`:''}
     ${cur.low?`<p class="set-note warn-note">${ico('info','xs')} ${esc(t('lowWarn'))}</p>`:''}
     <p class="set-note">${esc(t('calcNote'))}</p></div>`;
 }

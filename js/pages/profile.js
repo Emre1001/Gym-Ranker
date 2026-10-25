@@ -9,7 +9,7 @@ function renderProfile(){
   const head=`<div class="card prof-card span" style="--tier:${col}">
     <div class="prof-top"><div class="avatar"><span>${esc(ini)}</span><i>${emblem(i)}</i></div>
       <div class="prof-main"><div class="prof-name">${esc(t('hello',{name:nm}))}</div><div class="prof-rank${r.tier===10?' tier-fire':''}">${esc(rankName(i))} · <span class="num">${fmtN(totalXp)} XP</span></div>
-      <div class="prof-facts">${p.height?`<span class="pill neutral">${ageOf(p)} ${esc(t('yearsShort'))}</span><span class="pill neutral num">${p.height} cm</span><span class="pill neutral num">${fmtW(bodyWeight())}</span>`:''}${p.goal?`<span class="pill accent">${ico(GOAL_ICONS[p.goal],'xs')}${esc(t('goal_'+p.goal))}</span>`:''}</div></div></div>
+      <div class="prof-facts">${p.height?`<span class="pill neutral">${ageOf(p)} ${esc(t('yearsShort'))}</span><span class="pill neutral num">${p.height} cm</span><span class="pill neutral num">${fmtW(bodyWeight())}</span>`:''}${ageXpFactor()>1?`<span class="pill gold">${ico('bolt','xs')}${esc(t('ageBonus',{p:Math.round((ageXpFactor()-1)*100)}))}</span>`:''}${p.goal?`<span class="pill accent">${ico(GOAL_ICONS[p.goal],'xs')}${esc(t('goal_'+p.goal))}</span>`:''}</div></div></div>
     <div class="prof-stats"><div class="kv"><b class="num">${liveStreak()}</b><span>${esc(t('streak'))}</span></div><div class="kv"><b class="num">${unlocked}<small>/${ACHIEVEMENTS.length}</small></b><span>${esc(t('achievements'))}</span></div><div class="kv"><b class="num">${skillCount()}<small>/${skillTotal()}</small></b><span>${esc(t('skills'))}</span></div><div class="kv"><b class="num">${fmtN(m.days)}</b><span>${esc(t('trainingDays'))}</span></div></div>
   </div>`;
   const links=`<div class="list">

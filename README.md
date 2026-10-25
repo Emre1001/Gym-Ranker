@@ -27,7 +27,7 @@ Jeder Satz, jeder Schritt und jede Mahlzeit bringt XP. Wer skippt, verliert.
 
 | | |
 |:---|:---|
-| 👋 **Persönliches Setup** | Beim ersten Start: Name, Alter, Größe, Gewicht, Aktivität und Ziel. Danach begrüßt dich die App mit „Hallo Emre“ und reagiert auf das, was du tust. |
+| 👋 **Persönliches Setup** | Beim ersten Start: Name, Alter, Größe, Gewicht, Aktivität und Ziel. Das Alter zählt mit: Alters-Bonus auf XP und Quests, die zu dir passen. Danach begrüßt dich die App mit „Hallo Emre“ und reagiert auf das, was du tust. |
 | 🍽️ **Kalorientracker + Rechner** | Wie viel du essen sollst und darfst: für **Cut, Lean Bulk, Gewicht halten und Body Recomposition**, mit erlaubtem Bereich, Makros, Wasser und Lebensmittel-Datenbank. |
 | 📉 **Abnehm- / Zunehm-Journey** | Gewichtskurve mit 7-Tage-Schnitt, Ziellinie, Fortschritt in %, Tempo pro Woche und Prognose, wann du dein Ziel erreichst. |
 | 🚶 **Schritte mit Coach** | Tägliche Schritte eintragen, die App antwortet: von „mehr wäre besser“ bis „Wie hast du das geschafft?“. |
@@ -75,6 +75,20 @@ Gewicht × Wiederholungen × Multiplikator                       = XP   (Hanteln
 ```
 
 Der **Anteil** ist, wie viel deines Körpergewichts die Übung wirklich bewegt: Liegestütz ≈ 64 %, Klimmzug 100 %. Deshalb bringt ein Klimmzug mit 80 kg Körpergewicht mehr als einer mit 60 kg, und Zusatzgewicht zählt obendrauf.
+
+### Alters-Bonus
+
+Dasselbe Gewicht ist mit 12 oder mit 62 eine größere Leistung als mit 25. Darum gibt es auf jeden Satz einen **Alters-Bonus**, und Quests starten bei Jüngeren und Älteren mit niedrigeren Zielen:
+
+| Alter | XP-Bonus | Quest-Startwerte |
+|:---|:---:|:---:|
+| bis 12 | +60 % | 50 % |
+| 13 / 14 / 15 / 16 / 17 | +50 / +40 / +30 / +20 / +10 % | 55–90 % |
+| 18–39 | – | 100 % |
+| 40–59 | +5 bis +20 % | 80–90 % |
+| 60–64 / 65+ | +30 % / +40 % | 65 % |
+
+Ein 12-Jähriger mit 100 kg × 5 auf der Bank bekommt **800 XP** statt 500. Unter 18 bleiben Diäten beim langsamen Tempo und die App erinnert an „Technik vor Gewicht“.
 
 ### XP bluten
 
@@ -134,7 +148,7 @@ Der Rechner nutzt die **Mifflin-St-Jeor-Formel** mit deinem Aktivitätslevel und
 
 **Tägliche Quests** (3 pro Tag): z. B. *15 Sätze loggen*, *Beine: 4 Sätze*, *8.000 Schritte*, *Protein-Ziel schaffen*, *In deinem Kalorienbereich landen*. Alle drei geschafft → **Tageskiste mit +300 XP**.
 
-**Wochen-Quests** (3 pro Woche) passen sich an dich an: Ziel = dein Schnitt der letzten 4 aktiven Wochen **plus 20–30 %**, nie unter einem realistischen Startwert. Wer sonst 800 Liegestütze pro Woche schafft, bekommt *1.000 Liegestütze diese Woche*. Die Ziele werden montags festgelegt und ändern sich während der Woche nicht.
+**Wochen-Quests** (3 pro Woche) passen sich an dich an: Ziel = dein Schnitt der letzten 4 aktiven Wochen **plus 20–30 %**, nie unter einem realistischen Startwert, der sich nach deinem Alter richtet. Wer sonst 800 Liegestütze pro Woche schafft, bekommt *1.000 Liegestütze diese Woche*. Die Ziele werden montags festgelegt und ändern sich während der Woche nicht.
 
 **48 Erfolge**, von *Erste Wiederholung* über *Unzerbrechlich (30 Tage Streak)* bis *Skill-Meister*.
 
@@ -213,6 +227,7 @@ sw.js                   Offline-Cache
 - [x] Calisthenics mit Zusatzgewicht und Halte-Übungen
 - [x] Skill-Bäume mit Belohnungen
 - [x] Tägliche und anpassende Wochen-Quests, Erfolge
+- [x] Alters-Bonus und altersgerechte Quests
 - [x] Deutsch / English / Türkçe
 - [ ] Freundes-Rangliste
 - [ ] Schritte automatisch vom Handy übernehmen

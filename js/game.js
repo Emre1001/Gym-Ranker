@@ -26,8 +26,8 @@ function rewardClosed(){rewardOpen=false;if(REWARDS.length)setTimeout(nextReward
 const MUSCLE_GROUPS={legs:['quads','hamstrings','glutes','calves'],push:['chest','shoulders','triceps'],pull:['back','biceps','traps','forearms'],core:['core']};
 function seeded(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%10000)/10000}}
 function dailyQuests(d=dayKey()){
-  const rnd=seeded('gr'+d),pick=a=>a[Math.floor(rnd()*a.length)];
-  const train=[{id:'sets',n:pick([10,12,15,20]),xp:150},{id:'muscle',g:pick(['legs','push','pull','core']),n:4,xp:150},{id:'volume',n:pick([3000,5000,8000]),xp:200},{id:'pr',n:1,xp:250},{id:'cali',n:pick([3,5,8]),xp:150},{id:'hold',n:pick([60,90,120]),xp:150}];
+  const rnd=seeded('gr'+d),pick=a=>a[Math.floor(rnd()*a.length)],sc=ageQuestScale(),sz=v=>niceRound(v*sc);
+  const train=[{id:'sets',n:Math.max(6,Math.round(pick([10,12,15,20])*sc)),xp:150},{id:'muscle',g:pick(['legs','push','pull','core']),n:sc<.8?3:4,xp:150},{id:'volume',n:sz(pick([3000,5000,8000])),xp:200},{id:'pr',n:1,xp:250},{id:'cali',n:Math.max(3,Math.round(pick([3,5,8])*sc)),xp:150},{id:'hold',n:sz(pick([60,90,120])),xp:150}];
   const habit=[{id:'steps',n:stepGoal(),xp:150},{id:'water',n:waterGoal(),xp:100}];
   if(hasProfile())habit.push({id:'protein',xp:150},{id:'kcal',xp:200},{id:'meals',n:3,xp:100},{id:'weigh',n:1,xp:60});
   const a=pick(train),b=pick(habit),rest=train.concat(habit).filter(q=>q.id!==a.id&&q.id!==b.id);
@@ -97,32 +97,36 @@ function weeklyAvg(ws,fn){
   const act=sums.filter(v=>v>0);return act.length?act.reduce((a,b)=>a+b,0)/act.length:0;
 }
 function buildWeekly(ws){
-  const rnd=seeded('wk'+dayKey(ws)),pick=a=>a[Math.floor(rnd()*a.length)],harder=1.2+rnd()*.1;
+  // younger and older athletes: lower starting values and a smaller step up
+  const sc=ageQuestScale(),rnd=seeded('wk'+dayKey(ws)),pick=a=>a[Math.floor(rnd()*a.length)],harder=1+(.2+rnd()*.1)*Math.min(1,sc+.2);
   const h=getHistory().filter(e=>e.ts>=addDays(ws,-28)&&e.ts<ws);
   // 1) reps of a bodyweight move you actually do (or a classic to start with)
   const cnt={};h.forEach(e=>{const ex=getEx(e.exId);if(exMode(ex)==='bw')cnt[e.exId]=(cnt[e.exId]||0)+e.reps});
   const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
   const exId=top.length?pick(top):pick(['chest_bw_pushup','quad_bw_squat','back_bw_pullup']);
   const avgReps=weeklyAvg(ws,e=>e.exId===exId?e.reps:0);
-  const repsN=niceRound(Math.max(WQ_BASE[exId]||150,avgReps*harder));
+  const repsN=niceRound(Math.max((WQ_BASE[exId]||150)*sc,avgReps*harder));
   const list=[{id:'w_reps',ex:exId,n:repsN,xp:clamp(Math.round(repsN*(getEx(exId).mult||1)*1.2/50)*50,600,1500)}];
   // 2) training: days, sets or volume
   const days=new Set(h.map(e=>dayKey(e.ts))).size/4,sets=weeklyAvg(ws,()=>1),vol=weeklyAvg(ws,e=>setVol(e,getEx(e.exId)));
   const tr=pick(['days','sets','volume']);
   if(tr==='days')list.push({id:'w_days',n:clamp(Math.ceil(days)+1,3,6),xp:900});
-  else if(tr==='sets')list.push({id:'w_sets',n:niceRound(Math.max(40,sets*harder)),xp:900});
-  else list.push({id:'w_volume',n:niceRound(Math.max(10000,vol*1.15)),xp:1000});
+  else if(tr==='sets')list.push({id:'w_sets',n:niceRound(Math.max(40*sc,sets*harder)),xp:900});
+  else list.push({id:'w_volume',n:niceRound(Math.max(10000*sc,vol*(1+(harder-1)*.75))),xp:1000});
   // 3) habit or holds
   const stepsWeek=(()=>{const s=getSteps();let tot=0,n=0;for(let i=1;i<=28;i++){const v=s[dayKey(addDays(ws,-i))];if(v){tot+=v;n++}}return n?tot/n*7:0})();
   const hb=pick(hasProfile()?['steps','holds','protein']:['steps','holds']);
   if(hb==='steps')list.push({id:'w_steps',n:niceRound(Math.max(stepGoal()*5,stepsWeek*1.15)),xp:800});
-  else if(hb==='holds')list.push({id:'w_holds',n:niceRound(Math.max(300,weeklyAvg(ws,e=>exMode(getEx(e.exId))==='time'?setSecs(e):0)*harder)),xp:700});
+  else if(hb==='holds')list.push({id:'w_holds',n:niceRound(Math.max(300*sc,weeklyAvg(ws,e=>exMode(getEx(e.exId))==='time'?setSecs(e):0)*harder)),xp:700});
   else list.push({id:'w_protein',n:5,xp:900});
   return list;
 }
 function getWeekState(){
   const ws=weekStart(),k=dayKey(ws);let s=LS.json('gr_wquests',null);
-  if(!s||s.w!==k){s={w:k,list:buildWeekly(ws),done:{}};LS.setJson('gr_wquests',s)}
+  // rebuilt when the week changes or the age changed (targets depend on it); finished quests stay finished
+  const age=userAge();
+  if(!s||s.w!==k){s={w:k,age,list:buildWeekly(ws),done:{}};LS.setJson('gr_wquests',s)}
+  else if(s.age!==age){s.age=age;s.list=buildWeekly(ws);LS.setJson('gr_wquests',s)}
   return s;
 }
 function wquestProgress(q){

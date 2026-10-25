@@ -65,6 +65,23 @@ function navyBodyFat(m,p){
 }
 const bmiOf=(kg,cm)=>cm?kg/Math.pow(cm/100,2):null;
 
+/* ---------- age ----------
+   The same weight is a bigger feat for a 12-year-old or a 60-year-old than for a 25-year-old,
+   so sets pay more XP at both ends, and quest targets start lower there. */
+const userAge=()=>{const p=getProfile();return p&&p.born?ageOf(p):null};
+function ageXpFactor(age=userAge()){
+  if(age===null)return 1;
+  if(age<18)return[1.6,1.6,1.6,1.5,1.4,1.3,1.2,1.1][clamp(age,10,17)-10];
+  if(age<40)return 1;
+  return age<45?1.05:age<50?1.1:age<55?1.15:age<60?1.2:age<65?1.3:1.4;
+}
+function ageQuestScale(age=userAge()){
+  if(age===null)return 1;
+  if(age<18)return[.5,.5,.5,.55,.6,.7,.8,.9][clamp(age,10,17)-10];
+  return age<40?1:age<50?.9:age<60?.8:.65;
+}
+const isMinor=()=>{const a=userAge();return a!==null&&a<18};
+
 /* ---------- calorie calculator ---------- */
 const ACTIVITY={sed:1.2,light:1.375,mod:1.55,high:1.725,ath:1.9};
 const GOALS=['cut','bulk','maint','recomp'];
@@ -74,13 +91,14 @@ function bmrOf(p,kg){return 10*kg+6.25*(p.height||175)-5*ageOf(p)+(p.sex==='f'?-
 function planFor(p,goal=p.goal||'maint',pace=p.pace||'normal',kg=bodyWeight()){
   const bmr=bmrOf(p,kg),tdee=bmr*(ACTIVITY[p.activity]||1.375),floor=p.sex==='f'?1200:1500;
   let target=tdee,lo=tdee*.95,hi=tdee*1.05,protein=1.8,train=null,rest=null;
-  if(goal==='cut'){const d=PACE.cut[pace]||.2;target=Math.max(floor,tdee*(1-d));lo=Math.max(floor,target-tdee*.05);hi=target+tdee*.05;protein=2.2}
-  else if(goal==='bulk'){const s=PACE.bulk[pace]||.1;target=tdee*(1+s);lo=target-tdee*.04;hi=target+tdee*.04;protein=1.8}
+  // calorie formulas are made for adults: teens only get the slow pace
+  if(goal==='cut'){const d=ageOf(p)<18?PACE.cut.slow:(PACE.cut[pace]||.2);target=Math.max(floor,tdee*(1-d));lo=Math.max(floor,target-tdee*.05);hi=target+tdee*.05;protein=2.2}
+  else if(goal==='bulk'){const s=ageOf(p)<18?PACE.bulk.slow:(PACE.bulk[pace]||.1);target=tdee*(1+s);lo=target-tdee*.04;hi=target+tdee*.04;protein=1.8}
   else if(goal==='recomp'){target=tdee*.95;train=tdee*1.05;rest=tdee*.85;lo=rest;hi=train;protein=2.2}
   const r=v=>Math.round(v/10)*10;
   const pG=Math.round(protein*kg),fG=Math.round(Math.max(.8*kg,target*.25/9)),cG=Math.max(0,Math.round((target-pG*4-fG*9)/4));
   return{goal,bmr:Math.round(bmr),tdee:r(tdee),target:r(target),lo:r(lo),hi:r(hi),train:train&&r(train),rest:rest&&r(rest),
-    p:pG,c:cG,f:fG,weekly:(target-tdee)*7/7700,low:target<=floor+1};
+    p:pG,c:cG,f:fG,weekly:(target-tdee)*7/7700,low:target<=floor+1,teen:ageOf(p)<18};
 }
 const myPlan=()=>{const p=getProfile();return p?planFor(p):null};
 /* Today's target: on recomp, training days get the higher number */

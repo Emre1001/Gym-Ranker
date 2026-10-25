@@ -130,6 +130,7 @@ function renderPreview(){
   if(pr&&sc>prScore(pr))tags.push(`<span class="pill gold">${ico('trophy','xs')}${esc(t('prTag'))}</span>`);
   if(m==='w')tags.push(`<span class="pill neutral">1RM ≈ ${fmtW(sc)}</span>`);
   else tags.push(`<span class="pill neutral">BW ${fmtW(bw)}${w>0?' + '+fmtW(w,false):''}</span>`);
+  const af=ageXpFactor();if(af>1)tags.push(`<span class="pill gold">${esc(t('ageBonus',{p:Math.round((af-1)*100)}))}</span>`);
   const nx=nextSkillFor(ex.id);if(nx)tags.push(`<span class="pill accent">${ico('spark','xs')}${esc(nx)}</span>`);
   el.innerHTML=`<span class="xp num">+${fmtN(xp)}<small>XP</small></span><span class="tags">${tags.join('')}</span>`;
 }
@@ -217,7 +218,7 @@ function logSet(e){
   btn.classList.add('done','flash');requestAnimationFrame(()=>btn.classList.remove('flash'));
   clearTimeout(btn._t);btn._t=setTimeout(()=>btn.classList.remove('done'),1100);
   haptic(pr.isPR&&!pr.first?[12,50,24]:14);
-  toast('+'+fmtN(xp)+' XP',{type:'good',sub:exName(ex)+' · '+fmtSet(entry,ex)+(bonus?' · '+t('streakBonus',{xp:bonus}):''),action:{label:t('undo'),fn:()=>undoLog(snap,now)},dur:5500});
+  toast('+'+fmtN(xp)+' XP',{type:'good',sub:exName(ex)+' · '+fmtSet(entry,ex)+(bonus?' · '+t('streakBonus',{xp:bonus}):'')+(ageXpFactor()>1?' · '+t('ageBonus',{p:Math.round((ageXpFactor()-1)*100)}):''),action:{label:t('undo'),fn:()=>undoLog(snap,now)},dur:5500});
   if(pr.isPR&&!pr.first){setTimeout(()=>{toast(t('newPr'),{type:'pr',sub:exName(ex)+' · '+fmtSet(entry,ex),dur:4500});SFX.pr()},350)}
   if(pref.goal>0&&todayEntries().length===pref.goal)setTimeout(()=>toast(t('goalReached'),{type:'good',icon:'target'}),700);
   renderTrain();

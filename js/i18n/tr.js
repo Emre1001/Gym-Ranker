@@ -123,4 +123,5 @@ obActivity:'Ne kadar aktifsin?',obActivitySub:'Günlük hayatın artı antrenman
 act_sed:'Hareketsiz',actd_sed:'Masa başı iş, az hareket, az antrenman',act_light:'Hafif aktif',actd_light:'Haftada 1–3 antrenman veya çok yürüyüş',act_mod:'Aktif',actd_mod:'Haftada 3–5 antrenman',act_high:'Çok aktif',actd_high:'Haftada 6–7 antrenman veya fiziksel iş',act_ath:'Sporcu',actd_ath:'Günde iki kez sert antrenman',
 obGoal:'Hedefin ne?',obGoalSub:'İstediğin zaman değiştirebilirsin.',targetWeight:'Hedef kilo',obTargetCut:'Kilo verirken hedef kilondan düşük olmalı',obTargetBulk:'Kilo alırken hedef kilondan yüksek olmalı',
 obPlan:'Planın, {name}',obPlanSub:'{g}: bu kadar yemelisin.',obGo:'Antrenmana başla',obDone:'Hoş geldin, {name}. Başlayalım.'
+,ageBonus:'Yaş bonusu +%{p}',ageBonusInfo:'{a} yaşında her sette +%{p} XP kazanırsın. Aynı ağırlık senin yaşında daha büyük bir başarı ve görevler sana uygun hedeflerle başlar.',teenNote:'18 yaş altı: önce teknik, sonra ağırlık; gözetim olmadan maksimum deneme yok. Vücudun büyümek için hâlâ enerjiye ihtiyaç duyduğundan diyetler yavaş tempoda kalır.'
 });

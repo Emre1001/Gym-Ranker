@@ -123,4 +123,5 @@ obActivity:'Wie aktiv bist du?',obActivitySub:'Dein Alltag plus Training.',
 act_sed:'Sitzend',actd_sed:'Bürojob, wenig Bewegung, kaum Training',act_light:'Leicht aktiv',actd_light:'1–3× Training pro Woche oder viel zu Fuß',act_mod:'Aktiv',actd_mod:'3–5× Training pro Woche',act_high:'Sehr aktiv',actd_high:'6–7× Training pro Woche oder körperlicher Job',act_ath:'Athlet',actd_ath:'Zweimal täglich hartes Training',
 obGoal:'Was ist dein Ziel?',obGoalSub:'Du kannst es jederzeit ändern.',targetWeight:'Zielgewicht',obTargetCut:'Beim Abnehmen muss das Ziel unter deinem Gewicht liegen',obTargetBulk:'Beim Aufbau muss das Ziel über deinem Gewicht liegen',
 obPlan:'Dein Plan, {name}',obPlanSub:'{g}: So viel solltest du essen.',obGo:'Training starten',obDone:'Willkommen, {name}. Los geht’s.'
+,ageBonus:'Alters-Bonus +{p} %',ageBonusInfo:'Mit {a} bekommst du +{p} % XP auf jeden Satz. Dasselbe Gewicht ist in deinem Alter eine größere Leistung, und Quests starten mit Zielen, die zu dir passen.',teenNote:'Unter 18: Technik vor Gewicht, keine Maximalversuche ohne Aufsicht. Diäten bleiben beim langsamen Tempo, weil dein Körper noch Energie zum Wachsen braucht.'
 });

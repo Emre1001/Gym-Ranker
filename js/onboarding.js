@@ -58,7 +58,7 @@ function obRender(dir){
     h=`<h1 class="ob-title">${esc(t('obActivity'))}</h1><p class="ob-sub">${esc(t('obActivitySub'))}</p><div class="ob-opts">${Object.keys(ACTIVITY).map(k=>`<button class="ob-opt${d.activity===k?' on':''}" data-opt="activity" data-v="${k}"><b>${esc(t('act_'+k))}</b><span>${esc(t('actd_'+k))}</span></button>`).join('')}</div>`;
   }else if(name==='goal'){
     h=`<h1 class="ob-title">${esc(t('obGoal'))}</h1><p class="ob-sub">${esc(t('obGoalSub'))}</p><div class="ob-opts">${GOALS.map(g=>`<button class="ob-opt has-ico${d.goal===g?' on':''}" data-opt="goal" data-v="${g}"><span class="oo-ico">${ico(GOAL_ICONS[g],'sm')}</span><span class="oo-main"><b>${esc(t('goal_'+g))}</b><span>${esc(t('goald_'+g))}</span></span></button>`).join('')}</div>
-      ${d.goal==='cut'||d.goal==='bulk'?`<label class="label" style="margin-top:18px">${esc(t('pace'))}</label><div class="seg lg" id="obPace">${['slow','normal','fast'].map(v=>`<button data-v="${v}">${esc(t('pace_'+v))}</button>`).join('')}</div>`:''}
+      ${(d.goal==='cut'||d.goal==='bulk')&&ageOf(d)>=18?`<label class="label" style="margin-top:18px">${esc(t('pace'))}</label><div class="seg lg" id="obPace">${['slow','normal','fast'].map(v=>`<button data-v="${v}">${esc(t('pace_'+v))}</button>`).join('')}</div>`:''}
       <label class="label" for="obTarget" style="margin-top:18px">${esc(t('targetWeight'))} <span class="dim">(${esc(t('optional'))})</span></label>${obStepper('obTarget',d.target?fmtInput(toDisp(d.target)):'',UNIT(),.5)}`;
   }else if(name==='plan'){
     const pl=planFor(d,d.goal,d.pace,d.weight);
@@ -68,6 +68,8 @@ function obRender(dir){
       ${pl.train?`<div class="op-range">${esc(t('recompDays',{tr:fmtN(pl.train),rest:fmtN(pl.rest)}))}</div>`:''}
       <div class="op-macros"><div><b class="num">${pl.p} g</b><span>${esc(t('protein'))}</span></div><div><b class="num">${pl.c} g</b><span>${esc(t('carbs'))}</span></div><div><b class="num">${pl.f} g</b><span>${esc(t('fat'))}</span></div></div>
       <div class="op-facts"><span>${esc(t('bmr'))} <b class="num">${fmtN(pl.bmr)}</b></span><span>${esc(t('tdee'))} <b class="num">${fmtN(pl.tdee)}</b></span><span>${esc(Math.abs(pl.weekly)<.02?t('weeklyZero'):t('weeklyChange',{v:(pl.weekly>0?'+':'−')+fmtW(Math.abs(pl.weekly))}))}</span></div></div>
+      ${ageXpFactor(ageOf(d))>1?`<div class="coach gold">${ico('bolt','sm')}<span>${esc(t('ageBonusInfo',{a:ageOf(d),p:Math.round((ageXpFactor(ageOf(d))-1)*100)}))}</span></div>`:''}
+      ${pl.teen?`<p class="set-note warn-note">${ico('info','xs')} ${esc(t('teenNote'))}</p>`:''}
       ${pl.low?`<p class="set-note warn-note">${ico('info','xs')} ${esc(t('lowWarn'))}</p>`:''}<p class="set-note">${esc(t('calcNote'))}</p>`;
     next=OB.edit?t('save'):t('obGo');
   }
