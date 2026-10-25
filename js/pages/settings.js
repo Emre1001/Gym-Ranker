@@ -26,6 +26,13 @@ function renderSettings(){
     <div class="li stacked"><span class="li-ico" style="--c:#ff375f">${ico('target')}</span><span class="li-main"><div class="li-title">${esc(t('dailyGoal'))}</div><div class="li-sub">${esc(t('dailyGoalSub'))}</div></span>${segH('segGoal',[[ '0',t('off')],['10','10'],['15','15'],['20','20'],['30','30']])}</div>
   </div>
 
+  <div class="sec"><span>${esc(t('goalsSec'))}</span></div>
+  <div class="list">
+    ${btn('profile','#30d158','user',t('editProfile'),t('editProfileSub'))}
+    <div class="li stacked"><span class="li-ico" style="--c:#64d2ff">${ico('steps')}</span><span class="li-main"><div class="li-title">${esc(t('stepGoal'))}</div></span>${segH('segSteps',[6000,8000,10000,12000,15000].map(v=>[String(v),NF.format(v/1000)+'k']))}</div>
+    <div class="li stacked"><span class="li-ico" style="--c:#0a84ff">${ico('drop')}</span><span class="li-main"><div class="li-title">${esc(t('waterGoal'))}</div></span>${segH('segWater',[['0',t('auto')],['2000','2 L'],['2500','2,5 L'],['3000','3 L'],['3500','3,5 L']].map(([v,l])=>[v,LANG==='en'?l.replace(',','.'):l]))}</div>
+  </div>
+
   <div class="sec"><span>${esc(t('feedback'))}</span></div>
   <div class="list">
     ${li('#34c759','vibrate',t('vibration'),navigator.vibrate?'':esc(t('notSupported')),sw('vib',pref.vib,!navigator.vibrate))}
@@ -53,11 +60,14 @@ function renderSettings(){
   seg($('#segUnit'),pref.unit==='kg'||pref.unit==='lbs'?pref.unit:'system',v=>{setPref('unit',v);renderSettings();toast(t('unitSet',{u:UNIT()}),{icon:'scale'})});
   seg($('#segTimer'),String([30,60,90,120,180].includes(pref.timer)?pref.timer:90),v=>{setPref('timer',parseInt(v,10))});
   seg($('#segGoal'),String([0,10,15,20,30].includes(pref.goal)?pref.goal:0),v=>{setPref('goal',parseInt(v,10))});
+  const pf=getProfile()||{};
+  seg($('#segSteps'),String([6000,8000,10000,12000,15000].includes(pf.stepGoal)?pf.stepGoal:10000),v=>{const p=getProfile();if(p){p.stepGoal=parseInt(v,10);saveProfile(p)}});
+  seg($('#segWater'),String([2000,2500,3000,3500].includes(pf.waterGoal)?pf.waterGoal:0),v=>{const p=getProfile();if(p){p.waterGoal=parseInt(v,10)||0;saveProfile(p)}});
 }
 function initSettings(){
   const v=$('#settingsView');
   v.addEventListener('change',e=>{const i=e.target.closest('[data-pref]');if(!i)return;setPref(i.dataset.pref,i.checked);haptic(8);if(i.dataset.pref==='sound'&&i.checked)SFX.pr()});
-  v.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;({install:installApp,keys:openShortcuts,backup:openBackup,import:openImport,exportFile,importFile:()=>$('#fileImport').click(),csv:exportCSV,reset:resetAll})[b.dataset.act]()});
+  v.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;({profile:()=>openOnboarding(true),install:installApp,keys:openShortcuts,backup:openBackup,import:openImport,exportFile,importFile:()=>$('#fileImport').click(),csv:exportCSV,reset:resetAll})[b.dataset.act]()});
   $('#fileImport').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{importAny(await f.text())}catch(err){toast(t('invalidCode'),{type:'bad'})}});
 }
 function fadeSwap(fn){const m=$('#main');if(reduceMotion()||!m.animate)return fn();m.animate([{opacity:1},{opacity:0}],{duration:140,easing:'ease-in'}).onfinish=()=>{fn();m.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'none'}],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'})}}
@@ -77,14 +87,16 @@ function applyStatic(){
   document.documentElement.lang=LANG;
   $$('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));
   $$('[data-i18n-ph]').forEach(el=>el.placeholder=t(el.dataset.i18nPh));
-  $('#sideFoot').innerHTML=`<div><kbd>/</kbd>${esc(t('kbSearch'))}</div><div><kbd>1–5</kbd>${esc(t('kbTabs'))}</div><div style="margin-top:8px">v${VERSION}</div>`;
+  $$('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label',t(el.dataset.i18nAria)));
+  $('#sideFoot').innerHTML=`<div><kbd>/</kbd>${esc(t('kbSearch'))}</div><div><kbd>1–8</kbd>${esc(t('kbTabs'))}</div><div style="margin-top:8px">v${VERSION}</div>`;
 }
 function applyLang(){LANG=resolveLang();buildFormatters();applyStatic();renderAll();requestAnimationFrame(()=>{moveTabInd(false);syncSegs()})}
 
 /* ---------- Data import/export ---------- */
 const b64e=s=>btoa(unescape(encodeURIComponent(s)));
 const b64d=s=>decodeURIComponent(escape(atob(String(s).replace(/\s+/g,''))));
-function backupData(){return{v:3,xp:totalXp,lw:lastWorkoutTime,ld:lastDecayTime,h:getHistory(),pr:getPRs(),fav:getFavs(),str:getStreak(),rec:getRecent(),custom:CUSTOM,lang:pref.lang,theme:pref.theme,timer:pref.timer,autoTimer:pref.autoTimer,vib:pref.vib,sound:pref.sound,wUnit:pref.unit,goal:pref.goal}}
+const EXTRA_KEYS=['gr_profile','gr_weights','gr_steps','gr_water','gr_food','gr_measures','gr_xplog','gr_quests','gr_wquests','gr_ach','gr_skills','gr_qcount','gr_chests'];
+function backupData(){const extra={};EXTRA_KEYS.forEach(k=>{const v=LS.get(k);if(v!==null)extra[k]=v});return{v:4,extra,xp:totalXp,lw:lastWorkoutTime,ld:lastDecayTime,h:getHistory(),pr:getPRs(),fav:getFavs(),str:getStreak(),rec:getRecent(),custom:CUSTOM,lang:pref.lang,theme:pref.theme,timer:pref.timer,autoTimer:pref.autoTimer,vib:pref.vib,sound:pref.sound,wUnit:pref.unit,goal:pref.goal}}
 function importData(d){
   if(!d||typeof d!=='object'||d.xp===undefined||d.lw===undefined)throw new Error('bad');
   totalXp=parseFloat(d.xp)||0;lastWorkoutTime=parseInt(d.lw,10)||Date.now();lastDecayTime=parseInt(d.ld||d.lw,10)||Date.now();saveState();
@@ -95,6 +107,7 @@ function importData(d){
     if(d.autoTimer!==undefined)setPref('autoTimer',!!d.autoTimer);if(d.vib!==undefined)setPref('vib',!!d.vib);if(d.sound!==undefined)setPref('sound',!!d.sound);
     if(d.wUnit)setPref('unit',d.wUnit);if(d.goal!==undefined)setPref('goal',parseInt(d.goal,10)||0);
   }
+  if(d.extra&&typeof d.extra==='object')EXTRA_KEYS.forEach(k=>{if(typeof d.extra[k]==='string')LS.set(k,d.extra[k])});
   currentRankIndex=rankOf(totalXp);applyTheme();applyLang();
   toast(t('loadSuccess'),{type:'good',sub:rankName(currentRankIndex)+' · '+fmtN(totalXp)+' XP'});
 }
@@ -115,8 +128,8 @@ function openImport(){
 function exportFile(){download('gym-ranker-backup-'+dayKey()+'.json',JSON.stringify(backupData(),null,1),'application/json');toast(t('fileSaved'),{type:'good'})}
 function exportCSV(){
   const h=getHistory();if(!h.length)return toast(t('noData'),{type:'bad'});
-  const f=UNIT()==='lbs'?LBS:1;let csv='﻿Date,Time,Exercise,Muscle,Weight ('+UNIT()+'),Reps,XP\n';
-  h.forEach(e=>{const ex=getEx(e.exId),d=new Date(e.ts);csv+=`${dayKey(e.ts)},${pad2(d.getHours())}:${pad2(d.getMinutes())},"${(ex?exName(ex):e.exId).replace(/"/g,'""')}",${ex?t(ex.muscle):''},${Math.round(e.weight*f*10)/10},${e.reps},${Math.floor(e.xp)}\n`});
+  const f=UNIT()==='lbs'?LBS:1;let csv='﻿Date,Time,Exercise,Muscle,Weight ('+UNIT()+'),Reps,Seconds,Bodyweight ('+UNIT()+'),XP\n';
+  h.forEach(e=>{const ex=getEx(e.exId),d=new Date(e.ts);csv+=`${dayKey(e.ts)},${pad2(d.getHours())}:${pad2(d.getMinutes())},"${(ex?exName(ex):e.exId).replace(/"/g,'""')}",${ex?t(ex.muscle):''},${Math.round(e.weight*f*10)/10},${e.reps},${e.s!=null?e.s:''},${e.bw?Math.round(e.bw*f*10)/10:''},${Math.floor(e.xp)}\n`});
   download('gym-ranker-export.csv',csv,'text/csv;charset=utf-8');toast(t('csvExported'),{type:'good'});
 }
 async function resetAll(){
@@ -132,6 +145,6 @@ function installApp(){
 }
 function openShortcuts(){
   const k=(keys,label)=>`<div class="sess"><span style="text-transform:none">${esc(label)}</span><span>${keys.map(x=>`<kbd style="font:600 12px/1 var(--font);border:1px solid var(--line-2);border-radius:6px;padding:4px 7px;margin-left:4px">${x}</kbd>`).join('')}</span></div>`;
-  openSheet({title:t('shortcuts'),body:`<div>${k(['/'],t('kbSearch'))}${k(['⌘','K'],t('kbSearch'))}${k(['Enter'],t('kbLog'))}${k(['1','–','5'],t('kbTabs'))}${k(['T'],t('kbTimer'))}${k(['Esc'],t('kbClose'))}</div>`});
+  openSheet({title:t('shortcuts'),body:`<div>${k(['/'],t('kbSearch'))}${k(['⌘','K'],t('kbSearch'))}${k(['Enter'],t('kbLog'))}${k(['1','–','8'],t('kbTabs'))}${k(['T'],t('kbTimer'))}${k(['Esc'],t('kbClose'))}</div>`});
 }
 

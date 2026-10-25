@@ -59,14 +59,21 @@ function celebrate(i){
   const c=$('#celebrate'),r=RANKS[i];
   c.style.setProperty('--tier',TIERS[r.tier].c[1]);
   $('#celEmb').innerHTML=emblem(i);$('#celEyebrow').textContent=t('rankUp');
-  const n=$('#celName');n.textContent=rankName(i);n.classList.toggle('tier-fire',r.tier===10);
+  const n=$('#celName');n.textContent=rankName(i);n.classList.remove('long');n.classList.toggle('tier-fire',r.tier===10);
   $('#celSub').textContent=RANKS[i+1]?t('rankUpSub',{xp:fmtN(Math.max(0,RANKS[i+1].xp-totalXp)),rank:rankName(i+1)}):t('maxRank');
   $('#celBtn').textContent=t('continue');
   c.classList.remove('show');void c.offsetWidth;c.classList.add('show');
+  releaseCelebrate=BackStack.push('celebrate',()=>closeCelebrate(true));
   haptic([20,60,30,60,90]);SFX.rank();burst(TIERS[r.tier].c.concat(['#ffffff']));
   setTimeout(()=>$('#celBtn').focus({preventScroll:true}),900);
 }
-const closeCelebrate=()=>$('#celebrate').classList.remove('show');
+let releaseCelebrate=null;
+function closeCelebrate(fromBack){
+  const c=$('#celebrate');if(!c.classList.contains('show'))return;
+  c.classList.remove('show');
+  const rel=releaseCelebrate;releaseCelebrate=null;if(rel&&fromBack!==true)rel();
+  rewardClosed();
+}
 function burst(colors){
   if(reduceMotion())return;
   const cv=$('#fx'),ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;

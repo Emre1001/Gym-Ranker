@@ -52,20 +52,20 @@ function openCustomEditor(name){
 function openExDetail(id){
   const ex=getEx(id);if(!ex)return;
   const h=getHistory().filter(e=>e.exId===id),pr=getPRs()[id],favOn=getFavs().includes(id);
-  const vol=h.reduce((s,e)=>s+e.weight*e.reps,0);
+  const vol=h.reduce((s,e)=>s+setVol(e,ex),0),timed=exMode(ex)==='time';
   const byDay={};h.forEach(e=>{const k=dayKey(e.ts);(byDay[k]=byDay[k]||[]).push(e)});
   const days=Object.keys(byDay).sort();
-  const series=days.slice(-16).map(k=>Math.max(...byDay[k].map(e=>oneRM(e.weight,e.reps))));
+  const series=days.slice(-16).map(k=>Math.max(...byDay[k].map(e=>setScore(e,ex))));
   let spark='';
   if(series.length>=2){
     const W=480,H=90,mx=Math.max(...series),mn=Math.min(...series),rg=Math.max(1,mx-mn);
     const pts=series.map((v,i)=>[i/(series.length-1)*W,H-8-((v-mn)/rg)*(H-20)]);
-    spark=`<div class="sec" style="margin:22px 4px 4px"><span>${esc(t('est1rmTrend'))}</span><span class="num">${fmtW(series[0])} → ${fmtW(series[series.length-1])}</span></div><div class="spark"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path class="l" pathLength="1" d="${smoothPath(pts)}"/>${pts.map((p,i)=>i===pts.length-1?`<circle cx="${p[0]}" cy="${p[1]}" r="4.5"/>`:'').join('')}</svg></div>`;
+    spark=`<div class="sec" style="margin:22px 4px 4px"><span>${esc(t(timed?'holdTrend':'est1rmTrend'))}</span><span class="num">${timed?fmtSecs(series[0])+' → '+fmtSecs(series[series.length-1]):fmtW(series[0])+' → '+fmtW(series[series.length-1])}</span></div><div class="spark"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path class="l" pathLength="1" d="${smoothPath(pts)}"/>${pts.map((p,i)=>i===pts.length-1?`<circle cx="${p[0]}" cy="${p[1]}" r="4.5"/>`:'').join('')}</svg></div>`;
   }
-  const sess=days.slice(-5).reverse().map(k=>`<div class="sess"><span>${esc(relDay(keyToDate(k).getTime()))}</span><span class="num">${byDay[k].map(e=>fmtW(e.weight,false)+'×'+e.reps).join('  ')}</span></div>`).join('');
+  const sess=days.slice(-5).reverse().map(k=>`<div class="sess"><span>${esc(relDay(keyToDate(k).getTime()))}</span><span class="num">${byDay[k].map(e=>esc(fmtSet(e,ex,true))).join('  ')}</span></div>`).join('');
   const b=openSheet({title:t('exercise'),body:`
     <div class="ex-hero">${tileHTML(ex)}<div><h4>${esc(exName(ex))}</h4><p>${esc(exMeta(ex))} · ${fmtMult(ex.mult)}</p></div></div>
-    <div class="stat-grid"><div class="stat-box"><b class="num">${pr?fmtW(pr.weight,false)+'×'+pr.reps:'–'}</b><span>${esc(t('bestSet'))}</span></div><div class="stat-box"><b class="num">${pr?fmtW(pr.oneRM):'–'}</b><span>${esc(t('est1rm'))}</span></div><div class="stat-box"><b class="num">${fmtN(h.length)}</b><span>${esc(t('sets'))}</span></div></div>
+    <div class="stat-grid"><div class="stat-box"><b class="num">${pr?esc(fmtSet(pr,ex,true)):'–'}</b><span>${esc(t('bestSet'))}</span></div><div class="stat-box"><b class="num">${pr?(timed?esc(fmtSecs(setSecs(pr))):fmtW(prScore(pr))):'–'}</b><span>${esc(t(timed?'holdTime':'est1rm'))}</span></div><div class="stat-box"><b class="num">${fmtN(h.length)}</b><span>${esc(t('sets'))}</span></div></div>
     ${spark}
     ${sess?`<div class="sec" style="margin:22px 4px 4px"><span>${esc(t('lastSessions'))}</span><span>${esc(fmtVol(vol))}</span></div><div>${sess}</div>`:`<p class="sheet-text" style="margin-top:18px">${esc(t('noSetsYet'))}</p>`}
     <div class="sheet-actions"><button class="btn btn-secondary" data-a="fav" style="flex:0 0 auto;width:56px" aria-label="${esc(t('favorites'))}"><span class="fav-btn${favOn?' on':''}" style="margin:0">${ico('star','sm')}</span></button>${ex.custom?`<button class="btn btn-danger" data-a="del" style="flex:0 0 auto;width:56px" aria-label="${esc(t('delete'))}">${ico('trash','sm')}</button>`:''}<button class="btn btn-primary" data-a="train">${ico('play','xs')}${esc(t('trainThis'))}</button></div>`});

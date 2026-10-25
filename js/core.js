@@ -2,7 +2,7 @@
    Gym Ranker 3 — App
    Data stays 100% compatible with v1/v2 (same localStorage keys).
    ============================================================ */
-const VERSION='3.0.0';
+const VERSION='4.0.0';
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const LS={
@@ -66,7 +66,9 @@ function tone(seq){if(!pref.sound)return;try{AC=AC||new(window.AudioContext||win
 const SFX={
   timer:()=>tone([[880,0,.35],[1318.5,.16,.7]]),
   rank:()=>tone([[523.25,0,.45],[659.25,.11,.45],[783.99,.22,.5],[1046.5,.33,1.1,.18]]),
-  pr:()=>tone([[987.77,0,.25,.12],[1318.5,.09,.55,.12]])
+  pr:()=>tone([[987.77,0,.25,.12],[1318.5,.09,.55,.12]]),
+  quest:()=>tone([[659.25,0,.18,.12],[987.77,.08,.35,.12]]),
+  skill:()=>tone([[392,0,.3,.14],[587.33,.1,.3,.14],[783.99,.2,.35,.14],[1174.66,.32,.9,.16]])
 };
 
 /* ---------- Ranks ---------- */
@@ -138,16 +140,37 @@ function bumpStreak(){
   saveStreak(s);return s;
 }
 const oneRM=(w,r)=>r<=12?Math.round(w*(36/(37-r))):Math.round(w);
-function checkPR(id,w,r,ts){
-  const prs=getPRs(),rm=oneRM(w,r),had=!!prs[id];
-  if(!had||rm>prs[id].oneRM){prs[id]={weight:w,reps:r,date:ts,oneRM:rm};savePRs(prs);return{isPR:true,first:!had,oneRM:rm}}
-  return{isPR:false,oneRM:rm};
+/* Set modes: 'w' weight × reps · 'bw' (bodyweight × share + extra) × reps · 'time' seconds held */
+const exMode=ex=>(ex&&ex.mode)||'w';
+const isCali=ex=>exMode(ex)!=='w';
+const setSecs=e=>e.s!=null?e.s:(e.reps||0);
+const setLoad=(e,ex)=>(e.bw||0)*((ex&&ex.bwf)||1)+(e.weight||0);
+function calcXp(ex,w,r,s,bw){const m=exMode(ex);if(m==='w')return w*r*ex.mult;const load=bw*(ex.bwf||1)+(w||0);return(m==='time'?s:r)*load*ex.mult}
+function setScore(e,ex){
+  const m=exMode(ex);
+  if(m==='time'){const base=Math.max(1,(e.bw||bodyWeight())*(ex.bwf||1));return Math.round(setSecs(e)*(1+(e.weight||0)/base))}
+  return oneRM(m==='bw'?setLoad(e,ex):e.weight,e.reps);
+}
+const setVol=(e,ex)=>{const m=exMode(ex);return m==='time'?0:(m==='bw'?setLoad(e,ex):e.weight)*e.reps};
+const fmtSecs=s=>{s=Math.round(s);return s>=60?Math.floor(s/60)+':'+pad2(s%60)+'\u00a0min':s+'\u00a0s'};
+function fmtSet(e,ex,short){
+  const m=exMode(ex),w=e.weight||0;
+  if(m==='time')return(w>0?'+'+fmtW(w,!short)+' · ':'')+fmtSecs(setSecs(e));
+  if(m==='bw')return(w>0?(short?'+'+fmtW(w,false):'BW + '+fmtW(w)):'BW')+(short?'×':' × ')+e.reps;
+  return short?fmtW(w,false)+'×'+e.reps:fmtW(w)+' × '+e.reps;
+}
+const prScore=pr=>pr?(pr.score!=null?pr.score:pr.oneRM):0;
+function checkPR(ex,e){
+  const prs=getPRs(),sc=setScore(e,ex),had=!!prs[ex.id];
+  if(!had||sc>prScore(prs[ex.id])){prs[ex.id]={weight:e.weight,reps:e.reps,s:e.s,bw:e.bw,date:e.ts,oneRM:exMode(ex)==='time'?0:sc,score:sc};savePRs(prs);return{isPR:true,first:!had,score:sc}}
+  return{isPR:false,score:sc};
 }
 function toggleFav(id){const f=getFavs(),i=f.indexOf(id);if(i<0)f.push(id);else f.splice(i,1);saveFavs(f);haptic(8);return i<0}
 
 /* ---------- Exercises ---------- */
 const MUSCLE_LIST=['chest','back','shoulders','biceps','triceps','quads','hamstrings','glutes','calves','core','forearms','traps','fullBody'];
 const EQUIP_LIST=['barbell','dumbbell','cable','machine','bodyweight','kettlebell','band','smith','ezbar'];
+const EQUIP_FILTERS=['cali','skills'].concat(EQUIP_LIST);
 const MUSCLE_COLORS={chest:'#ff6b4a',back:'#3b9eff',shoulders:'#ffaa1f',biceps:'#ff4f8b',triceps:'#a27bff',quads:'#2fd18a',hamstrings:'#14bfc2',glutes:'#e879f9',calves:'#93d443',core:'#f5c518',forearms:'#d49a5f',traps:'#8197c9',fullBody:'#ff4d2e'};
 let CUSTOM=LS.json('gr_custom',[]);
 let EX_MAP=new Map();
@@ -157,12 +180,14 @@ const getEx=id=>EX_MAP.get(id);
 const saveCustom=()=>{LS.setJson('gr_custom',CUSTOM);rebuildEx()};
 const exName=ex=>ex?(ex.custom?ex.name:(LANG==='de'?ex.nameDe:ex.nameEn)):'?';
 const exAlt=ex=>ex.custom?'':(LANG==='de'?ex.nameEn:ex.nameDe);
-const exMeta=ex=>t(ex.muscle)+' · '+t(ex.equipment);
+const exMeta=ex=>t(ex.muscle)+' · '+(exMode(ex)==='time'?t('modeHold'):exMode(ex)==='bw'?t('cali'):t(ex.equipment));
 const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss').replace(/ı/g,'i');
 function searchEx(q,f={}){
   let list=allEx();
   if(f.muscle&&f.muscle!=='all')list=list.filter(e=>e.muscle===f.muscle);
-  if(f.equip&&f.equip!=='all')list=list.filter(e=>e.equipment===f.equip);
+  if(f.equip==='cali')list=list.filter(isCali);
+  else if(f.equip==='skills')list=list.filter(e=>e.skill);
+  else if(f.equip&&f.equip!=='all')list=list.filter(e=>e.equipment===f.equip);
   if(f.fav){const fv=new Set(getFavs());list=list.filter(e=>fv.has(e.id))}
   const nq=norm(q||'').trim();
   if(!nq)return list.slice().sort((a,b)=>exName(a).localeCompare(exName(b),locale()));
@@ -179,7 +204,7 @@ function searchEx(q,f={}){
 const tileHTML=(ex,c='')=>`<span class="tile ${c}" style="--c:${MUSCLE_COLORS[ex.muscle]||'#888'}"><svg class="ico"><use href="#eq-${ex.equipment}"/></svg></span>`;
 function exRowHTML(ex,i,favs){
   const on=favs.has(ex.id);
-  return `<div class="ex-row" role="button" tabindex="0" data-ex="${esc(ex.id)}" style="--i:${i}">${tileHTML(ex)}<span class="ex-main"><span class="ex-name">${esc(exName(ex))}</span><span class="ex-meta">${esc(exMeta(ex))}</span></span><span class="mult">${fmtMult(ex.mult)}</span><span class="fav-btn${on?' on':''}" role="button" tabindex="0" data-fav="${esc(ex.id)}" aria-label="${esc(t('favorites'))}" aria-pressed="${on}">${ico('star','sm')}</span></div>`;
+  return `<div class="ex-row" role="button" tabindex="0" data-ex="${esc(ex.id)}" style="--i:${i}">${tileHTML(ex)}<span class="ex-main"><span class="ex-name">${esc(exName(ex))}</span><span class="ex-meta">${esc(exMeta(ex))}</span></span>${ex.skill?`<span class="pill gold sk-pill">${ico('spark','xs')}</span>`:''}<span class="mult">${fmtMult(ex.mult)}</span><span class="fav-btn${on?' on':''}" role="button" tabindex="0" data-fav="${esc(ex.id)}" aria-label="${esc(t('favorites'))}" aria-pressed="${on}">${ico('star','sm')}</span></div>`;
 }
 function handleFavClick(btn){const on=toggleFav(btn.dataset.fav);btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',on);btn.classList.remove('popping');void btn.offsetWidth;btn.classList.add('popping')}
 const lastSet=id=>{const h=getHistory();for(let i=h.length-1;i>=0;i--)if(h[i].exId===id)return h[i];return null};
@@ -206,7 +231,7 @@ const secondaryMuscles={
 };
 function muscleRanks(){
   const prs=getPRs(),best={},src={};
-  Object.entries(prs).forEach(([id,pr])=>{const ex=getEx(id);if(!ex)return;[ex.muscle].concat(secondaryMuscles[id]||[]).forEach(m=>{if(!best[m]||pr.oneRM>best[m]){best[m]=pr.oneRM;src[m]=id}})});
+  Object.entries(prs).forEach(([id,pr])=>{const ex=getEx(id);if(!ex||exMode(ex)==='time'||!pr.oneRM)return;[ex.muscle].concat(secondaryMuscles[id]||[]).forEach(m=>{if(!best[m]||pr.oneRM>best[m]){best[m]=pr.oneRM;src[m]=id}})});
   const out={};
   MUSCLE_LIST.forEach(m=>{
     const rm=best[m]||0,th=muscleThresholds[m];let ri=-1;

@@ -41,13 +41,15 @@ function openSheet({title='',body='',tall=false,onClose=null}){
     $('#main').style.transformOrigin='50% '+(scrollY+innerHeight/2)+'px';
     document.body.classList.add('sheet-open','locked');
     requestAnimationFrame(()=>{s.classList.add('show');$('#sheetBackdrop').classList.add('show')});
+    SH.release=BackStack.push('sheet',()=>closeSheet(true));
     setTimeout(()=>{if(SH.open&&!s.contains(document.activeElement))s.focus({preventScroll:true})},60);
   }
   SH.open=true;haptic(6);
   return b;
 }
-function closeSheet(){
+function closeSheet(fromBack){
   if(!SH.open)return;SH.open=false;
+  const rel=SH.release;SH.release=null;if(rel&&fromBack!==true)rel();
   const s=$('#sheet');s.classList.remove('show');s.style.transform='';
   $('#sheetBackdrop').classList.remove('show');$('#sheetBackdrop').style.opacity='';
   document.body.classList.remove('sheet-open','locked');

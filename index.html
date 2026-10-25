@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Gym Ranker — Hardcore</title>
 <meta name="description" content="Gym Ranker Hardcore Edition: logge Sätze, farme XP und steige in 33 Rängen von Holz bis Champion auf. 300+ Übungen, Stärke-Map, Rekorde, Pausentimer. Offline, ohne Account.">
 <meta name="theme-color" content="#000000">
@@ -23,6 +23,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script>(function(){try{var t=localStorage.getItem('gr_theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})()</script>
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/features.css">
 </head>
 <body>
 <div id="splash" aria-hidden="true">
@@ -42,7 +43,7 @@
 <!-- ================= TRAIN ================= -->
 <section class="page" id="page-train" data-title="navTrain">
   <div class="ph">
-    <div><div class="ph-eyebrow" id="todayDate"></div><h1 class="ph-title" data-i18n="titleTrain"></h1></div>
+    <div class="ph-main"><div class="ph-eyebrow" id="todayDate"></div><h1 class="ph-title" id="helloTitle"></h1><p class="ph-sub" id="motd"></p></div>
     <div class="ph-actions"><button class="streak-pill" id="streakPill" aria-label="Streak"><svg class="ico sm"><use href="#i-flame"/></svg><span class="num" id="streakNum">0</span></button></div>
   </div>
   <div class="grid-train">
@@ -63,7 +64,16 @@
         <div class="bar"><i id="heroBar"></i></div>
         <div class="hero-foot"><span id="heroNext"></span><span id="heroStatus"></span></div>
       </article>
-      <article class="card o3" id="todayCard">
+      <article class="card quest-card o3" id="questCard">
+        <div class="card-head"><h2 class="card-title"><svg class="ico sm"><use href="#i-quest"/></svg><span data-i18n="dailyQuests"></span></h2><span class="card-sub" id="questSub"></span></div>
+        <div id="questList"></div>
+        <button class="quest chest" id="chestRow"></button>
+      </article>
+      <article class="card quest-card weekly o5" id="weekCard">
+        <div class="card-head"><h2 class="card-title"><svg class="ico sm"><use href="#i-crown"/></svg><span data-i18n="weeklyQuests"></span></h2><span class="card-sub" id="weekSub"></span></div>
+        <div id="weekList"></div>
+      </article>
+      <article class="card o6" id="todayCard">
         <div class="card-head"><h2 class="card-title" data-i18n="today"></h2><span class="card-sub" id="todaySub"></span></div>
         <div class="today-top">
           <div class="goal-ring" id="goalRing">
@@ -91,30 +101,53 @@
         </button>
         <div class="recent chips" id="recentRow"></div>
         <div class="steppers">
-          <div class="field"><label for="inWeight" id="lblWeight"></label>
+          <div class="field"><div class="field-head"><label for="inWeight" id="lblWeight"></label></div>
             <div class="stepper"><button type="button" data-step="w-1" aria-label="−"><svg class="ico"><use href="#i-minus"/></svg></button><input id="inWeight" type="text" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="next"><button type="button" data-step="w1" aria-label="+"><svg class="ico"><use href="#i-plus"/></svg></button></div>
           </div>
-          <div class="field"><label for="inReps" data-i18n="reps"></label>
+          <div class="field"><div class="field-head"><label for="inReps" id="lblReps"></label><button type="button" class="sw-btn" id="swBtn" hidden aria-pressed="false"><svg class="ico xs"><use href="#i-timer"/></svg><span id="swLbl" data-i18n="stopwatch"></span></button></div>
             <div class="stepper"><button type="button" data-step="r-1" aria-label="−"><svg class="ico"><use href="#i-minus"/></svg></button><input id="inReps" type="text" inputmode="numeric" placeholder="0" autocomplete="off" enterkeyhint="done"><button type="button" data-step="r1" aria-label="+"><svg class="ico"><use href="#i-plus"/></svg></button></div>
           </div>
         </div>
+        <p class="mode-hint" id="modeHint" hidden></p>
         <div class="preview" id="preview"></div>
         <button class="btn btn-primary btn-log" id="btnLog"><span class="btn-label"><svg class="ico sm"><use href="#i-bolt"/></svg><span data-i18n="logSet"></span></span><svg class="btn-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <div class="log-hint" data-i18n="logHint"></div>
       </article>
-      <div class="tools o4">
+      <article class="card day-card o4" id="dayCard">
+        <div class="card-head"><h2 class="card-title" data-i18n="dayOverview"></h2></div>
+        <div class="day-tiles" id="dayTiles"></div>
+      </article>
+      <div class="tools o7">
         <button class="tool" data-tool="timer"><span class="t-ico" style="background:#ff9f0a"><svg class="ico sm"><use href="#i-timer"/></svg></span><span><span data-i18n="toolTimer"></span><small id="toolTimerSub"></small></span></button>
         <button class="tool" data-tool="plates"><span class="t-ico" style="background:#0a84ff"><svg class="ico sm"><use href="#i-plate"/></svg></span><span><span data-i18n="toolPlates"></span><small data-i18n="toolPlatesSub"></small></span></button>
         <button class="tool" data-tool="orm"><span class="t-ico" style="background:#bf5af2"><svg class="ico sm"><use href="#i-gauge"/></svg></span><span><span data-i18n="toolOrm"></span><small data-i18n="toolOrmSub"></small></span></button>
+        <button class="tool" data-tool="skills"><span class="t-ico" style="background:#14bfc2"><svg class="ico sm"><use href="#i-spark"/></svg></span><span><span data-i18n="skills"></span><small id="toolSkillsSub"></small></span></button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ================= FOOD ================= -->
+<section class="page" id="page-food" data-title="navFood">
+  <div class="ph">
+    <div class="ph-main"><div class="ph-eyebrow" id="foodEyebrow"></div><h1 class="ph-title" data-i18n="titleFood"></h1></div>
+    <div class="ph-actions day-nav"><button class="icon-btn" id="foodPrev" data-i18n-aria="prevDay"><svg class="ico sm"><use href="#i-chev-l"/></svg></button><span id="foodDayLbl" class="num"></span><button class="icon-btn" id="foodNext" data-i18n-aria="nextDay"><svg class="ico sm"><use href="#i-chev-r"/></svg></button></div>
+  </div>
+  <div id="foodView"></div>
+</section>
+
+<!-- ================= BODY ================= -->
+<section class="page" id="page-body" data-title="navBody">
+  <div class="ph">
+    <div class="ph-main"><div class="ph-eyebrow" id="bodyEyebrow"></div><h1 class="ph-title" data-i18n="titleBody"></h1></div>
+  </div>
+  <div id="bodyView"></div>
+</section>
+
 <!-- ================= LIBRARY ================= -->
 <section class="page" id="page-library" data-title="navLibrary">
   <div class="ph">
-    <div><div class="ph-eyebrow" id="libEyebrow"></div><h1 class="ph-title" data-i18n="titleLibrary"></h1></div>
+    <div class="ph-main"><button class="back-btn" data-back data-i18n-aria="goBack"><svg class="ico sm"><use href="#i-chev-l"/></svg><span data-i18n="navProfile"></span></button><div class="ph-eyebrow" id="libEyebrow"></div><h1 class="ph-title" data-i18n="titleLibrary"></h1></div>
     <div class="ph-actions"><button class="btn btn-secondary btn-sm" id="btnNewEx"><svg class="ico xs"><use href="#i-plus"/></svg><span data-i18n="newExercise"></span></button></div>
   </div>
   <div class="lib-tools">
@@ -130,7 +163,7 @@
 <!-- ================= HISTORY ================= -->
 <section class="page" id="page-history" data-title="navHistory">
   <div class="ph">
-    <div><div class="ph-eyebrow" id="histEyebrow"></div><h1 class="ph-title" data-i18n="titleHistory"></h1></div>
+    <div class="ph-main"><button class="back-btn" data-back data-i18n-aria="goBack"><svg class="ico sm"><use href="#i-chev-l"/></svg><span data-i18n="navProfile"></span></button><div class="ph-eyebrow" id="histEyebrow"></div><h1 class="ph-title" data-i18n="titleHistory"></h1></div>
   </div>
   <div id="histList"></div>
   <button class="btn btn-secondary btn-sm more-btn" id="histMore" hidden></button>
@@ -139,20 +172,29 @@
 <!-- ================= PROGRESS ================= -->
 <section class="page" id="page-progress" data-title="navProgress">
   <div class="ph">
-    <div><div class="ph-eyebrow" id="progEyebrow"></div><h1 class="ph-title" data-i18n="titleProgress"></h1></div>
+    <div class="ph-main"><div class="ph-eyebrow" id="progEyebrow"></div><h1 class="ph-title" data-i18n="titleProgress"></h1></div>
   </div>
   <div class="seg lg" id="progSeg" style="margin-bottom:16px">
     <button data-v="overview" data-i18n="segOverview"></button>
     <button data-v="body" data-i18n="segBody"></button>
+    <button data-v="skills" data-i18n="skills"></button>
     <button data-v="records" data-i18n="segRecords"></button>
   </div>
   <div id="progView"></div>
 </section>
 
+<!-- ================= PROFILE ================= -->
+<section class="page" id="page-profile" data-title="navProfile">
+  <div class="ph">
+    <div class="ph-main"><div class="ph-eyebrow" id="profEyebrow"></div><h1 class="ph-title" data-i18n="titleProfile"></h1></div>
+  </div>
+  <div id="profileView"></div>
+</section>
+
 <!-- ================= SETTINGS ================= -->
 <section class="page" id="page-settings" data-title="navSettings">
   <div class="ph">
-    <div><div class="ph-eyebrow">Gym Ranker</div><h1 class="ph-title" data-i18n="titleSettings"></h1></div>
+    <div class="ph-main"><button class="back-btn" data-back data-i18n-aria="goBack"><svg class="ico sm"><use href="#i-chev-l"/></svg><span data-i18n="navProfile"></span></button><div class="ph-eyebrow">Gym Ranker</div><h1 class="ph-title" data-i18n="titleSettings"></h1></div>
   </div>
   <div class="settings-wrap" id="settingsView"></div>
 </section>
@@ -165,10 +207,13 @@
   <div class="tabs" role="tablist">
     <span class="tab-ind" id="tabInd"></span>
     <button class="tab" role="tab" data-page="train"><svg class="ico"><use href="#i-train"/></svg><span data-i18n="navTrain"></span></button>
-    <button class="tab" role="tab" data-page="library"><svg class="ico"><use href="#i-library"/></svg><span data-i18n="navLibrary"></span></button>
-    <button class="tab" role="tab" data-page="history"><svg class="ico"><use href="#i-history"/></svg><span data-i18n="navHistory"></span></button>
+    <button class="tab" role="tab" data-page="food"><svg class="ico"><use href="#i-food"/></svg><span data-i18n="navFood"></span></button>
+    <button class="tab" role="tab" data-page="body"><svg class="ico"><use href="#i-body"/></svg><span data-i18n="navBody"></span></button>
     <button class="tab" role="tab" data-page="progress"><svg class="ico"><use href="#i-chart"/></svg><span data-i18n="navProgress"></span></button>
-    <button class="tab" role="tab" data-page="settings"><svg class="ico"><use href="#i-sliders"/></svg><span data-i18n="navSettings"></span></button>
+    <button class="tab side" role="tab" data-page="library"><svg class="ico"><use href="#i-library"/></svg><span data-i18n="navLibrary"></span></button>
+    <button class="tab side" role="tab" data-page="history"><svg class="ico"><use href="#i-history"/></svg><span data-i18n="navHistory"></span></button>
+    <button class="tab" role="tab" data-page="profile"><svg class="ico"><use href="#i-user"/></svg><span data-i18n="navProfile"></span></button>
+    <button class="tab side" role="tab" data-page="settings"><svg class="ico"><use href="#i-sliders"/></svg><span data-i18n="navSettings"></span></button>
   </div>
   <div class="side-foot" id="sideFoot"></div>
 </nav>
@@ -247,6 +292,37 @@
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
   <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></symbol>
   <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7.5 14h9"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></symbol>
+  <symbol id="i-food" viewBox="0 0 24 24"><path d="M3.5 12.5h17a8.5 8.5 0 0 1-17 0z"/><path d="M8 9c0-1.5 1-2 1-3.5M12 9c0-1.5 1-2 1-3.5M16 9c0-1.5 1-2 1-3.5"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7.5c-1.6-1.2-4-1.4-5.6 0-2.4 2-2 6.3.2 9.5 1.3 1.9 2.8 3.4 4.2 2.6.8-.5 1.6-.5 2.4 0 1.4.8 2.9-.7 4.2-2.6 2.2-3.2 2.6-7.5.2-9.5-1.6-1.4-4-1.2-5.6 0z"/><path d="M12 7.5c0-2 1-3.5 3-4"/></symbol>
+  <symbol id="i-body" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.2"/><path d="M6 8.5h12M12 8.5v6.5M9.5 21l2.5-6 2.5 6M8 8.5l-1 6M16 8.5l1 6"/></symbol>
+  <symbol id="i-steps" viewBox="0 0 24 24"><path d="M7.5 3.5c1.8 0 2.8 2 2.6 4.6-.1 1.8-.6 3.4-.6 4.9H5.8c0-1.5-.8-3.1-.8-5.2 0-2.4 1-4.3 2.5-4.3zM5.9 15.5h3.6v1.8a1.8 1.8 0 0 1-3.6 0zM16.5 7.5c1.5 0 2.5 1.9 2.5 4.3 0 2.1-.8 3.7-.8 5.2h-3.7c0-1.5-.5-3.1-.6-4.9-.2-2.6.8-4.6 2.6-4.6zM14.5 19.5h3.6v1.2a1.8 1.8 0 0 1-3.6 0z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6.5 6.8 6.5 11.3a6.5 6.5 0 0 1-13 0C5.5 10 12 3.2 12 3.2z"/><path d="M9 15.2a3 3 0 0 0 2.4 2.6"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><rect x="2.5" y="8" width="19" height="8" rx="2"/><path d="M6.5 8v3M10 8v4.5M13.5 8v3M17 8v4.5"/></symbol>
+  <symbol id="i-quest" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="3"/><path d="M8.5 9l1.5 1.5 3-3M8.5 15h7"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M4 8l4 4 4-6.5 4 6.5 4-4-1.5 10h-13z"/><path d="M5.5 20.5h13"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2.8l2 6.2 6.2 2-6.2 2-2 6.2-2-6.2-6.2-2 6.2-2z"/><path d="M19 3v3M17.5 4.5h3"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5v7.5h14v-7.5M12 8.5V20M12 8.5c-1.5-3.5-5.5-4-5.5-1.5S10 8.5 12 8.5zM12 8.5c1.5-3.5 5.5-4 5.5-1.5S14 8.5 12 8.5z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 17.5h6M10 20.5h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2v1.6h5v-1.6c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></symbol>
+  <symbol id="i-trend-down" viewBox="0 0 24 24"><path d="M3 7l6 6 4-4 8 8M15 17h6v-6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4.5L3.5 9M4 13a8 8 0 0 0 14.5 4.5l2-2.5"/><path d="M3.5 4v5h5M20.5 20v-5h-5"/></symbol>
+  <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><rect x="8" y="5.5" width="8" height="4" rx="1"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 17h.01M12 17h.01M15.5 17h.01"/></symbol>
+  <symbol id="i-medal" viewBox="0 0 24 24"><path d="M8 2.5l2.5 6M16 2.5l-2.5 6"/><circle cx="12" cy="15" r="6"/><path d="M12 12l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z"/></symbol>
+  <!-- calisthenics -->
+  <symbol id="i-pullup" viewBox="0 0 24 24"><path d="M2.5 3.5h19M8.5 3.5L10 9.5M15.5 3.5L14 9.5M12 12v5M12 17l-2 4.5M12 17l2 4.5"/><circle cx="12" cy="8.6" r="1.8"/></symbol>
+  <symbol id="i-pushup" viewBox="0 0 24 24"><path d="M2 20.5h20M7.5 12.8L21 18.2M9.5 13.6V20.5"/><circle cx="5.2" cy="11.6" r="1.9"/></symbol>
+  <symbol id="i-dip" viewBox="0 0 24 24"><path d="M3 13.5h5M16 13.5h5M8 13.5l1.5-4.5M16 13.5l-1.5-4.5M12 8v7.5M12 15.5l-2 3 1.5 2.5"/><circle cx="12" cy="5.5" r="1.8"/></symbol>
+  <symbol id="i-muscleup" viewBox="0 0 24 24"><path d="M2.5 14h19M8.5 14l1.5-5M15.5 14l-1.5-5M12 7.5v7M12 14.5l-1 6.5M12 14.5l1 6.5"/><circle cx="12" cy="4.8" r="1.8"/></symbol>
+  <symbol id="i-handstand" viewBox="0 0 24 24"><path d="M3 21.5h18M10 21.5l1-6M14 21.5l-1-6M12 15.5V7.5M12 7.5L10 2.5M12 7.5l2-5"/><circle cx="12" cy="18" r="1.6"/></symbol>
+  <symbol id="i-lever" viewBox="0 0 24 24"><path d="M2.5 3.5h19M9 3.5v7M9 10.5h12.5"/><circle cx="6.4" cy="10.5" r="1.7"/></symbol>
+  <symbol id="i-planche" viewBox="0 0 24 24"><path d="M2 21h20M10 14.5V21M6.5 14.5h15"/><circle cx="4.4" cy="14.5" r="1.7"/></symbol>
+  <symbol id="i-lsit" viewBox="0 0 24 24"><path d="M2 21h20M8.5 6.5v7.5h11.5M6.5 8l-1 13"/><circle cx="8.5" cy="4" r="1.7"/></symbol>
+  <symbol id="i-pistol" viewBox="0 0 24 24"><path d="M2 21h20M9 6l1 6.5M10 12.5L7.5 16l2.5 5M10 12.5h11M9.5 8h7.5"/><circle cx="8.6" cy="3.9" r="1.7"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 2v20M4 6l4.5 3.5M4 13l4.5-3.5M8.5 9.5H21"/><circle cx="10.5" cy="6.5" r="1.6"/></symbol>
+  <symbol id="i-hang" viewBox="0 0 24 24"><path d="M2.5 3.5h19M10 3.5l1 7.5M14 3.5l-1 7.5M12 12v5M12 17l-1.5 4.5M12 17l1.5 4.5"/><circle cx="12" cy="9.6" r="1.6"/></symbol>
   <!-- equipment -->
   <symbol id="eq-barbell" viewBox="0 0 24 24"><path d="M1.8 12h20.4M5 7.5v9M7.8 9v6M19 7.5v9M16.2 9v6" stroke-width="2.2"/></symbol>
   <symbol id="eq-dumbbell" viewBox="0 0 24 24"><path d="M8.5 12h7M5.5 8v8M8.5 6.5v11M18.5 8v8M15.5 6.5v11" stroke-width="2.3"/></symbol>
@@ -259,19 +335,30 @@
   <symbol id="eq-ezbar" viewBox="0 0 24 24"><path d="M1.8 12h3.4l2-2.2 2 4.4 2.8-4.4 2.8 4.4 2-4.4 2 2.2h3.4" stroke-width="2"/><path d="M4 8v8M20 8v8" stroke-width="2.2"/></symbol>
 </svg>
 
+<script src="js/back-stack.js"></script>
 <script src="js/i18n/en.js"></script>
 <script src="js/i18n/de.js"></script>
 <script src="js/i18n/tr.js"></script>
 <script src="js/data/exercises.js"></script>
 <script src="js/data/body-svg.js"></script>
+<script src="js/data/foods.js"></script>
+<script src="js/data/tips.js"></script>
 <script src="js/core.js"></script>
+<script src="js/data/calisthenics.js"></script>
+<script src="js/data/skills.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/health.js"></script>
+<script src="js/game.js"></script>
 <script src="js/pages/train.js"></script>
+<script src="js/pages/food.js"></script>
+<script src="js/pages/body.js"></script>
+<script src="js/pages/profile.js"></script>
 <script src="js/pages/library.js"></script>
 <script src="js/pages/history.js"></script>
 <script src="js/pages/progress.js"></script>
 <script src="js/pages/settings.js"></script>
 <script src="js/tools.js"></script>
+<script src="js/onboarding.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

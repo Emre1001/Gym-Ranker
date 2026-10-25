@@ -10,7 +10,7 @@ function renderProgress(){
 }
 function renderProgView(anim,h=getHistory()){
   const v=$('#progView');
-  if(PROG==='body')v.innerHTML=bodyView();else if(PROG==='records')v.innerHTML=recordsView(h);else v.innerHTML=overviewView(h);
+  if(PROG==='body')v.innerHTML=bodyView();else if(PROG==='records')v.innerHTML=recordsView(h);else if(PROG==='skills')v.innerHTML=skillsView();else v.innerHTML=overviewView(h);
   if(PROG==='overview')mountXpChart(h);
   if(anim)[...v.children].forEach((c,i)=>{c.style.animation='none';void c.offsetWidth;c.style.animation=`rise .55s var(--ease) ${i*50}ms both`});
 }
@@ -29,7 +29,7 @@ function overviewView(h){
   const delta=pwk?Math.round((wk-pwk)/pwk*100):null;
   const kpi=(ic,c,label,val,sub)=>`<div class="card kpi" style="--kc:${c}"><div class="k-label">${ico(ic,'xs')}${esc(label)}</div><div class="k-val num">${val}</div><div class="k-sub">${sub}</div></div>`;
   const kpis=`<div class="kpis span">${kpi('bolt','var(--accent)',t('totalXp'),fmtN(totalXp),esc(rankName(rankOf(totalXp))))}${kpi('flame','#ff9f0a',t('streak'),ls+' <small style="font-size:15px;color:var(--text-2)">'+esc(t('daysShort'))+'</small>',esc(t('bestStreak',{n:st.longest||0})))}${kpi('history','#0a84ff',t('trainingDays'),fmtN(days.size),esc(t('avgSets',{n:days.size?NF1.format(h.length/days.size):0})))}${kpi('chart','#30d158',t('last7'),fmtN(wk)+' <small style="font-size:15px;color:var(--text-2)">'+esc(t('sets'))+'</small>',delta===null?esc(t('vsPrev')):`<span class="delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta}%</span> ${esc(t('vsPrev'))}`)}</div>`;
-  const xp30=dailySeries(h,30,entryXp),sum30=xp30.reduce((s,x)=>s+x.v,0);
+  const xp30=dailySeries(h.concat(getXpLog()),30,entryXp),sum30=xp30.reduce((s,x)=>s+x.v,0);
   const xpCard=`<div class="card span"><div class="card-head" style="margin-bottom:6px"><div><h3 class="card-title">${esc(t('xp30'))}</h3><div class="card-sub num">${fmtN(sum30)} XP</div></div></div><div class="chart" id="xpChart"></div><div class="chart-x"><span>${esc(fmtDate(addDays(now,-29),{day:'numeric',month:'short'}))}</span><span>${esc(fmtDate(addDays(now,-15),{day:'numeric',month:'short'}))}</span><span>${esc(t('todayShort'))}</span></div></div>`;
   const s14=dailySeries(h,14,()=>1),mx=Math.max(1,...s14.map(x=>x.v)),tk=dayKey();
   const bars=`<div class="card"><div class="card-head"><h3 class="card-title">${esc(t('sets14'))}</h3><span class="card-sub num">${fmtN(s14.reduce((s,x)=>s+x.v,0))}</span></div><div class="bars">${s14.map((x,i)=>`<div class="b${x.v?' has':''}${x.k===tk?' today':''}"><i data-v="${x.v}" style="height:${Math.max(3,x.v/mx*100)}%;--i:${i}"></i><em>${esc(fmtDate(keyToDate(x.k),{weekday:'narrow'}))}</em></div>`).join('')}</div></div>`;
@@ -38,7 +38,7 @@ function overviewView(h){
   h.forEach(e=>{const k=dayKey(e.ts);cnt[k]=(cnt[k]||0)+1});
   let cells='';for(let i=0;i<W*7;i++){const ts=addDays(start,i),k=dayKey(ts),c=cnt[k]||0,lv=c===0?'':c<6?'l1':c<12?'l2':c<20?'l3':'l4';cells+=`<i class="${lv}${k===tk?' t':''}${ts>today?' f':''}" style="--i:${i}" title="${esc(fmtDate(ts,{day:'numeric',month:'short'}))}: ${c}"></i>`}
   const heat=`<div class="card"><div class="card-head"><h3 class="card-title">${esc(t('activity'))}</h3><span class="card-sub">${esc(t('weeksN',{n:W}))}</span></div><div class="heat" style="grid-template-columns:repeat(${W},1fr)">${cells}</div><div class="heat-legend">${esc(t('less'))}<i style="background:var(--surface-3)"></i><i class="l1" style="background:color-mix(in srgb,var(--accent) 30%,var(--surface-3))"></i><i style="background:color-mix(in srgb,var(--accent) 55%,var(--surface-3))"></i><i style="background:color-mix(in srgb,var(--accent) 80%,var(--surface-3))"></i><i style="background:var(--accent)"></i>${esc(t('more'))}</div></div>`;
-  const dist={};h.forEach(e=>{const ex=getEx(e.exId);if(ex)dist[ex.muscle]=(dist[ex.muscle]||0)+e.xp});
+  const dist={};h.forEach(e=>{const ex=getEx(e.exId);if(ex)dist[ex.muscle]=(dist[ex.muscle]||0)+(e.xp||0)});
   const tot=Object.values(dist).reduce((a,b)=>a+b,0),dm=Math.max(1,...Object.values(dist));
   const rows=Object.entries(dist).sort((a,b)=>b[1]-a[1]).map(([m,v],i)=>`<div class="dist-row" style="--c:${MUSCLE_COLORS[m]}"><span class="dn">${esc(t(m))}</span><span class="dt"><i style="width:${v/dm*100}%;--i:${i}"></i></span><span class="dv num">${Math.round(v/tot*100)}%</span></div>`).join('');
   const distCard=`<div class="card span"><div class="card-head"><h3 class="card-title">${esc(t('muscleDist'))}</h3><span class="card-sub">${esc(t('byXp'))}</span></div>${rows||`<div class="empty">${ico('chart')}<b>${esc(t('noData'))}</b>${esc(t('noDataSub'))}</div>`}</div>`;
@@ -46,7 +46,7 @@ function overviewView(h){
 }
 function mountXpChart(h){
   const box=$('#xpChart');if(!box)return;
-  const data=dailySeries(h,30,entryXp),W=Math.max(260,box.clientWidth||600),H=box.clientHeight||190,top=22,bot=6;
+  const data=dailySeries(h.concat(getXpLog()),30,entryXp),W=Math.max(260,box.clientWidth||600),H=box.clientHeight||190,top=22,bot=6;
   const mx=Math.max(1,...data.map(d=>d.v))*1.08;
   const pts=data.map((d,i)=>[i/(data.length-1)*W,top+(H-top-bot)*(1-d.v/mx)]);
   const line=smoothPath(pts),area=line+` L${W},${H} L0,${H} Z`;
@@ -76,10 +76,25 @@ function openMuscleSheet(m){
 }
 function recordsView(h){
   const prs=Object.entries(getPRs()).filter(([id])=>getEx(id)).sort((a,b)=>(b[1].date||0)-(a[1].date||0));
-  const prList=prs.length?`<div class="list">${prs.slice(0,40).map(([id,p])=>{const ex=getEx(id);return `<button class="pr-row" data-detail="${esc(id)}">${tileHTML(ex,'sm')}<span class="ex-main"><span class="ex-name" style="display:block">${esc(exName(ex))}</span><span class="ex-meta" style="display:block">${esc(p.date?relDay(p.date):'')}</span></span><span class="pr-val"><b class="num">${fmtW(p.weight,false)} × ${p.reps}</b><small class="num">1RM ${fmtW(p.oneRM)}</small></span></button>`}).join('')}</div>`:`<div class="card empty">${ico('trophy')}<b>${esc(t('noPrs'))}</b>${esc(t('noPrsSub'))}</div>`;
+  const prList=prs.length?`<div class="list">${prs.slice(0,40).map(([id,p])=>{const ex=getEx(id);return `<button class="pr-row" data-detail="${esc(id)}">${tileHTML(ex,'sm')}<span class="ex-main"><span class="ex-name" style="display:block">${esc(exName(ex))}</span><span class="ex-meta" style="display:block">${esc(p.date?relDay(p.date):'')}</span></span><span class="pr-val"><b class="num">${esc(fmtSet(p,ex,true))}</b><small class="num">${exMode(ex)==='time'?esc(t('holdTime')):'1RM '+fmtW(prScore(p))}</small></span></button>`}).join('')}</div>`:`<div class="card empty">${ico('trophy')}<b>${esc(t('noPrs'))}</b>${esc(t('noPrsSub'))}</div>`;
   const cnt={};h.forEach(e=>cnt[e.exId]=(cnt[e.exId]||0)+1);
   const top=Object.entries(cnt).filter(([id])=>getEx(id)).sort((a,b)=>b[1]-a[1]).slice(0,10),tm=top.length?top[0][1]:1;
   const topList=top.length?`<div class="list">${top.map(([id,c],i)=>{const ex=getEx(id);return `<button class="top-row" data-detail="${esc(id)}"><span class="top-rank num">${i+1}</span><span class="ex-main"><span class="ex-name" style="display:block">${esc(exName(ex))}</span><span class="top-bar"><i style="width:${c/tm*100}%;--i:${i}"></i></span></span><span class="mult num">${fmtN(c)} ${esc(t('setsShort'))}</span></button>`}).join('')}</div>`:`<div class="card empty">${ico('chart')}<b>${esc(t('noData'))}</b>${esc(t('noDataSub'))}</div>`;
   return `<div class="grid-2"><div><div class="sec" style="margin-top:4px"><span>${esc(t('personalRecords'))}</span><span>${prs.length}</span></div>${prList}</div><div><div class="sec" style="margin-top:4px"><span>${esc(t('topExercises'))}</span></div>${topList}</div></div>`;
 }
 
+
+/* ---------- calisthenics skill trees ---------- */
+function skillsView(){
+  const got=getSkills(),n=skillCount(),tot=skillTotal(),xpGot=SKILL_TREES.reduce((s,tr)=>s+tr.nodes.filter(x=>got[x.id]).reduce((a,x)=>a+x.xp,0),0);
+  const head=`<div class="card skills-head span"><div class="sh-top"><div><div class="eyebrow">${esc(t('skills'))}</div><div class="sh-num num">${n}<small> / ${tot}</small></div></div><div class="sh-xp num">+${fmtN(xpGot)} XP</div></div><div class="bar" style="--tier:var(--accent)"><i style="width:${n/tot*100}%"></i></div><p class="set-note" style="margin:10px 0 0">${esc(t('skillsInfo'))}</p></div>`;
+  const trees=SKILL_TREES.map((tr,ti)=>{
+    const done=tr.nodes.filter(x=>got[x.id]).length,nextI=tr.nodes.findIndex(x=>!got[x.id]);
+    const nodes=tr.nodes.map((x,i)=>{
+      const on=!!got[x.id],nx=i===nextI,best=nx?nodeBest(x):0,goal=x.s||x.r;
+      return `<button class="sk-node${on?' on':''}${nx?' next':''}" data-detail="${esc(x.ex)}"><span class="sk-dot">${on?ico('check','xs'):nx?'<i></i>':ico('lock','xs')}</span><span class="sk-main"><span class="sk-name">${esc(nodeLabel(x))}</span>${nx?`<span class="sk-prog"><span class="q-bar"><i style="width:${clamp(best/goal,0,1)*100}%"></i></span><span class="num">${x.s?fmtSecs(best):best} / ${x.s?fmtSecs(goal):goal}</span></span>`:''}</span><span class="sk-xp num">+${fmtN(x.xp)}</span></button>`;
+    }).join('');
+    return `<div class="card sk-tree" style="--tc:${tr.c};--i:${ti}"><div class="sk-head"><span class="sk-badge">${ico(tr.icon)}</span><div class="sk-hmain"><h3 class="card-title">${esc(t('tree_'+tr.id))}</h3><span class="card-sub">${esc(t('levelOf',{n:done,max:tr.nodes.length}))}</span></div>${done===tr.nodes.length?`<span class="pill gold">${ico('crown','xs')}${esc(t('mastered'))}</span>`:''}</div><div class="sk-bar"><i style="width:${done/tr.nodes.length*100}%"></i></div><div class="sk-nodes">${nodes}</div></div>`;
+  }).join('');
+  return `<div class="grid-2">${head}${trees}</div>`;
+}
